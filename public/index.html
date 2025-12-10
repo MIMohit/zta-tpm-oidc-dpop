@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zero-Trust Architecture | Device + User Authentication</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: #f1f5f9;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+    }
+
+    .container {
+      background: #1e293b;
+      padding: 3rem;
+      border-radius: 1.5rem;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+      max-width: 600px;
+      width: 100%;
+      text-align: center;
+    }
+
+    h1 {
+      color: #06b6d4;
+      margin-bottom: 0.5rem;
+      font-size: 2rem;
+    }
+
+    h2 {
+      color: #94a3b8;
+      font-weight: 400;
+      margin-bottom: 2rem;
+      font-size: 1rem;
+    }
+
+    .status-box {
+      background: #0f172a;
+      padding: 1.5rem;
+      border-radius: 0.75rem;
+      margin-bottom: 2rem;
+      border: 2px solid #334155;
+    }
+
+    .status-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid #334155;
+    }
+
+    .status-item:last-child {
+      border-bottom: none;
+    }
+
+    .status-label {
+      color: #94a3b8;
+      font-size: 0.9rem;
+    }
+
+    .status-value {
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    .status-value.success {
+      color: #4ade80;
+    }
+
+    .status-value.error {
+      color: #f87171;
+    }
+
+    .status-value.warning {
+      color: #fbbf24;
+    }
+
+    button {
+      background: #06b6d4;
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      width: 100%;
+      margin-bottom: 1rem;
+    }
+
+    button:hover:not(:disabled) {
+      background: #0891b2;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(6, 182, 212, 0.3);
+    }
+
+    button:disabled {
+      background: #334155;
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+
+    button.secondary {
+      background: #475569;
+    }
+
+    button.secondary:hover:not(:disabled) {
+      background: #64748b;
+    }
+
+    button.danger {
+      background: #ef4444;
+    }
+
+    button.danger:hover:not(:disabled) {
+      background: #dc2626;
+    }
+
+    .info {
+      background: #0f172a;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      margin-top: 1rem;
+      font-size: 0.85rem;
+      color: #94a3b8;
+      border-left: 3px solid #06b6d4;
+    }
+
+    .link {
+      display: inline-block;
+      color: #06b6d4;
+      text-decoration: none;
+      margin-top: 1rem;
+      font-size: 0.9rem;
+    }
+
+    .link:hover {
+      text-decoration: underline;
+    }
+
+    .divider {
+      height: 1px;
+      background: #334155;
+      margin: 2rem 0;
+    }
+
+    .step-indicator {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .step {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #334155;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      color: #64748b;
+    }
+
+    .step.active {
+      background: #06b6d4;
+      color: white;
+    }
+
+    .step.complete {
+      background: #4ade80;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔐 Zero-Trust Architecture</h1>
+    <h2>Device Registration + User Authentication</h2>
+
+    <div class="step-indicator">
+      <div class="step" id="step1">1</div>
+      <div class="step" id="step2">2</div>
+    </div>
+
+    <div class="status-box">
+      <div class="status-item">
+        <span class="status-label">Device Status:</span>
+        <span class="status-value" id="device-status">⏳ Checking...</span>
+      </div>
+      <div class="status-item">
+        <span class="status-label">Device ID:</span>
+        <span class="status-value" id="device-id">-</span>
+      </div>
+      <div class="status-item">
+        <span class="status-label">User Status:</span>
+        <span class="status-value" id="user-status">❌ Not logged in</span>
+      </div>
+      <div class="status-item" id="username-row" style="display: none;">
+        <span class="status-label">Username:</span>
+        <span class="status-value success" id="username">-</span>
+      </div>
+    </div>
+
+    <div id="device-section">
+      <button id="register-device-btn" onclick="registerDevice()">
+        📱 Step 1: Register Device (TPM)
+      </button>
+      <div class="info">
+        🔒 Zero-Trust requires device verification first. Click above to attest your TPM.
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div id="login-section">
+      <button id="login-btn" onclick="handleLogin()" disabled>
+        🔑 Step 2: Login with Keycloak
+      </button>
+      <div class="info">
+        ℹ️ Login is only available after device registration is complete.
+      </div>
+    </div>
+
+    <div id="logout-section" style="display: none;">
+      <button class="danger" onclick="handleLogout()">
+        🚪 Logout
+      </button>
+    </div>
+
+    <a href="/api/devices" class="link">📋 View All Registered Devices</a>
+  </div>
+
+  <script>
+    let deviceId = localStorage.getItem('deviceId') || crypto.randomUUID();
+    localStorage.setItem('deviceId', deviceId);
+
+    async function checkStatus() {
+      try {
+        // Check device status
+        const deviceRes = await fetch('/api/device/status');
+        const deviceData = await deviceRes.json();
+
+        document.getElementById('device-id').textContent = deviceData.deviceId || deviceId;
+
+        if (deviceData.registered && deviceData.trusted) {
+          document.getElementById('device-status').textContent = '✅ Trusted';
+          document.getElementById('device-status').className = 'status-value success';
+          document.getElementById('step1').className = 'step complete';
+          document.getElementById('login-btn').disabled = false;
+          document.getElementById('register-device-btn').textContent = '✅ Device Already Registered';
+          document.getElementById('register-device-btn').disabled = true;
+        } else if (deviceData.registered) {
+          document.getElementById('device-status').textContent = '❌ Untrusted';
+          document.getElementById('device-status').className = 'status-value error';
+        } else {
+          document.getElementById('device-status').textContent = '⚠️ Not Registered';
+          document.getElementById('device-status').className = 'status-value warning';
+        }
+
+        // Check user auth status
+        const authRes = await fetch('/api/auth/check');
+        const authData = await authRes.json();
+
+        if (authData.authenticated) {
+          document.getElementById('user-status').textContent = '✅ Logged In';
+          document.getElementById('user-status').className = 'status-value success';
+          document.getElementById('username').textContent = authData.username;
+          document.getElementById('username-row').style.display = 'flex';
+          document.getElementById('step2').className = 'step complete';
+          
+          document.getElementById('device-section').style.display = 'none';
+          document.getElementById('login-section').style.display = 'none';
+          document.getElementById('logout-section').style.display = 'block';
+        } else {
+          document.getElementById('user-status').textContent = '❌ Not logged in';
+          document.getElementById('user-status').className = 'status-value error';
+          document.getElementById('step2').className = 'step';
+        }
+
+      } catch (err) {
+        console.error('Status check failed:', err);
+        document.getElementById('device-status').textContent = '❌ Error';
+        document.getElementById('device-status').className = 'status-value error';
+      }
+    }
+
+    async function registerDevice() {
+      try {
+        document.getElementById('register-device-btn').disabled = true;
+        document.getElementById('register-device-btn').textContent = '⏳ Registering Device...';
+
+        // Step 1: Init
+        const initRes = await fetch(`/api/device/register/init?deviceId=${deviceId}`);
+        const { nonce, deviceId: newDeviceId } = await initRes.json();
+        
+        deviceId = newDeviceId;
+        localStorage.setItem('deviceId', deviceId);
+
+        // Step 2: Run attestation
+        const attestRes = await fetch('/run-attestation');
+        const result = await attestRes.json();
+
+        alert(result.message);
+
+        if (result.canLogin) {
+          document.getElementById('step1').className = 'step complete';
+          checkStatus();
+        } else {
+          document.getElementById('register-device-btn').disabled = false;
+          document.getElementById('register-device-btn').textContent = '🔄 Retry Device Registration';
+        }
+      } catch (err) {
+        alert('Device registration failed: ' + err.message);
+        document.getElementById('register-device-btn').disabled = false;
+        document.getElementById('register-device-btn').textContent = '🔄 Retry Device Registration';
+      }
+    }
+
+    function handleLogin() {
+      window.location.href = '/login';
+    }
+
+    function handleLogout() {
+      window.location.href = '/logout';
+    }
+
+    // Check status on load
+    checkStatus();
+    setInterval(checkStatus, 5000);
+  </script>
+</body>
+</html>
