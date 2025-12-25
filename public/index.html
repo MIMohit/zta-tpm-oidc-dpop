@@ -242,7 +242,11 @@
       </button>
     </div>
 
-    <a href="/api/devices" class="link">📋 View All Registered Devices</a>
+    <div id="workplace-section" style="display: none;">
+      <button class="secondary" onclick="goToWorkplace()">
+        🏠 Go to Workplace
+      </button>
+    </div>
   </div>
 
   <script>
@@ -286,10 +290,12 @@
           document.getElementById('device-section').style.display = 'none';
           document.getElementById('login-section').style.display = 'none';
           document.getElementById('logout-section').style.display = 'block';
+          document.getElementById('workplace-section').style.display = 'block';
         } else {
           document.getElementById('user-status').textContent = '❌ Not logged in';
           document.getElementById('user-status').className = 'status-value error';
           document.getElementById('step2').className = 'step';
+          document.getElementById('workplace-section').style.display = 'none';
         }
 
       } catch (err) {
@@ -337,6 +343,10 @@
 
     function handleLogout() {
       window.location.href = '/logout';
+    }
+
+    function goToWorkplace() {
+      window.location.href = '/remote-work.html';
     }
 
     // Check status on load

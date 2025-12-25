@@ -1,0 +1,14 @@
+# Secrets
+.env
+.env.*
+firebase.json
+serviceAccountKey.json
+
+# TPM / Attestation artifacts
+attestation-data.json
+
+# Node
+node_modules/
+
+# Logs
+*.log

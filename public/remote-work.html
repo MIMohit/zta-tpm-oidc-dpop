@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Remote Work Portal</title>
+  <style>
+    body {
+      font-family: Inter, sans-serif;
+      background: #0f172a;
+      color: #f1f5f9;
+      text-align: center;
+      padding: 2rem;
+    }
+    button {
+      padding: 1rem 1.5rem;
+      background: #06b6d4;
+      color: #0f172a;
+      border: none;
+      border-radius: .75rem;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    pre {
+      margin-top: 2rem;
+      background: #020617;
+      padding: 1rem;
+      border-radius: .75rem;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+
+<h1>🏠 Remote Work Dashboard</h1>
+<p>You are authenticated. Access is Zero-Trust controlled.</p>
+
+<button onclick="requestAudit()">Access Audit Info</button>
+
+<pre id="output"></pre>
+
+<script>
+async function requestAudit() {
+  const res = await fetch('/zta/access/audit');
+  const out = document.getElementById('output');
+
+  if (!res.ok) {
+    out.textContent = "❌ Access denied by Zero Trust policy";
+    return;
+  }
+
+  const data = await res.json();
+  out.textContent = JSON.stringify(data, null, 2);
+}
+</script>
+
+</body>
+</html>

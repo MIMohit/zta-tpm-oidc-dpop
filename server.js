@@ -9,6 +9,13 @@ import { fileURLToPath } from "url";
 import session from "express-session";
 import * as openid from "openid-client";
 import * as jose from 'jose';
+import { hsmHmacEK, timingSafeEq } from "./hsm.js";
+
+const logSection = (title) => {
+  console.log("\n" + "═".repeat(60));
+  console.log(`🔍 ${title}`);
+  console.log("═".repeat(60));
+};
 
 // Generate DPoP proof
 async function generateDPoPProof(method, url, accessToken = null) {
@@ -78,13 +85,14 @@ let keycloakConfig;
 (async () => {
   try {
     keycloakConfig = {
-      issuer: 'http://localhost:8080/realms/zta-realm',
-      authorization_endpoint: 'http://localhost:8080/realms/zta-realm/protocol/openid-connect/auth',
-      token_endpoint: 'http://localhost:8080/realms/zta-realm/protocol/openid-connect/token',
-      userinfo_endpoint: 'http://localhost:8080/realms/zta-realm/protocol/openid-connect/userinfo',
-      end_session_endpoint: 'http://localhost:8080/realms/zta-realm/protocol/openid-connect/logout',
-      jwks_uri: 'http://localhost:8080/realms/zta-realm/protocol/openid-connect/certs',
+      issuer: 'http://172.30.32.1:8080/realms/zta-realm',
+      authorization_endpoint: 'http://172.30.32.1:8080/realms/zta-realm/protocol/openid-connect/auth',
+      token_endpoint: 'http://172.30.32.1:8080/realms/zta-realm/protocol/openid-connect/token',
+      userinfo_endpoint: 'http://172.30.32.1:8080/realms/zta-realm/protocol/openid-connect/userinfo',
+      end_session_endpoint: 'http://172.30.32.1:8080/realms/zta-realm/protocol/openid-connect/logout',
+      jwks_uri: 'http://172.30.32.1:8080/realms/zta-realm/protocol/openid-connect/certs',
     };
+
     
     console.log('✅ OIDC Client configured with PKCE support (HTTP allowed for local dev)');
   } catch (err) {
@@ -197,66 +205,75 @@ app.get('/api/device/status', (req, res) => {
 
 // STEP 3: Run TPM Attestation (Anonymous)
 app.get("/run-attestation", async (req, res) => {
-  const scriptPath = "./public/generate-tpm-attestation.ps1";
-  console.log("⚙️ Running TPM attestation PowerShell script...");
-
-  exec(
-    `powershell -ExecutionPolicy Bypass -File "${scriptPath}"`,
-    { windowsHide: true },
-    async (error, stdout, stderr) => {
-      if (error) {
-        console.error("❌ PowerShell execution failed:", stderr || error.message);
-        return res.status(500).json({ error: stderr || error.message });
-      }
-      
-      console.log("✅ PowerShell output:\n", stdout);
-      
-      try {
-        const attestationDataPath = path.join(__dirname, 'public', 'attestation-data.json');
-        let rawData = fs.readFileSync(attestationDataPath, 'utf8');
-
-        if (rawData.charCodeAt(0) === 0xFEFF) {
-          rawData = rawData.slice(1);
-        }
-
-        const attestationData = JSON.parse(rawData);
-        const deviceId = req.session.deviceId || attestationData.device_id;
-        
-        const decoded = Buffer.from(attestationData.attestation_b64, "base64").toString("utf8");
-        const attestation = JSON.parse(decoded);
-        const evalResult = evaluateAttestation(attestation);
-
-        deviceRegistry[deviceId] = {
-          user_id: null,
-          attestation,
-          evalResult,
-          status: evalResult.trusted ? "trusted" : "untrusted",
-          created_at: new Date().toISOString(),
-          registered: true,
-        };
-
-        console.log(`✅ Device registered: ${deviceId}`);
-        console.log(`   Status: ${evalResult.trusted ? "TRUSTED ✅" : "UNTRUSTED ❌"}`);
-
-        res.json({
-          message: evalResult.trusted 
-            ? "✅ Device registered successfully. You can now login."
-            : "❌ Device registration failed - untrusted TPM",
-          device_id: deviceId,
-          status: evalResult.trusted ? "trusted" : "untrusted",
-          reasons: evalResult.reasons,
-          canLogin: evalResult.trusted,
-        });
-        
-        fs.unlinkSync(attestationDataPath);
-        
-      } catch (err) {
-        console.error("❌ Registration error:", err);
-        res.status(500).json({ error: "Failed to register device: " + err.message });
-      }
+  try {
+    if (!req.session.deviceId) {
+      return res.status(400).json({
+        error: "Device registration not initialized",
+        message: "Call /api/device/register/init first"
+      });
     }
-  );
+
+    // 🔐 Call Windows TPM Attestation Service
+    const WINDOWS_HOST = "172.30.32.1"; // your Windows host IP
+    const TPM_SERVICE_URL = `http://${WINDOWS_HOST}:9000/attest`;
+
+    const tpmRes = await fetch(TPM_SERVICE_URL);
+    if (!tpmRes.ok) {
+      throw new Error("Windows TPM service failed");
+    }
+
+    const attestation = await tpmRes.json();
+
+    const evalResult = evaluateAttestation(attestation);
+    logSection("TPM ATTESTATION RECEIVED");
+
+    console.log("├─ Manufacturer   :", attestation.manufacturer);
+    console.log("├─ Spec Version   :", attestation.spec_version);
+    console.log("├─ EK Hash        :", attestation.ek_hash);
+    console.log("├─ Timestamp      :", attestation.timestamp);
+    console.log("├─ Trust Decision :", evalResult.trusted ? "ACCEPTED ✅" : "REJECTED ❌");
+
+    if (evalResult.reasons?.length) {
+      console.log("└─ Reasons:");
+      evalResult.reasons.forEach(r => console.log("   •", r));
+    }
+
+    const deviceId = req.session.deviceId;
+
+    if (evalResult.trusted && attestation.ek_hash) {
+      const ek_hmac = await hsmHmacEK(attestation.ek_hash);
+
+      deviceRegistry[deviceId] = {
+        user_id: null,
+        ek_hmac,
+        ek_hash: attestation.ek_hash,
+        status: "trusted",
+        registered_at: new Date().toISOString()
+      };
+    }
+
+    logSection("EK HASH SEALED VIA HSM");
+
+    console.log("├─ EK Hash        :", attestation.ek_hash);
+    console.log("├─ HMAC (stored)  :", ek_hmac);
+    console.log("└─ Status         : STORED SECURELY");
+
+    return res.json({
+      deviceId,
+      status: evalResult.trusted ? "trusted" : "untrusted",
+      canLogin: evalResult.trusted,
+      reasons: evalResult.reasons
+    });
+
+  } catch (err) {
+    console.error("❌ TPM registration error:", err);
+    res.status(500).json({
+      error: "TPM registration failed",
+      details: err.message
+    });
+  }
 });
+
 
 // Evaluate TPM attestation
 function evaluateAttestation(attestation) {
@@ -288,6 +305,7 @@ function evaluateAttestation(attestation) {
       const cert = new crypto.X509Certificate(pemText);
 
       const extractCN = (x500) => {
+        if (!x500 || typeof x500 !== "string") return "Unknown";
         const match = x500.match(/CN=([^,]+)/);
         return match ? match[1].trim() : x500;
       };
@@ -340,6 +358,33 @@ app.get('/login', requireTrustedDevice, async (req, res) => {
     return res.status(500).send('OIDC client not initialized');
   }
 
+  const deviceId = getDeviceId(req);          // ✅ DEFINE FIRST
+  const device = deviceRegistry[deviceId];   // ✅ SAFE
+  if (!device || !device.ek_hmac || !device.ek_hash) {
+    return res.status(403).send("Device identity incomplete — re-enrollment required");
+  }
+
+  logSection("TPM RE-VERIFICATION ON LOGIN");
+
+  console.log("├─ Device ID      :", deviceId);
+  console.log("├─ Stored EK Hash :", device.ek_hash);
+
+  const freshHmac = await hsmHmacEK(device.ek_hash);
+
+  console.log("├─ Recomputed HMAC:", freshHmac);
+  console.log("├─ Stored HMAC    :", device.ek_hmac);
+
+
+  if (!timingSafeEq(freshHmac, device.ek_hmac)) {
+    console.log("└─ Verification   : MISMATCH ❌");
+    console.log("🔒 ACTION         : DEVICE MUST RE-ENROLL");
+    device.status = "re_enroll_required";
+    return res.status(403).send("Device identity changed — re-enrollment required");
+  }
+
+  console.log("└─ Verification   : MATCH ✅");
+  console.log("🔐 DEVICE TRUST CONTINUES — LOGIN PERMITTED");
+
   try {
     const deviceId = getDeviceId(req);
     console.log(`🔐 Login attempt from trusted device: ${deviceId}`);
@@ -367,6 +412,7 @@ app.get('/login', requireTrustedDevice, async (req, res) => {
 
     const authorizationUrl = `${keycloakConfig.authorization_endpoint}?${params.toString()}`;
     res.redirect(authorizationUrl);
+    //res.redirect("/remote-work.html");
   } catch (err) {
     console.error('Login error:', err);
     res.status(500).send('Login failed: ' + err.message);
@@ -449,7 +495,7 @@ const claims = JSON.parse(Buffer.from(idTokenParts[1], 'base64').toString());
     req.session.userInfo = claims;
     delete req.session.code_verifier;
 
-    res.redirect('/');
+    res.redirect('/remote-work.html');
   } catch (err) {
     console.error('❌ Token exchange error:', err);
     res.status(500).send('Authentication failed: ' + err.message);
@@ -491,23 +537,31 @@ app.get("/api/devices", (req, res) => {
 
   const devicesHTML = Object.entries(deviceRegistry)
     .map(([deviceId, info]) => {
-      const { user_id, status, created_at, attestation, evalResult } = info;
-      const encoded = Buffer.from(JSON.stringify(attestation)).toString("base64");
+      const { user_id, status, registered_at, ek_hash } = info;
+      //const encoded = Buffer.from(JSON.stringify(attestation)).toString("base64");
       return `
       <div style="background:#1e293b;padding:1.5rem;margin:1rem auto;width:650px;border-radius:1rem;box-shadow:0 4px 12px rgba(0,0,0,0.3);">
         <h2 style="color:${status === "trusted" ? "#4ade80" : "#f87171"}">${status === "trusted" ? "✅ TRUSTED" : "❌ UNTRUSTED"} TPM Registration</h2>
         <p><b>Device ID:</b> ${deviceId}</p>
         <p><b>User:</b> ${user_id || 'Not bound yet'}</p>
         <p><b>Status:</b> <span style="color:${status === "trusted" ? "#4ade80" : "#f87171"}">${status}</span></p>
-        <p><b>Manufacturer:</b> ${attestation.manufacturer}</p>
-        <p><b>TPM Version:</b> ${attestation.version}</p>
-        <p><b>Spec Version:</b> ${attestation.spec_version}</p>
+        <p><b>Device Identity:</b> TPM-bound</p>
+        <p>
+          <b>EK Identity:</b><br/>
+          <code style="word-break:break-all; color:#38bdf8;">
+            ${ek_hash}
+          </code>
+        </p>
+
+        <p>
+          <b>Verification:</b> EK hash sealed via HSM (HMAC)
+        </p>
+
+        <p>
+          <b>Trust Model:</b> Hardware-rooted Zero Trust
+        </p>
+
         <p><b>Registered At:</b> ${new Date(created_at).toLocaleString()}</p>
-        
-        <div style="background:#0f172a;padding:1rem;border-radius:8px;margin-top:1rem;">
-          <p><b>Attestation Details:</b></p>
-          ${evalResult.reasons.map(r => `<p style="margin:0.3rem 0;color:#94a3b8;">• ${r}</p>`).join("\n")}
-        </div>
       </div>
       `;
     })
