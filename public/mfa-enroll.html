@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Security Setup</title>
+  <style>
+    body {
+      font-family: Inter, sans-serif;
+      background: #0f172a;
+      color: #f1f5f9;
+      text-align: center;
+      padding: 2rem;
+    }
+    input, button {
+      margin: .75rem;
+      padding: .75rem;
+      border-radius: .5rem;
+      border: none;
+    }
+    button {
+      background: #06b6d4;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<h2>🔐 Security Setup</h2>
+<p>Please answer the questions below. This is required once.</p>
+
+<input id="q1" placeholder="What is your favorite color?" />
+<br />
+<input id="q2" placeholder="What city were you born in?" />
+<br />
+
+<button onclick="submitMFA()">Save & Continue</button>
+
+<script>
+async function submitMFA() {
+  const res = await fetch("/mfa/enroll", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      answers: {
+        q1: document.getElementById("q1").value,
+        q2: document.getElementById("q2").value
+      }
+    })
+  });
+
+  if (res.ok) {
+    window.location.href = "/remote-work.html";
+  } else {
+    alert("Failed to save security answers.");
+  }
+}
+</script>
+
+</body>
+</html>

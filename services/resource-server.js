@@ -1,5 +1,5 @@
 import express from "express";
-import { db } from "./firebase.js";
+import { db } from "../firebase.js";
 
 const app = express();
 
@@ -23,3 +23,5 @@ app.get("/company/audit", async (req, res) => {
 app.listen(5001, () =>
   console.log("📊 Resource Server (Firebase-backed) running on :5001")
 );
+
+console.log("📊 Resource server serving audit data");

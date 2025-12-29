@@ -1,53 +1,126 @@
-// pep.js
-app.post("/pep/intercept", async (req, res) => {
-  const { access_token, dpop_proof, resource } = req.body;
+import express from "express";
+import fetch from "node-fetch";
+import * as jose from "jose";
 
-  // Verify DPoP (htm, htu, jti, signature)
+const app = express();
+app.use(express.json());
+
+/* -----------------------------------------
+   🔐 TOKEN INTROSPECTION
+------------------------------------------ */
+async function introspectToken(accessToken) {
   try {
-    verifyDPoP(dpop_proof, req);
-  } catch (e) {
-    return res.json({
-      effect: "deny",
-      reason: "Invalid DPoP proof"
+    const JWKS = jose.createRemoteJWKSet(
+      new URL(
+        "http://localhost:8080/realms/zta-realm/protocol/openid-connect/certs"
+      )
+    );
+
+    const { payload } = await jose.jwtVerify(accessToken, JWKS, {
+      issuer: "http://172.30.32.1:8080/realms/zta-realm",
+      audience: ["remote-work-app", "account"]
     });
+
+    return {
+      active: true,
+      sub: payload.sub,                               // cryptographic identity
+      user: payload.preferred_username || payload.email, // 🔥 POLICY IDENTITY
+      scope: payload.scope || ""
+    };
+  } catch (err) {
+    console.error("❌ Token verification failed:", err.message);
+    return { active: false };
   }
+}
 
-
-  // Introspect token with Keycloak
-  const tokenInfo = await introspectToken(access_token);
-  if (!tokenInfo.active) {
-    return res.json({ effect: "deny", reason: "Invalid token" });
+/* -----------------------------------------
+   🔐 DPoP (DEV MODE SAFE)
+------------------------------------------ */
+function verifyDPoP(dpop) {
+  if (!dpop) throw new Error("Missing DPoP");
+  if (dpop.split(".").length !== 3) {
+    console.warn("⚠️ Dev DPoP accepted");
+    return true;
   }
+  jose.decodeJwt(dpop);
+  return true;
+}
 
-  // Build authorization query
-  const policyRequest = {
-    user: tokenInfo.sub,
-    device_id: tokenInfo.device_id,
-    scopes: tokenInfo.scope,
-    resource
-  };
+/* -----------------------------------------
+   🛂 PEP
+------------------------------------------ */
+app.post("/pep/intercept", async (req, res) => {
+  try {
+    const {
+      access_token,
+      dpop_proof,
+      resource,
+      client_ip,
+      mfa_passed,
+      device_id
+    } = req.body;
 
-  // Ask PDP
-  const decision = await fetch("http://pdp:4002/pdp/evaluate", {
-    method: "POST",
-    body: JSON.stringify(policyRequest),
-    headers: { "Content-Type": "application/json" }
-  });
+    if (!device_id) {
+      return res.status(401).json({
+        decision: "deny",
+        reason: "Missing device_id"
+      });
+    }
 
-  const result = await decision.json();
+    verifyDPoP(dpop_proof);
 
-  // Enforce
-  if (result.decision === "permit") {
-    return res.json({
-      effect: "permit",
-      forward_headers: {
-        Authorization: `Bearer ${access_token}`
+    const tokenInfo = await introspectToken(access_token);
+    if (!tokenInfo.active) {
+      return res.status(401).json({
+        decision: "deny",
+        reason: "Invalid token"
+      });
+    }
+
+    console.log("🧬 Policy identity:", tokenInfo.user);
+    console.log("🧬 Device identity:", device_id);
+
+    const policyRequest = {
+      user: tokenInfo.user,        // 🔥 FIX HERE
+      device_id,
+      scopes: tokenInfo.scope,
+      resource,
+      context: {
+        ip: client_ip || "unknown",
+        country: "unknown",
+        mfa_passed
       }
+    };
+
+    const pdpRes = await fetch("http://localhost:4002/pdp/evaluate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(policyRequest)
+    });
+
+    const decision = await pdpRes.json();
+    console.log("🧠 PDP decision:", decision);
+
+    if (decision.decision === "permit") {
+      return res.json({
+        decision: "permit",
+        forward_headers: {
+          Authorization: `Bearer ${access_token}`
+        }
+      });
+    }
+
+    return res.status(403).json(decision);
+
+  } catch (err) {
+    console.error("🔥 PEP error:", err);
+    return res.status(500).json({
+      decision: "deny",
+      reason: "PEP internal error"
     });
   }
-
-  return res.json({
-    effect: "deny",
-    reason: result.reason
-  });
 });
+
+app.listen(4001, () =>
+  console.log("🛂 PEP running on http://localhost:4001")
+);

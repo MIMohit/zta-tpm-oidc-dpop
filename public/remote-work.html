@@ -2,47 +2,102 @@
 <html>
 <head>
   <title>Remote Work Portal</title>
-  <style>
-    body {
-      font-family: Inter, sans-serif;
-      background: #0f172a;
-      color: #f1f5f9;
-      text-align: center;
-      padding: 2rem;
-    }
-    button {
-      padding: 1rem 1.5rem;
-      background: #06b6d4;
-      color: #0f172a;
-      border: none;
-      border-radius: .75rem;
-      cursor: pointer;
-      font-size: 1rem;
-    }
-    pre {
-      margin-top: 2rem;
-      background: #020617;
-      padding: 1rem;
-      border-radius: .75rem;
-      text-align: left;
-    }
-  </style>
 </head>
 <body>
 
 <h1>🏠 Remote Work Dashboard</h1>
-<p>You are authenticated. Access is Zero-Trust controlled.</p>
-
 <button onclick="requestAudit()">Access Audit Info</button>
-
 <pre id="output"></pre>
 
+<div id="mfa-box" style="display:none;">
+  <h3>🔐 Additional Verification Required</h3>
+
+  <label>What is your favorite color?</label><br>
+  <input id="mfa-q1"><br><br>
+
+  <label>What city were you born in?</label><br>
+  <input id="mfa-q2"><br><br>
+
+  <button onclick="submitMFA()">Verify</button>
+</div>
+
+
 <script>
-async function requestAudit() {
-  const res = await fetch('/zta/access/audit');
-  const out = document.getElementById('output');
+async function getValidAccessToken() {
+  const res = await fetch("/api/session/tokens", {
+    credentials: "include"
+  });
 
   if (!res.ok) {
+    throw new Error("No active session or token expired");
+  }
+
+  const { access_token, dpop, device_id } = await res.json();
+
+  // Store session data
+  sessionStorage.setItem("access_token", access_token);
+  sessionStorage.setItem("dpop", dpop);
+
+  if (device_id) {
+    localStorage.setItem("device_id", device_id);
+  }
+
+  return access_token;
+}
+
+async function getClientIP() {
+  const res = await fetch("https://api.ipify.org?format=json");
+  const data = await res.json();
+  return data.ip;
+}
+
+async function requestAudit() {
+  const out = document.getElementById("output");
+
+  const accessToken = await getValidAccessToken();
+  let dpop = sessionStorage.getItem("dpop");
+  const clientIP = await getClientIP();
+
+  // Invalidate MFA if IP changed
+  const lastIP = sessionStorage.getItem("last_ip");
+  if (lastIP && lastIP !== clientIP) {
+    sessionStorage.removeItem("mfa_passed");
+  }
+
+  sessionStorage.setItem("last_ip", clientIP);
+  const mfaPassed = sessionStorage.getItem("mfa_passed") === "true";
+
+  const deviceId = localStorage.getItem("device_id");
+
+  if (!deviceId) {
+    out.textContent = "❌ No TPM device identity present";
+    return;
+  }
+
+  if (!dpop || dpop.split(".").length !== 3) {
+    console.warn("⚠️ Using dev DPoP placeholder");
+    dpop = "dev-dpop-placeholder";
+    sessionStorage.setItem("dpop", dpop);
+  }
+
+  const res = await fetch("http://localhost:4000/zta/access/audit", {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      DPoP: dpop,
+      "X-DEVICE-ID": deviceId,
+      "X-CLIENT-IP": clientIP,
+      "X-MFA-PASSED": String(mfaPassed)
+    }
+  });
+
+  if (res.status === 401) {
+    out.textContent = "⚠️ MFA required. Please verify.";
+    document.getElementById("mfa-box").style.display = "block";
+    return;
+  }
+
+
+  if (res.status === 403) {
     out.textContent = "❌ Access denied by Zero Trust policy";
     return;
   }
@@ -50,6 +105,34 @@ async function requestAudit() {
   const data = await res.json();
   out.textContent = JSON.stringify(data, null, 2);
 }
+
+async function submitMFA() {
+  const q1 = document.getElementById("mfa-q1").value;
+  const q2 = document.getElementById("mfa-q2").value;
+
+  const res = await fetch("/mfa/verify", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify({
+      answers: { q1, q2 }
+    })
+  });
+
+  if (!res.ok) {
+    alert("❌ MFA verification failed");
+    return;
+  }
+
+  // MFA passed
+  sessionStorage.setItem("mfa_passed", "true");
+  document.getElementById("mfa-box").style.display = "none";
+  document.getElementById("output").textContent = "✅ MFA verified. Retrying…";
+
+  // Retry original request
+  requestAudit();
+}
+
 </script>
 
 </body>

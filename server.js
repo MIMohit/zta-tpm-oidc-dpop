@@ -10,6 +10,9 @@ import session from "express-session";
 import * as openid from "openid-client";
 import * as jose from 'jose';
 import { hsmHmacEK, timingSafeEq } from "./hsm.js";
+import { db } from "./firebase.js";
+import { hashAnswer } from "./mfa-crypto.js";
+import { verifyAnswer } from "./mfa-crypto.js";
 
 const logSection = (title) => {
   console.log("\n" + "═".repeat(60));
@@ -439,6 +442,8 @@ app.get('/callback', async (req, res) => {
 const dpopProof = await generateDPoPProof('POST', keycloakConfig.token_endpoint);
 console.log('🔐 DPoP Proof Generated');
 
+
+
 const tokenParams = new URLSearchParams({
   grant_type: 'authorization_code',
   client_id: 'remote-work-app',
@@ -464,6 +469,9 @@ if (!tokenResponse.ok) {
 const tokens = await tokenResponse.json();
 console.log('✅ Token exchange successful with PKCE + DPoP!');
 console.log('🔐 Token Type:', tokens.token_type); // Should be "DPoP"
+req.session.tokenSet = tokens;
+req.session.dpop = dpopProof;
+
 
 const idTokenParts = tokens.id_token.split('.');
 const claims = JSON.parse(Buffer.from(idTokenParts[1], 'base64').toString());
@@ -495,12 +503,97 @@ const claims = JSON.parse(Buffer.from(idTokenParts[1], 'base64').toString());
     req.session.userInfo = claims;
     delete req.session.code_verifier;
 
+    // After successful Keycloak login - update device record
+    const userInfo = claims;
+    await db.ref(`devices/${deviceId}`).update({
+      user_id: userInfo.preferred_username,
+      last_seen: new Date().toISOString(),
+      last_ip: req.ip,
+      last_country: req.headers["x-country"] || "unknown"
+    });
+
+    console.log("🔗 Device bound to user:", userInfo.sub);
+
+    // After login success, check MFA enrollment for this device
+    const userId = claims.preferred_username;
+
+    // Check if MFA already enrolled
+    const snap = await db.ref(`mfa_enrollments/${deviceId}`).once("value");
+
+    if (!snap.exists()) {
+      req.session.mfa_enroll_required = true;
+      return res.redirect("/mfa-enroll.html");
+    }
+
     res.redirect('/remote-work.html');
   } catch (err) {
     console.error('❌ Token exchange error:', err);
     res.status(500).send('Authentication failed: ' + err.message);
   }
 });
+
+// 🔑 Expose session tokens to frontend (post-login only)
+app.get("/api/session/tokens", (req, res) => {
+  if (!req.session?.tokenSet || !req.session.deviceId) {
+    return res.status(401).json({ error: "No active session" });
+  }
+
+  res.json({
+    access_token: req.session.tokenSet.access_token,
+    dpop: req.session.dpop,
+    device_id: req.session.deviceId   // 🔥 THIS WAS MISSING
+  });
+});
+
+
+
+app.post("/mfa/enroll", async (req, res) => {
+  const deviceId = req.session.deviceId;
+  const userId = req.session.userInfo.preferred_username;
+
+  const { answers } = req.body;
+
+  await db.ref(`mfa_enrollments/${deviceId}`).set({
+    user_id: userId,
+    questions: {
+      q1: {
+        question: "What is your favorite color?",
+        answer_hash: hashAnswer(answers.q1)
+      },
+      q2: {
+        question: "What city were you born in?",
+        answer_hash: hashAnswer(answers.q2)
+      }
+    },
+    enrolled_at: new Date().toISOString()
+  });
+
+  delete req.session.mfa_enroll_required;
+  res.json({ enrolled: true });
+});
+
+app.post("/mfa/verify", async (req, res) => {
+  const deviceId = req.session.deviceId;
+  const { answers } = req.body;
+
+  const snap = await db.ref(`mfa_enrollments/${deviceId}`).once("value");
+  if (!snap.exists()) {
+    return res.status(403).json({ error: "MFA not enrolled" });
+  }
+
+  const stored = snap.val().questions;
+
+  for (const key in answers) {
+    if (!verifyAnswer(answers[key], stored[key].answer_hash)) {
+      return res.status(403).json({ error: "MFA failed" });
+    }
+  }
+
+  // MFA success → short-lived flag
+  req.session.mfa_passed = true;
+  res.json({ success: true });
+});
+
 
 // Logout
 app.get('/logout', (req, res) => {
@@ -585,6 +678,18 @@ app.get("/api/devices", (req, res) => {
   
   res.send(html);
 });
+
+// app.get("/api/session/tokens", (req, res) => {
+//   if (!req.session.tokenSet || !req.session.dpop) {
+//     return res.status(401).json({ error: "Not authenticated" });
+//   }
+
+//   res.json({
+//     access_token: req.session.tokenSet.access_token,
+//     dpop: req.session.dpop
+//   });
+// });
+
 
 const server = app.listen(5173, () => {
   console.log("✅ Backend running at http://localhost:5173");
