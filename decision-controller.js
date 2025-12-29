@@ -1,6 +1,10 @@
 import express from "express";
 import cors from "cors";
 import fetch from "node-fetch";
+const country = req.headers["x-country"] || "unknown";
+const geo = req.headers["x-geo"]
+  ? JSON.parse(req.headers["x-geo"])
+  : null;
 
 const app = express();
 
@@ -54,7 +58,9 @@ app.get("/zta/access/audit", async (req, res) => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         last_ip: client_ip,
-        last_country: "unknown"
+        last_country: country,
+        last_geo: geo,
+        last_geo_time: Date.now()
       })
     });
 

@@ -1,26 +1,171 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Remote Work Portal</title>
+  <meta charset="UTF-8">
+  <title>REMOTE-WORK :: SECURE TERMINAL</title>
+
+  <style>
+    /* ===== 90s CYBER TERMINAL THEME ===== */
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: radial-gradient(circle at top, #001400, #000000 80%);
+      color: #00ff66;
+      font-family: "Courier New", Courier, monospace;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .terminal {
+      width: 820px;
+      max-width: 95%;
+      background: rgba(0, 0, 0, 0.92);
+      border: 2px solid #00ff66;
+      box-shadow:
+        0 0 20px #00ff66,
+        inset 0 0 30px rgba(0, 255, 102, 0.15);
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Scanlines */
+    .terminal::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(0, 255, 102, 0.05),
+        rgba(0, 255, 102, 0.05) 1px,
+        transparent 1px,
+        transparent 3px
+      );
+      pointer-events: none;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .header span {
+      color: #00ffaa;
+    }
+
+    .title {
+      font-weight: bold;
+      letter-spacing: 2px;
+    }
+
+    .status {
+      color: #ffcc00;
+    }
+
+    hr {
+      border: none;
+      border-top: 1px solid #00ff66;
+      margin: 10px 0;
+    }
+
+    .output {
+      background: #000;
+      border: 1px solid #00ff66;
+      padding: 10px;
+      min-height: 160px;
+      white-space: pre-wrap;
+      font-size: 14px;
+      overflow-y: auto;
+    }
+
+    .cursor::after {
+      content: "█";
+      animation: blink 1s infinite;
+    }
+
+    @keyframes blink {
+      50% { opacity: 0; }
+    }
+
+    .btn {
+      margin-top: 15px;
+      background: transparent;
+      color: #00ff66;
+      border: 1px solid #00ff66;
+      padding: 10px 16px;
+      font-family: inherit;
+      font-size: 14px;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .btn:hover {
+      background: #00ff66;
+      color: #000;
+      box-shadow: 0 0 10px #00ff66;
+    }
+
+    .mfa-box {
+      display: none;
+      margin-top: 15px;
+      border: 1px dashed #ffcc00;
+      padding: 10px;
+    }
+
+    .mfa-box input {
+      width: 100%;
+      background: black;
+      color: #00ff66;
+      border: 1px solid #00ff66;
+      padding: 6px;
+      margin-top: 6px;
+      font-family: inherit;
+    }
+
+    .warning {
+      color: #ff5555;
+      font-weight: bold;
+    }
+  </style>
 </head>
+
 <body>
 
-<h1>🏠 Remote Work Dashboard</h1>
-<button onclick="requestAudit()">Access Audit Info</button>
-<pre id="output"></pre>
+<div class="terminal">
+  <div class="header">
+    <span class="title">REMOTE-WORK TERMINAL</span>
+    <span class="status">SECURE MODE</span>
+  </div>
 
-<div id="mfa-box" style="display:none;">
-  <h3>🔐 Additional Verification Required</h3>
+  <hr>
 
-  <label>What is your favorite color?</label><br>
-  <input id="mfa-q1"><br><br>
+  <div class="output cursor" id="output">
+Initializing secure channel...
+Awaiting operator command...
+  </div>
 
-  <label>What city were you born in?</label><br>
-  <input id="mfa-q2"><br><br>
+  <button class="btn" onclick="requestAudit()">ACCESS CLASSIFIED INFO</button>
 
-  <button onclick="submitMFA()">Verify</button>
+  <div class="mfa-box" id="mfa-box">
+    <p class="warning">⚠ MULTI-FACTOR AUTH REQUIRED</p>
+
+    <label>Challenge 1:</label>
+    <input id="mfa-q1" placeholder="What is your favorite color?">
+
+    <label>Challenge 2:</label>
+    <input id="mfa-q2" placeholder="Which city were you born in?">
+
+    <button class="btn" onclick="submitMFA()">VERIFY IDENTITY</button>
+  </div>
 </div>
-
 
 <script>
 async function getValidAccessToken() {
@@ -53,7 +198,8 @@ async function getClientIP() {
 
 async function requestAudit() {
   const out = document.getElementById("output");
-
+  const geo = JSON.parse(sessionStorage.getItem("geo") || "null");
+  const country = "unknown"; //replace later
   const accessToken = await getValidAccessToken();
   let dpop = sessionStorage.getItem("dpop");
   const clientIP = await getClientIP();
@@ -86,7 +232,9 @@ async function requestAudit() {
       DPoP: dpop,
       "X-DEVICE-ID": deviceId,
       "X-CLIENT-IP": clientIP,
-      "X-MFA-PASSED": String(mfaPassed)
+      "X-MFA-PASSED": String(mfaPassed),
+      "X-COUNTRY": country,
+      "X-GEO": geo ? JSON.stringify(geo) : ""
     }
   });
 
@@ -132,6 +280,12 @@ async function submitMFA() {
   // Retry original request
   requestAudit();
 }
+navigator.geolocation.getCurrentPosition(pos => {
+  sessionStorage.setItem("geo", JSON.stringify({
+    lat: pos.coords.latitude,
+    lon: pos.coords.longitude
+  }));
+});
 
 </script>
 
