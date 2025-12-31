@@ -110,7 +110,13 @@ app.post("/pep/intercept", async (req, res) => {
       });
     }
 
-    return res.status(403).json(decision);
+    if (decision.decision === "mfa_required") {
+      return res.json(decision);   // 🔥 DO NOT TURN INTO 403
+    }
+
+    if (decision.decision === "deny") {
+      return res.json(decision);
+    }
 
   } catch (err) {
     console.error("🔥 PEP error:", err);

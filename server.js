@@ -72,13 +72,15 @@ app.use((req, res, next) => {
 const memoryStore = new session.MemoryStore();
 
 app.use(session({
-  secret: 'zta-secret-key-change-this',
+  name: "zta.sid",
+  secret: "zta-secret",
   resave: false,
-  saveUninitialized: true,
-  store: memoryStore,
+  saveUninitialized: false,
   cookie: {
-    secure: false,
-    maxAge: 3600000
+    httpOnly: true,
+    sameSite: "lax",
+    secure: false,     // localhost only
+    path: "/"          // 🔥 REQUIRED
   }
 }));
 
@@ -541,10 +543,9 @@ app.get("/api/session/tokens", (req, res) => {
   res.json({
     access_token: req.session.tokenSet.access_token,
     dpop: req.session.dpop,
-    device_id: req.session.deviceId   // 🔥 THIS WAS MISSING
+    device_id: req.session.deviceId
   });
 });
-
 
 
 app.post("/mfa/enroll", async (req, res) => {

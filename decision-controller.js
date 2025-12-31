@@ -1,10 +1,6 @@
 import express from "express";
 import cors from "cors";
 import fetch from "node-fetch";
-const country = req.headers["x-country"] || "unknown";
-const geo = req.headers["x-geo"]
-  ? JSON.parse(req.headers["x-geo"])
-  : null;
 
 const app = express();
 
@@ -16,19 +12,33 @@ app.use(express.json());
 
 app.get("/zta/access/audit", async (req, res) => {
   try {
-    const access_token =
-      req.headers.authorization?.replace("Bearer ", "") || null;
-    const dpop = req.headers.dpop || null;
-    const client_ip = req.headers["x-client-ip"] || "unknown";
-    const mfa_passed = req.headers["x-mfa-passed"] === "true";
+    const access_token = req.headers.authorization?.replace("Bearer ", "");
+    const dpop = req.headers.dpop;
     const device_id = req.headers["x-device-id"];
 
     if (!access_token || !dpop || !device_id) {
-      return res.status(401).json({
-        error: "Missing token, DPoP, or device_id"
-      });
+      return res.status(401).json({ error: "Missing credentials" });
     }
 
+    /* 🔥 VPN-AWARE NETWORK SIGNAL */
+    const client_ip =
+      req.headers["x-public-ip"] ||
+      req.headers["x-forwarded-for"] ||
+      req.ip;
+
+    const mfa_passed = req.headers["x-mfa-passed"] === "true";
+        // 🔐 Server-side MFA invalidation on IP change
+    if (
+      req.headers["x-mfa-passed"] === "true" &&
+      req.headers["x-last-ip"] &&
+      req.headers["x-last-ip"] !== client_ip
+    ) {
+      console.warn("⚠ MFA invalidated due to network change");
+      req.headers["x-mfa-passed"] = "false";
+    }
+
+
+    /* ---- PEP ---- */
     const pepRes = await fetch("http://localhost:4001/pep/intercept", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -47,34 +57,35 @@ app.get("/zta/access/audit", async (req, res) => {
     if (decision.decision === "mfa_required") {
       return res.status(401).json(decision);
     }
-
-    if (decision.decision !== "permit") {
+    if (decision.decision === "deny") {
       return res.status(403).json(decision);
     }
 
-    // 🔐 Trust the new network context AFTER successful access
-    await fetch(`http://localhost:4003/pip/device/${device_id}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        last_ip: client_ip,
-        last_country: country,
-        last_geo: geo,
-        last_geo_time: Date.now()
-      })
-    });
+    /* 🔄 TRUST CONVERGENCE (AFTER MFA ONLY) */
+    if (mfa_passed === true) {
+      await fetch(`http://localhost:4003/pip/device/${device_id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-MFA-COMPLETED": "true"   // 🔥 REQUIRED
+        },
+        body: JSON.stringify({
+          last_ip: client_ip
+        })
+      });
+    }
+
 
     const resourceRes = await fetch(
       "http://localhost:5001/company/audit",
       { headers: decision.forward_headers }
     );
 
-    const data = await resourceRes.json();
-    return res.json(data);
+    res.json(await resourceRes.json());
 
   } catch (err) {
-    console.error("🔥 ZTA Controller error:", err);
-    return res.status(500).json({ error: "ZTA internal failure" });
+    console.error("ZTA error:", err);
+    res.status(500).json({ error: "ZTA failure" });
   }
 });
 

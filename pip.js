@@ -4,21 +4,31 @@ import { db } from "./firebase.js";
 const app = express();
 app.use(express.json());
 
-// READ device attributes
+/* -------------------------------
+   READ device attributes
+-------------------------------- */
 app.get("/pip/device/:deviceId", async (req, res) => {
   const snap = await db.ref(`devices/${req.params.deviceId}`).once("value");
-
   if (!snap.exists()) {
     return res.json({ status: "unknown" });
   }
-
   res.json(snap.val());
 });
 
-// UPDATE dynamic attributes
+/* -------------------------------
+   UPDATE device attributes (SAFE)
+-------------------------------- */
 app.post("/pip/device/:deviceId", async (req, res) => {
+  const { last_ip, ...rest } = req.body;
+
+  // 🚨 BLOCK last_ip updates unless MFA proof is present
+  if (last_ip && req.headers["x-mfa-completed"] !== "true") {
+    console.warn("🚫 Blocked premature last_ip update");
+    delete rest.last_ip;
+  }
+
   await db.ref(`devices/${req.params.deviceId}`).update({
-    ...req.body,
+    ...rest,
     last_seen: new Date().toISOString()
   });
 

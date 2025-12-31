@@ -321,7 +321,7 @@
         const attestRes = await fetch('/run-attestation');
         const result = await attestRes.json();
 
-        alert(result.message);
+        alert("TPM Registration Successful");
 
         if (result.canLogin) {
           document.getElementById('step1').className = 'step complete';

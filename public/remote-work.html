@@ -169,89 +169,77 @@ Awaiting operator command...
 
 <script>
 async function getValidAccessToken() {
-  const res = await fetch("/api/session/tokens", {
-    credentials: "include"
-  });
-
-  if (!res.ok) {
-    throw new Error("No active session or token expired");
-  }
-
-  const { access_token, dpop, device_id } = await res.json();
-
-  // Store session data
-  sessionStorage.setItem("access_token", access_token);
-  sessionStorage.setItem("dpop", dpop);
-
-  if (device_id) {
+  try {
+    const res = await fetch("/api/session/tokens", { credentials: "include" });
+    if (!res.ok) return null;
+    const { access_token, dpop, device_id } = await res.json();
+    sessionStorage.setItem("access_token", access_token);
+    sessionStorage.setItem("dpop", dpop);
     localStorage.setItem("device_id", device_id);
+    return access_token;
+  } catch {
+    return null;
   }
-
-  return access_token;
 }
 
-async function getClientIP() {
+async function getPublicIP() {
   const res = await fetch("https://api.ipify.org?format=json");
-  const data = await res.json();
-  return data.ip;
+  const { ip } = await res.json();
+  return ip;
+}
+
+function resetMFAInputs() {
+  document.getElementById("mfa-q1").value = "";
+  document.getElementById("mfa-q2").value = "";
 }
 
 async function requestAudit() {
   const out = document.getElementById("output");
-  const geo = JSON.parse(sessionStorage.getItem("geo") || "null");
-  const country = "unknown"; //replace later
   const accessToken = await getValidAccessToken();
-  let dpop = sessionStorage.getItem("dpop");
-  const clientIP = await getClientIP();
-
-  // Invalidate MFA if IP changed
-  const lastIP = sessionStorage.getItem("last_ip");
-  if (lastIP && lastIP !== clientIP) {
-    sessionStorage.removeItem("mfa_passed");
-  }
-
-  sessionStorage.setItem("last_ip", clientIP);
-  const mfaPassed = sessionStorage.getItem("mfa_passed") === "true";
-
-  const deviceId = localStorage.getItem("device_id");
-
-  if (!deviceId) {
-    out.textContent = "❌ No TPM device identity present";
+  if (!accessToken) {
+    out.textContent = "⚠ Session active, retry after MFA.";
     return;
   }
 
-  if (!dpop || dpop.split(".").length !== 3) {
-    console.warn("⚠️ Using dev DPoP placeholder");
-    dpop = "dev-dpop-placeholder";
-    sessionStorage.setItem("dpop", dpop);
+  const dpop = sessionStorage.getItem("dpop");
+  const deviceId = localStorage.getItem("device_id");
+  const publicIP = await getPublicIP();
+
+  // 🔥 Invalidate MFA if network changed
+  const lastIP = sessionStorage.getItem("last_public_ip");
+  if (lastIP && lastIP !== publicIP) {
+    sessionStorage.removeItem("mfa_passed");
   }
+
+  // Save current IP
+  sessionStorage.setItem("last_public_ip", publicIP);
+
+  const mfaPassed = sessionStorage.getItem("mfa_passed") === "true";
+
 
   const res = await fetch("http://localhost:4000/zta/access/audit", {
     headers: {
       Authorization: `Bearer ${accessToken}`,
       DPoP: dpop,
       "X-DEVICE-ID": deviceId,
-      "X-CLIENT-IP": clientIP,
-      "X-MFA-PASSED": String(mfaPassed),
-      "X-COUNTRY": country,
-      "X-GEO": geo ? JSON.stringify(geo) : ""
+      "X-MFA-PASSED": mfaPassed ? "true" : "false",
+      "X-PUBLIC-IP": publicIP
     }
   });
 
   if (res.status === 401) {
-    out.textContent = "⚠️ MFA required. Please verify.";
+    out.textContent = "⚠ MFA required. Please verify your identity.";
+    resetMFAInputs(); // 🔥 clear old answers
     document.getElementById("mfa-box").style.display = "block";
     return;
   }
 
-
   if (res.status === 403) {
-    out.textContent = "❌ Access denied by Zero Trust policy";
+    out.textContent = "❌ Access denied";
     return;
   }
 
-  const data = await res.json();
-  out.textContent = JSON.stringify(data, null, 2);
+  out.textContent = JSON.stringify(await res.json(), null, 2);
 }
 
 async function submitMFA() {
@@ -260,34 +248,20 @@ async function submitMFA() {
 
   const res = await fetch("/mfa/verify", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
     credentials: "include",
-    body: JSON.stringify({
-      answers: { q1, q2 }
-    })
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ answers: { q1, q2 } })
   });
 
-  if (!res.ok) {
-    alert("❌ MFA verification failed");
-    return;
-  }
+  if (!res.ok) return alert("MFA failed");
 
-  // MFA passed
   sessionStorage.setItem("mfa_passed", "true");
   document.getElementById("mfa-box").style.display = "none";
   document.getElementById("output").textContent = "✅ MFA verified. Retrying…";
-
-  // Retry original request
-  requestAudit();
+  setTimeout(requestAudit, 200);
 }
-navigator.geolocation.getCurrentPosition(pos => {
-  sessionStorage.setItem("geo", JSON.stringify({
-    lat: pos.coords.latitude,
-    lon: pos.coords.longitude
-  }));
-});
-
 </script>
+
 
 </body>
 </html>
