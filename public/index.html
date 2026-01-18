@@ -337,9 +337,28 @@
       }
     }
 
-    function handleLogin() {
-      window.location.href = '/login';
+    async function handleLogin() {
+      try {
+        // 🔐 STEP 1: Explicit TPM re-verification
+        const res = await fetch("/api/device/reverify", {
+          method: "POST",
+          credentials: "include"
+        });
+
+        if (!res.ok) {
+          alert("❌ Device verification failed. Please re-register your TPM.");
+          return;
+        }
+
+        // 🚀 STEP 2: Start Keycloak login (fast, safe)
+        window.location.href = "/login";
+
+      } catch (err) {
+        console.error("Login pre-check failed:", err);
+        alert("❌ Unable to verify device. Try again.");
+      }
     }
+
 
     function handleLogout() {
       window.location.href = '/logout';

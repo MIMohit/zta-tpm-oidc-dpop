@@ -20,6 +20,28 @@ const logSection = (title) => {
   console.log("═".repeat(60));
 };
 
+// Delay calculation utility (JMeter-style)
+function calculateDelay(startTimestamp, endTimestamp) {
+  const start = Number(startTimestamp);
+  const end = Number(endTimestamp);
+
+  if (isNaN(start) || isNaN(end)) {
+    throw new Error("Invalid timestamp input");
+  }
+
+  if (end < start) {
+    throw new Error("End timestamp cannot be before start timestamp");
+  }
+
+  const delayMs = end - start;
+
+  return {
+    delay_ms: delayMs,
+    delay_seconds: delayMs / 1000
+  };
+}
+
+
 // Generate DPoP proof
 async function generateDPoPProof(method, url, accessToken = null) {
   if (!app.locals.dpopKeyPair) {
@@ -118,18 +140,37 @@ function getDeviceId(req) {
   return req.session.deviceId || 'unknown';
 }
 
-function requireTrustedDevice(req, res, next) {
+async function requireTrustedDevice(req, res, next) {
   const deviceId = getDeviceId(req);
-  
-  if (!isDeviceTrusted(deviceId)) {
-    return res.status(403).json({ 
-      error: 'Device not registered',
-      message: 'Please register your device before logging in',
-      deviceId 
-    });
+
+  // Check memory first (fast path)
+  if (deviceRegistry[deviceId]?.status === "trusted") {
+    return next();
   }
-  
-  next();
+
+  // Rehydrate from Firebase (after restart)
+  try {
+    const snap = await db.ref(`devices/${deviceId}`).once("value");
+
+    if (!snap.exists()) {
+      return res.status(403).send("Device not registered");
+    }
+
+    const device = snap.val();
+
+    if (device.status !== "trusted") {
+      return res.status(403).send("Device not trusted");
+    }
+
+    // Restore into memory
+    deviceRegistry[deviceId] = device;
+
+    return next();
+
+  } catch (err) {
+    console.error("Device trust check failed:", err);
+    return res.status(503).send("Device trust unavailable");
+  }
 }
 
 function requireAuth(req, res, next) {
@@ -218,7 +259,7 @@ app.get("/run-attestation", async (req, res) => {
       });
     }
 
-    // 🔐 Call Windows TPM Attestation Service
+    // Call Windows TPM Attestation Service
     const WINDOWS_HOST = "172.30.32.1"; // your Windows host IP
     const TPM_SERVICE_URL = `http://${WINDOWS_HOST}:9000/attest`;
 
@@ -357,71 +398,90 @@ function evaluateAttestation(attestation) {
   return result;
 }
 
+// STEP X: TPM Re-verification (PRE-LOGIN)
+app.post("/api/device/reverify", requireTrustedDevice, async (req, res) => {
+  const deviceId = getDeviceId(req);
+  const device = deviceRegistry[deviceId];
+
+  logSection("HSM VERIFICATION INITIATED");
+  console.log("├─ Device ID      :", deviceId);
+  console.log("├─ EK Hash        :", device?.ek_hash);
+
+  if (!device || !device.ek_hmac || !device.ek_hash) {
+    console.log("└─ Status         : FAILED (Missing credentials)");
+    return res.status(403).json({
+      status: "re_enroll_required"
+    });
+  }
+
+  try {
+    console.log("├─ Stored HMAC    :", device.ek_hmac);
+    console.log("└─ Computing fresh HMAC via HSM...");
+
+    // ⏱ HARD TIMEOUT — prevents hanging
+    const freshHmac = await Promise.race([
+      hsmHmacEK(device.ek_hash),
+      new Promise((_, reject) =>
+        setTimeout(() => reject(new Error("TPM timeout")), 3000)
+      )
+    ]);
+
+    console.log("├─ Fresh HMAC     :", freshHmac);
+
+    if (!timingSafeEq(freshHmac, device.ek_hmac)) {
+      device.status = "re_enroll_required";
+      console.log("└─ Status         : MISMATCH ❌ (Device tampered or compromised)");
+      return res.status(403).json({
+        status: "device_mismatch"
+      });
+    }
+
+    // ✅ mark re-verification success
+    req.session.deviceReverified = true;
+    console.log("└─ Status         : VERIFIED ✅ (HMAC matches, device authentic)");
+
+    return res.json({ status: "ok" });
+
+  } catch (err) {
+    console.error("❌ TPM reverify failed:", err.message);
+    return res.status(503).json({
+      error: "TPM unavailable"
+    });
+  }
+});
+
 // STEP 4: Login (ONLY if device is trusted)
 app.get('/login', requireTrustedDevice, async (req, res) => {
   if (!keycloakConfig) {
     return res.status(500).send('OIDC client not initialized');
   }
 
-  const deviceId = getDeviceId(req);          // ✅ DEFINE FIRST
-  const device = deviceRegistry[deviceId];   // ✅ SAFE
-  if (!device || !device.ek_hmac || !device.ek_hash) {
-    return res.status(403).send("Device identity incomplete — re-enrollment required");
+  // ENSURE TPM WAS RE-VERIFIED
+  if (!req.session.deviceReverified) {
+    return res.redirect("/index.html");
   }
 
-  logSection("TPM RE-VERIFICATION ON LOGIN");
+  const deviceId = getDeviceId(req);
+  console.log(`🔐 Login attempt from verified device: ${deviceId}`);
 
-  console.log("├─ Device ID      :", deviceId);
-  console.log("├─ Stored EK Hash :", device.ek_hash);
+  const code_verifier = openid.randomPKCECodeVerifier();
+  const code_challenge = await openid.calculatePKCECodeChallenge(code_verifier);
 
-  const freshHmac = await hsmHmacEK(device.ek_hash);
+  req.session.code_verifier = code_verifier;
 
-  console.log("├─ Recomputed HMAC:", freshHmac);
-  console.log("├─ Stored HMAC    :", device.ek_hmac);
+  const params = new URLSearchParams({
+    client_id: 'remote-work-app',
+    redirect_uri: 'http://localhost:5173/callback',
+    response_type: 'code',
+    scope: 'openid profile email',
+    code_challenge,
+    code_challenge_method: 'S256',
+  });
 
+  const authorizationUrl =
+    `${keycloakConfig.authorization_endpoint}?${params.toString()}`;
 
-  if (!timingSafeEq(freshHmac, device.ek_hmac)) {
-    console.log("└─ Verification   : MISMATCH ❌");
-    console.log("🔒 ACTION         : DEVICE MUST RE-ENROLL");
-    device.status = "re_enroll_required";
-    return res.status(403).send("Device identity changed — re-enrollment required");
-  }
-
-  console.log("└─ Verification   : MATCH ✅");
-  console.log("🔐 DEVICE TRUST CONTINUES — LOGIN PERMITTED");
-
-  try {
-    const deviceId = getDeviceId(req);
-    console.log(`🔐 Login attempt from trusted device: ${deviceId}`);
-    
-    const code_verifier = openid.randomPKCECodeVerifier();
-    const code_challenge = await openid.calculatePKCECodeChallenge(code_verifier);
-
-    req.session.code_verifier = code_verifier;
-
-    console.log('\n🔐 ========== PKCE AUTHENTICATION INITIATED ==========');
-    console.log('Device ID:', deviceId);
-    console.log('Code Verifier:', code_verifier);
-    console.log('Code Challenge:', code_challenge);
-    console.log('Code Challenge Method: S256');
-    console.log('====================================================\n');
-
-    const params = new URLSearchParams({
-      client_id: 'remote-work-app',
-      redirect_uri: 'http://localhost:5173/callback',
-      response_type: 'code',
-      scope: 'openid profile email',
-      code_challenge: code_challenge,
-      code_challenge_method: 'S256',
-    });
-
-    const authorizationUrl = `${keycloakConfig.authorization_endpoint}?${params.toString()}`;
-    res.redirect(authorizationUrl);
-    //res.redirect("/remote-work.html");
-  } catch (err) {
-    console.error('Login error:', err);
-    res.status(500).send('Login failed: ' + err.message);
-  }
+  return res.redirect(authorizationUrl);
 });
 
 // STEP 5: Callback - Bind user to device
@@ -431,10 +491,11 @@ app.get('/callback', async (req, res) => {
   }
 
   try {
+    const startTs = Date.now();
     const code = req.query.code;
     const deviceId = getDeviceId(req);
     
-    console.log('\n🔑 ========== OIDC AUTHORIZATION CODE RECEIVED ==========');
+    console.log('\n ========== OIDC AUTHORIZATION CODE RECEIVED ==========');
     console.log('Device ID:', deviceId);
     console.log('Authorization Code:', code);
     console.log('=======================================================\n');
@@ -469,6 +530,12 @@ if (!tokenResponse.ok) {
 }
 
 const tokens = await tokenResponse.json();
+const delay = calculateDelay(startTs, Date.now());
+
+console.log("⏱️ LOGIN → TOKEN EXCHANGE DELAY");
+console.log("├─ Delay (ms):", delay.delay_ms);
+console.log("└─ Delay (sec):", delay.delay_seconds);
+
 console.log('✅ Token exchange successful with PKCE + DPoP!');
 console.log('🔐 Token Type:', tokens.token_type); // Should be "DPoP"
 req.session.tokenSet = tokens;
@@ -489,16 +556,16 @@ const claims = JSON.parse(Buffer.from(idTokenParts[1], 'base64').toString());
     console.log('🔐 ========== USER LOGGED IN ==========');
     console.log('Username:', claims.preferred_username);
     console.log('Device ID:', deviceId);
-    console.log('\n📋 OIDC Tokens Received:');
+    console.log('\n OIDC Tokens Received:');
     console.log('─────────────────────────────────────');
-    console.log('\n✅ Access Token (JWT):');
+    console.log('\n Access Token (JWT):');
     console.log(tokens.access_token);
-    console.log('\n✅ ID Token Claims:');
+    console.log('\n ID Token Claims:');
     console.log(JSON.stringify(claims, null, 2));
-    console.log('\n📊 Token Info:');
+    console.log('\n Token Info:');
     console.log('  - Token Type:', tokens.token_type || 'Bearer');
     console.log('  - Expires In:', tokens.expires_in || 'N/A', 'seconds');
-    console.log('  - PKCE: ✅ Enabled (S256)');
+    console.log('  - PKCE: Enabled (S256)');
     console.log('======================================\n');
 
     req.session.tokenSet = tokens;
@@ -514,7 +581,7 @@ const claims = JSON.parse(Buffer.from(idTokenParts[1], 'base64').toString());
       last_country: req.headers["x-country"] || "unknown"
     });
 
-    console.log("🔗 Device bound to user:", userInfo.sub);
+    console.log(" Device bound to user:", userInfo.sub);
 
     // After login success, check MFA enrollment for this device
     const userId = claims.preferred_username;
@@ -529,12 +596,12 @@ const claims = JSON.parse(Buffer.from(idTokenParts[1], 'base64').toString());
 
     res.redirect('/remote-work.html');
   } catch (err) {
-    console.error('❌ Token exchange error:', err);
+    console.error(' Token exchange error:', err);
     res.status(500).send('Authentication failed: ' + err.message);
   }
 });
 
-// 🔑 Expose session tokens to frontend (post-login only)
+// Expose session tokens to frontend (post-login only)
 app.get("/api/session/tokens", (req, res) => {
   if (!req.session?.tokenSet || !req.session.deviceId) {
     return res.status(401).json({ error: "No active session" });
@@ -574,6 +641,7 @@ app.post("/mfa/enroll", async (req, res) => {
 });
 
 app.post("/mfa/verify", async (req, res) => {
+  const mfaStartTs = Date.now();
   const deviceId = req.session.deviceId;
   const { answers } = req.body;
 
@@ -592,7 +660,15 @@ app.post("/mfa/verify", async (req, res) => {
 
   // MFA success → short-lived flag
   req.session.mfa_passed = true;
-  res.json({ success: true });
+  const mfaDelay = Date.now() - mfaStartTs;
+  console.log("⏱️ MFA VERIFICATION DELAY");
+  console.log("├─ Delay (ms):", mfaDelay);
+  console.log("└─ Device ID:", deviceId);
+
+  res.json({
+    success: true,
+    mfa_delay_ms: mfaDelay
+  });
 });
 
 
@@ -622,7 +698,7 @@ app.get("/api/devices", (req, res) => {
       <style>body { font-family: Inter, sans-serif; background:#0f172a; color:#f1f5f9; text-align:center; padding:2rem; } a { color:#06b6d4; text-decoration:none; }</style>
       </head>
       <body>
-        <h2>📭 No TPM devices registered yet.</h2>
+        <h2> No TPM devices registered yet.</h2>
         <p><a href="/">← Back to home</a></p>
       </body>
       </html>
