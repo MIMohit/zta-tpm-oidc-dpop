@@ -491,7 +491,6 @@ app.get('/callback', async (req, res) => {
   }
 
   try {
-    const startTs = Date.now();
     const code = req.query.code;
     const deviceId = getDeviceId(req);
     
@@ -504,8 +503,6 @@ app.get('/callback', async (req, res) => {
 // Generate DPoP proof
 const dpopProof = await generateDPoPProof('POST', keycloakConfig.token_endpoint);
 console.log('🔐 DPoP Proof Generated');
-
-
 
 const tokenParams = new URLSearchParams({
   grant_type: 'authorization_code',
@@ -530,11 +527,6 @@ if (!tokenResponse.ok) {
 }
 
 const tokens = await tokenResponse.json();
-const delay = calculateDelay(startTs, Date.now());
-
-console.log("⏱️ LOGIN → TOKEN EXCHANGE DELAY");
-console.log("├─ Delay (ms):", delay.delay_ms);
-console.log("└─ Delay (sec):", delay.delay_seconds);
 
 console.log('✅ Token exchange successful with PKCE + DPoP!');
 console.log('🔐 Token Type:', tokens.token_type); // Should be "DPoP"
@@ -641,7 +633,7 @@ app.post("/mfa/enroll", async (req, res) => {
 });
 
 app.post("/mfa/verify", async (req, res) => {
-  const mfaStartTs = Date.now();
+  const mfaStart = Date.now();
   const deviceId = req.session.deviceId;
   const { answers } = req.body;
 
@@ -660,10 +652,8 @@ app.post("/mfa/verify", async (req, res) => {
 
   // MFA success → short-lived flag
   req.session.mfa_passed = true;
-  const mfaDelay = Date.now() - mfaStartTs;
-  console.log("⏱️ MFA VERIFICATION DELAY");
-  console.log("├─ Delay (ms):", mfaDelay);
-  console.log("└─ Device ID:", deviceId);
+  const mfaDelay = Date.now() - mfaStart;
+  console.log("⏱️ MFA verification delay:", mfaDelay, "ms");
 
   res.json({
     success: true,

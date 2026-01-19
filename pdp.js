@@ -18,6 +18,8 @@ function haversineDistance(lat1, lon1, lat2, lon2) {
 }
 
 app.post("/pdp/evaluate", async (req, res) => {
+  const pdpStart = Date.now();
+
   const { user, device_id, resource, context } = req.body;
   const { ip, country, geo, mfa_passed } = context;
 
@@ -28,6 +30,9 @@ app.post("/pdp/evaluate", async (req, res) => {
 
   /* -------- DEVICE BINDING -------- */
   if (dev.user_id !== user) {
+    const pdpDelay = Date.now() - pdpStart;
+    console.log("⏱️ PDP decision delay:", pdpDelay, "ms");
+
     return res.json({
       decision: "deny",
       reason: "User-device mismatch"
@@ -43,6 +48,9 @@ app.post("/pdp/evaluate", async (req, res) => {
     dev.last_ip !== ip &&
     !mfa_passed
   ) {
+    const pdpDelay = Date.now() - pdpStart;
+    console.log("⏱️ PDP decision delay:", pdpDelay, "ms");
+
     return res.json({
       decision: "mfa_required",
       level: 2,
@@ -56,6 +64,9 @@ app.post("/pdp/evaluate", async (req, res) => {
     dev.last_country !== country &&
     !mfa_passed
   ) {
+    const pdpDelay = Date.now() - pdpStart;
+    console.log("⏱️ PDP decision delay:", pdpDelay, "ms");
+
     return res.json({
       decision: "mfa_required",
       level: 1,
@@ -76,6 +87,9 @@ app.post("/pdp/evaluate", async (req, res) => {
     const speed = distance / hours;
 
     if (speed > 900 && !mfa_passed) {
+      const pdpDelay = Date.now() - pdpStart;
+      console.log("⏱️ PDP decision delay:", pdpDelay, "ms");
+
       return res.json({
         decision: "mfa_required",
         level: 2,
@@ -95,6 +109,9 @@ app.post("/pdp/evaluate", async (req, res) => {
 
   /* -------- DEVICE STATUS -------- */
   if (dev.status === "revoked") {
+    const pdpDelay = Date.now() - pdpStart;
+    console.log("⏱️ PDP decision delay:", pdpDelay, "ms");
+
     return res.json({
       decision: "deny",
       reason: "Device revoked"
@@ -103,6 +120,9 @@ app.post("/pdp/evaluate", async (req, res) => {
 
   /* -------- RESOURCE AUTH -------- */
   if (resource === "company.audit" && user !== "alice") {
+    const pdpDelay = Date.now() - pdpStart;
+    console.log("⏱️ PDP decision delay:", pdpDelay, "ms");
+
     return res.json({
       decision: "deny",
       reason: "User not authorized"
@@ -110,6 +130,9 @@ app.post("/pdp/evaluate", async (req, res) => {
   }
 
   /* -------- FINAL PERMIT -------- */
+  const pdpDelay = Date.now() - pdpStart;
+  console.log("⏱️ PDP decision delay:", pdpDelay, "ms");
+
   return res.json({
     decision: "permit",
     reason: "Policy satisfied"

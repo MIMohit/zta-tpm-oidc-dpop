@@ -8,10 +8,14 @@ app.use(express.json());
    READ device attributes
 -------------------------------- */
 app.get("/pip/device/:deviceId", async (req, res) => {
+  const startTs = Date.now();
+
   const snap = await db.ref(`devices/${req.params.deviceId}`).once("value");
   if (!snap.exists()) {
     return res.json({ status: "unknown" });
   }
+  const pipDelay = Date.now() - startTs;
+  console.log("⏱️ PIP delay:", pipDelay, "ms");
   res.json(snap.val());
 });
 

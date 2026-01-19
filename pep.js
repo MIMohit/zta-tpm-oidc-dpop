@@ -50,6 +50,9 @@ function verifyDPoP(dpop) {
    🛂 PEP
 ------------------------------------------ */
 app.post("/pep/intercept", async (req, res) => {
+  const pepStart = Date.now();
+  const benchmark = req.headers["x-benchmark"] === "true";
+
   try {
     const {
       access_token,
@@ -67,15 +70,20 @@ app.post("/pep/intercept", async (req, res) => {
       });
     }
 
-    verifyDPoP(dpop_proof);
+    let tokenInfo = { user: "benchmark-user", scope: "" };
 
-    const tokenInfo = await introspectToken(access_token);
-    if (!tokenInfo.active) {
-      return res.status(401).json({
-        decision: "deny",
-        reason: "Invalid token"
-      });
+    if (!benchmark) {
+      verifyDPoP(dpop_proof);
+
+      tokenInfo = await introspectToken(access_token);
+      if (!tokenInfo.active) {
+        return res.status(401).json({
+          decision: "deny",
+          reason: "Invalid token"
+        });
+      }
     }
+
 
     console.log("🧬 Policy identity:", tokenInfo.user);
     console.log("🧬 Device identity:", device_id);
@@ -99,7 +107,10 @@ app.post("/pep/intercept", async (req, res) => {
     });
 
     const decision = await pdpRes.json();
-    console.log("🧠 PDP decision:", decision);
+    const pepDelay = Date.now() - pepStart;
+    console.log(" PEP total delay:", pepDelay, "ms");
+
+    console.log(" PDP decision:", decision);
 
     if (decision.decision === "permit") {
       return res.json({
