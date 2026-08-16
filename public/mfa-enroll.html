@@ -1,56 +1,188 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Security Setup</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MFA Enrollment | Zero-Trust Portal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
     body {
-      font-family: Inter, sans-serif;
-      background: #0f172a;
+      font-family: 'Inter', sans-serif;
+      background: radial-gradient(circle at top left, #0f172a, #020617);
       color: #f1f5f9;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+    .card {
+      background: rgba(30, 41, 59, 0.7);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 1.5rem;
+      padding: 3rem;
+      width: 100%;
+      max-width: 480px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
       text-align: center;
-      padding: 2rem;
+      animation: fadeIn 0.6s ease-out;
     }
-    input, button {
-      margin: .75rem;
-      padding: .75rem;
-      border-radius: .5rem;
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .icon-wrapper {
+      width: 72px;
+      height: 72px;
+      background: rgba(6, 182, 212, 0.1);
+      border: 1.5px solid rgba(6, 182, 212, 0.3);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+      color: #06b6d4;
+      font-size: 2rem;
+      box-shadow: 0 0 20px rgba(6, 182, 212, 0.2);
+    }
+    h2 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #f8fafc;
+      margin-bottom: 0.75rem;
+      letter-spacing: -0.025em;
+    }
+    p {
+      color: #94a3b8;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      margin-bottom: 2rem;
+    }
+    .btn {
+      background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+      color: #ffffff;
       border: none;
-    }
-    button {
-      background: #06b6d4;
+      padding: 1rem 1.75rem;
+      border-radius: 0.75rem;
+      font-size: 1rem;
+      font-weight: 600;
       cursor: pointer;
+      width: 100%;
+      box-shadow: 0 4px 12px rgba(6, 182, 212, 0.3);
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    .btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(6, 182, 212, 0.4);
+      background: linear-gradient(135deg, #0891b2 0%, #0e7490 100%);
+    }
+    .btn:active:not(:disabled) {
+      transform: translateY(0);
+    }
+    .btn:disabled {
+      background: #334155;
+      color: #64748b;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+    .status-text {
+      margin-top: 1.5rem;
+      font-size: 0.875rem;
+      color: #94a3b8;
+      min-height: 20px;
+    }
+    .success {
+      color: #4ade80;
+    }
+    .error {
+      color: #f87171;
     }
   </style>
 </head>
 <body>
 
-<h2>🔐 Security Setup</h2>
-<p>Please answer the questions below. This is required once.</p>
+<div class="card">
+  <div class="icon-wrapper">
+    🔐
+  </div>
+  <h2>Biometric Registration</h2>
+  <p>To finalize enrollment for this device under the Zero-Trust policy, please register your biometric (TouchID, FaceID) or hardware security key.</p>
 
-<input id="q1" placeholder="What is your favorite color?" />
-<br />
-<input id="q2" placeholder="What city were you born in?" />
-<br />
+  <button class="btn" id="enroll-btn" onclick="enrollMFA()">
+    Register Security Key
+  </button>
 
-<button onclick="submitMFA()">Save & Continue</button>
+  <div class="status-text" id="status">Ready to enroll</div>
+</div>
 
+<script src="https://unpkg.com/@simplewebauthn/browser/dist/bundle/index.umd.min.js"></script>
 <script>
-async function submitMFA() {
-  const res = await fetch("/mfa/enroll", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      answers: {
-        q1: document.getElementById("q1").value,
-        q2: document.getElementById("q2").value
-      }
-    })
-  });
+const { startRegistration } = SimpleWebAuthnBrowser;
 
-  if (res.ok) {
-    window.location.href = "/remote-work.html";
-  } else {
-    alert("Failed to save security answers.");
+async function enrollMFA() {
+  const statusDiv = document.getElementById("status");
+  const enrollBtn = document.getElementById("enroll-btn");
+
+  statusDiv.className = "status-text";
+  statusDiv.textContent = "Fetching registration options...";
+  enrollBtn.disabled = true;
+
+  try {
+    const resp = await fetch("/mfa/register/options", { credentials: "include" });
+    if (!resp.ok) {
+      throw new Error("Failed to load registration options from server.");
+    }
+    const options = await resp.json();
+
+    statusDiv.textContent = "Please verify your biometric or security key...";
+    
+    let attResp;
+    try {
+      attResp = await startRegistration({ optionsJSON: options });
+    } catch (browserErr) {
+      throw new Error(`Browser WebAuthn error: ${browserErr.message}`);
+    }
+
+    statusDiv.textContent = "Verifying with server...";
+
+    const verifyResp = await fetch("/mfa/register/verify", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(attResp),
+      credentials: "include"
+    });
+
+    if (!verifyResp.ok) {
+      const errData = await verifyResp.json();
+      throw new Error(errData.error || "Server verification failed.");
+    }
+
+    const verificationResult = await verifyResp.json();
+
+    if (verificationResult.enrolled) {
+      statusDiv.className = "status-text success";
+      statusDiv.textContent = "✅ Success! Redirecting to workplace...";
+      setTimeout(() => {
+        window.location.href = "/remote-work.html";
+      }, 1500);
+    } else {
+      throw new Error("MFA enrollment was not accepted by the server.");
+    }
+
+  } catch (err) {
+    statusDiv.className = "status-text error";
+    statusDiv.textContent = err.message;
+    enrollBtn.disabled = false;
   }
 }
 </script>

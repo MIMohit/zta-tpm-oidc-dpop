@@ -11,8 +11,12 @@ import * as openid from "openid-client";
 import * as jose from 'jose';
 import { hsmHmacEK, timingSafeEq } from "./hsm.js";
 import { db } from "./firebase.js";
-import { hashAnswer } from "./mfa-crypto.js";
-import { verifyAnswer } from "./mfa-crypto.js";
+import {
+  generateRegistrationOptions,
+  verifyRegistrationResponse,
+  generateAuthenticationOptions,
+  verifyAuthenticationResponse
+} from "@simplewebauthn/server";
 
 const logSection = (title) => {
   console.log("\n" + "═".repeat(60));
@@ -607,58 +611,150 @@ app.get("/api/session/tokens", (req, res) => {
 });
 
 
-app.post("/mfa/enroll", async (req, res) => {
+app.get("/mfa/register/options", requireAuth, async (req, res) => {
   const deviceId = req.session.deviceId;
   const userId = req.session.userInfo.preferred_username;
 
-  const { answers } = req.body;
-
-  await db.ref(`mfa_enrollments/${deviceId}`).set({
-    user_id: userId,
-    questions: {
-      q1: {
-        question: "What is your favorite color?",
-        answer_hash: hashAnswer(answers.q1)
-      },
-      q2: {
-        question: "What city were you born in?",
-        answer_hash: hashAnswer(answers.q2)
+  try {
+    const options = await generateRegistrationOptions({
+      rpName: "Zero-Trust Portal",
+      rpID: "localhost",
+      userID: Buffer.from(userId),
+      userName: userId,
+      userDisplayName: userId,
+      attestationType: "none",
+      authenticatorSelection: {
+        userVerification: "preferred",
+        residentKey: "preferred"
       }
-    },
-    enrolled_at: new Date().toISOString()
-  });
+    });
 
-  delete req.session.mfa_enroll_required;
-  res.json({ enrolled: true });
+    req.session.webauthnChallenge = options.challenge;
+    res.json(options);
+  } catch (err) {
+    console.error("Error generating registration options:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post("/mfa/register/verify", requireAuth, async (req, res) => {
+  const deviceId = req.session.deviceId;
+  const userId = req.session.userInfo.preferred_username;
+  const expectedChallenge = req.session.webauthnChallenge;
+
+  try {
+    const verification = await verifyRegistrationResponse({
+      response: req.body,
+      expectedChallenge,
+      expectedOrigin: req.headers.origin || "http://localhost:5173",
+      expectedRPID: "localhost"
+    });
+
+    if (verification.verified) {
+      const { registrationInfo } = verification;
+      await db.ref(`mfa_enrollments/${deviceId}`).set({
+        user_id: userId,
+        credential: {
+          credentialID: Buffer.from(registrationInfo.credentialID).toString("base64url"),
+          credentialPublicKey: Buffer.from(registrationInfo.credentialPublicKey).toString("base64url"),
+          counter: registrationInfo.counter,
+          transports: req.body.response.transports || []
+        },
+        enrolled_at: new Date().toISOString()
+      });
+
+      delete req.session.mfa_enroll_required;
+      delete req.session.webauthnChallenge;
+      res.json({ enrolled: true });
+    } else {
+      res.status(400).json({ error: "Registration verification failed" });
+    }
+  } catch (err) {
+    console.error("Error verifying registration response:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.get("/mfa/auth/options", async (req, res) => {
+  const deviceId = req.session.deviceId;
+  if (!deviceId) {
+    return res.status(400).json({ error: "No device context" });
+  }
+
+  try {
+    const snap = await db.ref(`mfa_enrollments/${deviceId}`).once("value");
+    if (!snap.exists()) {
+      return res.status(404).json({ error: "MFA not enrolled for this device" });
+    }
+
+    const stored = snap.val().credential;
+    const options = await generateAuthenticationOptions({
+      rpID: "localhost",
+      allowCredentials: [{
+        id: stored.credentialID,
+        type: "public-key",
+        transports: stored.transports || []
+      }],
+      userVerification: "preferred"
+    });
+
+    req.session.webauthnChallenge = options.challenge;
+    res.json(options);
+  } catch (err) {
+    console.error("Error generating authentication options:", err);
+    res.status(500).json({ error: err.message });
+  }
 });
 
 app.post("/mfa/verify", async (req, res) => {
   const mfaStart = Date.now();
   const deviceId = req.session.deviceId;
-  const { answers } = req.body;
+  const expectedChallenge = req.session.webauthnChallenge;
 
-  const snap = await db.ref(`mfa_enrollments/${deviceId}`).once("value");
-  if (!snap.exists()) {
-    return res.status(403).json({ error: "MFA not enrolled" });
+  if (!deviceId) {
+    return res.status(400).json({ error: "No device context" });
   }
 
-  const stored = snap.val().questions;
-
-  for (const key in answers) {
-    if (!verifyAnswer(answers[key], stored[key].answer_hash)) {
-      return res.status(403).json({ error: "MFA failed" });
+  try {
+    const snap = await db.ref(`mfa_enrollments/${deviceId}`).once("value");
+    if (!snap.exists()) {
+      return res.status(403).json({ error: "MFA not enrolled" });
     }
+
+    const stored = snap.val().credential;
+    const verification = await verifyAuthenticationResponse({
+      response: req.body,
+      expectedChallenge,
+      expectedOrigin: req.headers.origin || "http://localhost:5173",
+      expectedRPID: "localhost",
+      authenticator: {
+        credentialID: Buffer.from(stored.credentialID, "base64url"),
+        credentialPublicKey: Buffer.from(stored.credentialPublicKey, "base64url"),
+        counter: stored.counter,
+        transports: stored.transports || []
+      }
+    });
+
+    if (verification.verified) {
+      await db.ref(`mfa_enrollments/${deviceId}/credential/counter`).set(verification.authenticationInfo.newCounter);
+
+      req.session.mfa_passed = true;
+      delete req.session.webauthnChallenge;
+
+      const mfaDelay = Date.now() - mfaStart;
+      console.log("⏱️ MFA verification delay:", mfaDelay, "ms");
+
+      res.json({
+        success: true,
+        mfa_delay_ms: mfaDelay
+      });
+    } else {
+      res.status(403).json({ error: "MFA failed" });
+    }
+  } catch (err) {
+    console.error("Error verifying authentication response:", err);
+    res.status(500).json({ error: err.message });
   }
-
-  // MFA success → short-lived flag
-  req.session.mfa_passed = true;
-  const mfaDelay = Date.now() - mfaStart;
-  console.log("⏱️ MFA verification delay:", mfaDelay, "ms");
-
-  res.json({
-    success: true,
-    mfa_delay_ms: mfaDelay
-  });
 });
 
 

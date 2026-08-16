@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>REMOTE-WORK :: SECURE TERMINAL</title>
+  <script src="https://unpkg.com/@simplewebauthn/browser/dist/bundle/index.umd.min.js"></script>
 
   <style>
     /* ===== 90s CYBER TERMINAL THEME ===== */
@@ -156,14 +157,8 @@ Awaiting operator command...
 
   <div class="mfa-box" id="mfa-box">
     <p class="warning">⚠ MULTI-FACTOR AUTH REQUIRED</p>
-
-    <label>Challenge 1:</label>
-    <input id="mfa-q1" placeholder="What is your favorite color?">
-
-    <label>Challenge 2:</label>
-    <input id="mfa-q2" placeholder="Which city were you born in?">
-
-    <button class="btn" onclick="submitMFA()">VERIFY IDENTITY</button>
+    <p style="margin-bottom: 10px;">Please authenticate using your registered biometric or security key.</p>
+    <button class="btn" id="mfa-verify-btn" onclick="submitMFA()">VERIFY IDENTITY (SECURITY KEY)</button>
   </div>
 </div>
 
@@ -186,11 +181,6 @@ async function getPublicIP() {
   const res = await fetch("https://api.ipify.org?format=json");
   const { ip } = await res.json();
   return ip;
-}
-
-function resetMFAInputs() {
-  document.getElementById("mfa-q1").value = "";
-  document.getElementById("mfa-q2").value = "";
 }
 
 async function requestAudit() {
@@ -229,7 +219,6 @@ async function requestAudit() {
 
   if (res.status === 401) {
     out.textContent = "⚠ MFA required. Please verify your identity.";
-    resetMFAInputs(); // 🔥 clear old answers
     document.getElementById("mfa-box").style.display = "block";
     return;
   }
@@ -242,23 +231,57 @@ async function requestAudit() {
   out.textContent = JSON.stringify(await res.json(), null, 2);
 }
 
+const { startAuthentication } = SimpleWebAuthnBrowser;
+
 async function submitMFA() {
-  const q1 = document.getElementById("mfa-q1").value;
-  const q2 = document.getElementById("mfa-q2").value;
+  const out = document.getElementById("output");
+  const verifyBtn = document.getElementById("mfa-verify-btn");
+  verifyBtn.disabled = true;
+  verifyBtn.textContent = "WAITING FOR KEY...";
 
-  const res = await fetch("/mfa/verify", {
-    method: "POST",
-    credentials: "include",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ answers: { q1, q2 } })
-  });
+  try {
+    const optionsResp = await fetch("/mfa/auth/options", { credentials: "include" });
+    if (!optionsResp.ok) {
+      const errData = await optionsResp.json();
+      throw new Error(errData.error || "Failed to retrieve authentication options.");
+    }
+    const options = await optionsResp.json();
 
-  if (!res.ok) return alert("MFA failed");
+    let assertResp;
+    try {
+      assertResp = await startAuthentication({ optionsJSON: options });
+    } catch (err) {
+      throw new Error("WebAuthn ceremony failed: " + err.message);
+    }
 
-  sessionStorage.setItem("mfa_passed", "true");
-  document.getElementById("mfa-box").style.display = "none";
-  document.getElementById("output").textContent = "✅ MFA verified. Retrying…";
-  setTimeout(requestAudit, 200);
+    const verifyResp = await fetch("/mfa/verify", {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(assertResp)
+    });
+
+    if (!verifyResp.ok) {
+      const errData = await verifyResp.json();
+      throw new Error(errData.error || "Verification failed.");
+    }
+
+    const verificationResult = await verifyResp.json();
+    if (verificationResult.success) {
+      sessionStorage.setItem("mfa_passed", "true");
+      document.getElementById("mfa-box").style.display = "none";
+      out.textContent = "✅ MFA verified. Retrying…";
+      setTimeout(requestAudit, 200);
+    } else {
+      throw new Error("MFA was not verified by the server.");
+    }
+
+  } catch (err) {
+    alert("MFA verification failed: " + err.message);
+  } finally {
+    verifyBtn.disabled = false;
+    verifyBtn.textContent = "VERIFY IDENTITY (SECURITY KEY)";
+  }
 }
 </script>
 
