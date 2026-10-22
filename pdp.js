@@ -1,144 +1,166 @@
 import express from "express";
+import { loadConfig } from "./lib/config.js";
+import { requireInternal, internalFetch } from "./lib/internal-auth.js";
+import { isMain } from "./lib/main.js";
+import { decide, defaultPolicyData, loadPolicyData } from "./lib/policy.js";
+import { on, printBannerOnce } from "./lib/ablation.js";
+import { mountHealth } from "./lib/health.js";
 
-const app = express();
-app.use(express.json());
-
-function haversineDistance(lat1, lon1, lat2, lon2) {
-  const R = 6371;
-  const dLat = (lat2 - lat1) * Math.PI / 180;
-  const dLon = (lon2 - lon1) * Math.PI / 180;
-
-  const a =
-    Math.sin(dLat / 2) ** 2 +
-    Math.cos(lat1 * Math.PI / 180) *
-    Math.cos(lat2 * Math.PI / 180) *
-    Math.sin(dLon / 2) ** 2;
-
-  return 2 * R * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-}
-
-app.post("/pdp/evaluate", async (req, res) => {
-  const pdpStart = Date.now();
-
-  const { user, device_id, resource, context } = req.body;
-  const { ip, country, geo, mfa_passed } = context;
-
-  const pipRes = await fetch(`http://localhost:4003/pip/device/${device_id}`);
-  const dev = await pipRes.json();
-
-  console.log("📡 PIP device:", { dev, ip, country, mfa_passed });
-
-  /* -------- DEVICE BINDING -------- */
-  if (dev.user_id !== user) {
-    const pdpDelay = Date.now() - pdpStart;
-    console.log("⏱️ PDP decision delay:", pdpDelay, "ms");
-
-    return res.json({
-      decision: "deny",
-      reason: "User-device mismatch"
-    });
+/**
+ * Creates the PDP Express application.
+ * @param {Record<string, any>} [cfg]
+ * @returns {import('express').Express}
+ */
+export function createApp(cfg = loadConfig()) {
+  const opaUrl = cfg.opaUrl || process.env.OPA_URL;
+  if (opaUrl && (!on("M20") || !on("M21"))) {
+    throw new Error("OPA does not support ablated M20/M21 policy evaluation; use the JS engine (unset OPA_URL)");
   }
 
-  /* -------- SENSITIVE RESOURCE STEP-UP -------- */
-  const sensitiveResources = ["company.audit", "admin.panel"];
+  const app = express();
+  mountHealth(app, "pdp"); // public liveness + ablation state
+  app.use(express.json());
 
-  if (
-    sensitiveResources.includes(resource) &&
-    dev.last_ip &&
-    dev.last_ip !== ip &&
-    !mfa_passed
-  ) {
-    const pdpDelay = Date.now() - pdpStart;
-    console.log("⏱️ PDP decision delay:", pdpDelay, "ms");
+  // Require internal service token on all PDP routes
+  app.use(requireInternal(cfg));
 
-    return res.json({
-      decision: "mfa_required",
-      level: 2,
-      reason: "Sensitive resource with network anomaly"
-    });
-  }
+  const policyData = cfg.policyData || defaultPolicyData;
 
-  /* -------- COUNTRY CHANGE -------- */
-  if (
-    dev.last_country &&
-    dev.last_country !== country &&
-    !mfa_passed
-  ) {
-    const pdpDelay = Date.now() - pdpStart;
-    console.log("⏱️ PDP decision delay:", pdpDelay, "ms");
+  app.post("/pdp/evaluate", async (req, res) => {
+    const pdpStart = Date.now();
 
-    return res.json({
-      decision: "mfa_required",
-      level: 1,
-      reason: "Geographic location changed"
-    });
-  }
-
-  /* -------- IMPOSSIBLE TRAVEL -------- */
-  if (dev.last_geo && geo && dev.last_geo_time) {
-    const distance = haversineDistance(
-      dev.last_geo.lat,
-      dev.last_geo.lon,
-      geo.lat,
-      geo.lon
-    );
-
-    const hours = (Date.now() - dev.last_geo_time) / (1000 * 60 * 60);
-    const speed = distance / hours;
-
-    if (speed > 900 && !mfa_passed) {
-      const pdpDelay = Date.now() - pdpStart;
-      console.log("⏱️ PDP decision delay:", pdpDelay, "ms");
-
-      return res.json({
-        decision: "mfa_required",
-        level: 2,
-        reason: "Impossible travel detected"
+    const { token, resource, op = "GET", ip } = req.body;
+    if (!token || !resource) {
+      return res.status(400).json({
+        error: "invalid_request",
+        message: "token and resource are required",
       });
     }
-  }
 
-  /* -------- NETWORK CHANGE -------- */
-  if (dev.last_ip && dev.last_ip !== ip && !mfa_passed) {
-    return res.json({
-      decision: "mfa_required",
-      level: 1,
-      reason: "Network change detected"
-    });
-  }
+    const nowMs = cfg.clock ? cfg.clock() : Date.now();
+    const nowS = Math.floor(nowMs / 1000);
 
-  /* -------- DEVICE STATUS -------- */
-  if (dev.status === "revoked") {
+    // Call PIP for context
+    const pipUrl = cfg.pipUrl || "http://localhost:4003";
+    let pipResult = {
+      status: "unknown",
+      owner: null,
+      attestation_age_s: 999999,
+      risk: 1.0,
+      features: [1, 1, 1, 1, 1, 1],
+    };
+
+    try {
+      const pipRes = await internalFetch(
+        `${pipUrl}/pip/context`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            sub: token.sub,
+            dev: token.dev,
+            ip,
+            now: nowS,
+          }),
+        },
+        cfg
+      );
+
+      if (pipRes.ok) {
+        pipResult = await pipRes.json();
+      } else {
+        console.warn(`⚠️ PIP returned ${pipRes.status} for context query`);
+      }
+    } catch (err) {
+      console.warn("⚠️ Error fetching PIP context:", err.message);
+    }
+
+    // Build Rego-shaped input
+    const authTime =
+      typeof token.auth_time === "number"
+        ? token.auth_time > 1e11
+          ? Math.floor(token.auth_time / 1000)
+          : token.auth_time
+        : 0;
+
+    const regoInput = {
+      resource,
+      op,
+      now_s: nowS,
+      risk: pipResult.risk,
+      device: {
+        status: pipResult.status,
+        attestation_age_s: pipResult.attestation_age_s,
+        owner: pipResult.owner,
+      },
+      token: {
+        sub: token.sub,
+        role: token.role,
+        acr: token.acr,
+        auth_time: authTime,
+      },
+    };
+
+    let decision = "deny";
+    let reason = "internal_error";
+
+    const opaUrl = cfg.opaUrl || process.env.OPA_URL;
+    if (opaUrl) {
+      try {
+        const opaRes = await globalThis.fetch(
+          `${opaUrl}/v1/data/zta/authz/decision`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ input: regoInput }),
+          }
+        );
+        if (opaRes.ok) {
+          const opaData = await opaRes.json();
+          decision = opaData.result?.decision || opaData.result || "deny";
+          reason = opaData.result?.reason || `opa_${decision}`;
+        } else {
+          console.warn(`⚠️ OPA returned ${opaRes.status}, falling back to JS engine`);
+          const res = decide(regoInput, policyData);
+          decision = res.decision;
+          reason = res.reason;
+        }
+      } catch (err) {
+        console.warn("⚠️ OPA query failed, falling back to JS engine:", err.message);
+        const res = decide(regoInput, policyData);
+        decision = res.decision;
+        reason = res.reason;
+      }
+    } else {
+      const res = decide(regoInput, policyData);
+      decision = res.decision;
+      reason = res.reason;
+    }
+
     const pdpDelay = Date.now() - pdpStart;
     console.log("⏱️ PDP decision delay:", pdpDelay, "ms");
 
-    return res.json({
-      decision: "deny",
-      reason: "Device revoked"
+    res.json({
+      decision,
+      reason,
+      pip: {
+        status: pipResult.status,
+        attestation_age_s: pipResult.attestation_age_s,
+        risk: pipResult.risk,
+      },
     });
-  }
-
-  /* -------- RESOURCE AUTH -------- */
-  if (resource === "company.audit" && user !== "alice") {
-    const pdpDelay = Date.now() - pdpStart;
-    console.log("⏱️ PDP decision delay:", pdpDelay, "ms");
-
-    return res.json({
-      decision: "deny",
-      reason: "User not authorized"
-    });
-  }
-
-  /* -------- FINAL PERMIT -------- */
-  const pdpDelay = Date.now() - pdpStart;
-  console.log("⏱️ PDP decision delay:", pdpDelay, "ms");
-
-  return res.json({
-    decision: "permit",
-    reason: "Policy satisfied"
   });
-});
 
-app.listen(4002, () =>
-  console.log("🧠 PDP running on http://localhost:4002")
-);
+  return app;
+}
+
+if (isMain(import.meta.url)) {
+  printBannerOnce("pdp");
+  const cfg = loadConfig();
+  const PORT = process.env.PORT || 4002;
+  createApp(cfg).listen(PORT, () =>
+    console.log(`🧠 PDP running on http://localhost:${PORT}`)
+  );
+}
+
+export default { createApp };

@@ -1,77 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta http-equiv="refresh" content="0; url=/">
   <title>TPM Device Registration</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="card">
     <h2>TPM Device Registration</h2>
-    <p>Click below to register your device.</p>
-    <button id="registerBtn">Register Device</button>
-    <div id="status"></div>
+    <p>Device registration has moved to the main portal.</p>
+    <a href="/" class="link">Proceed to Device Registration →</a>
   </div>
-
-  <script>
-    const button = document.getElementById("registerBtn");
-    const statusDiv = document.getElementById("status");
-
-    button.addEventListener("click", async () => {
-        statusDiv.textContent = "⏳ Requesting nonce...";
-        statusDiv.className = "";
-
-        try {
-        // 1️⃣ Get nonce from backend
-        const nonceRes = await fetch("/api/device/register/init");
-        const { nonce } = await nonceRes.json();
-
-        // 2️⃣ Ask TPM Agent to generate attestation
-        statusDiv.textContent = "🔐 Contacting TPM Agent...";
-        const tpmRes = await fetch("http://localhost:7000/tpm/attest", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ nonce })
-        });
-
-        if (!tpmRes.ok) throw new Error("TPM Agent not reachable");
-        const tpmData = await tpmRes.json();
-        console.log("📦 TPM Agent response:", tpmData);
-
-        // 3️⃣ Send attestation to backend
-        statusDiv.textContent = "📡 Sending attestation to backend...";
-        const res = await fetch("/api/device/register/submit", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(tpmData)
-        });
-
-        const result = await res.json();
-        console.log("✅ Backend response:", result);
-
-        if (res.ok) {
-            const encodedKey = tpmData.attestation_b64;
-            statusDiv.innerHTML = `
-            <p>✅ <b>${result.device_id}</b> registered successfully</p>
-            <p>Status: <b>${result.status}</b></p>
-            <p><b>Encoded TPM Key:</b></p>
-            <textarea readonly>${encodedKey}</textarea><br>
-            <a href="/api/devices" target="_blank" class="link">📡 View Connected Devices</a><br>
-            <a href="/" class="link">🏠 Back to Home</a>
-            `;
-            statusDiv.className = "success";
-        } else {
-            statusDiv.textContent = `❌ ${result.error || "Registration failed"}`;
-            statusDiv.className = "error";
-        }
-        } catch (err) {
-        console.error("❌ Registration flow error:", err);
-        statusDiv.textContent = "❌ TPM Agent or Backend unreachable.";
-        statusDiv.className = "error";
-        }
-    });
-  </script>
-
 </body>
 </html>

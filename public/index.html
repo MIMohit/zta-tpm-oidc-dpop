@@ -217,6 +217,7 @@
     </div>
 
     <div id="device-section">
+      <input type="text" id="enrol-code" placeholder="Enter enrolment code" style="width: 100%; background: #0f172a; color: #f1f5f9; border: 1px solid #334155; padding: 0.75rem 1rem; border-radius: 0.5rem; margin-bottom: 1rem; font-family: inherit; font-size: 1rem; box-sizing: border-box;" />
       <button id="register-device-btn" onclick="registerDevice()">
         📱 Step 1: Register Device (TPM)
       </button>
@@ -250,33 +251,62 @@
   </div>
 
   <script>
-    let deviceId = localStorage.getItem('deviceId') || crypto.randomUUID();
-    localStorage.setItem('deviceId', deviceId);
+    const AGENT_URL = 'http://127.0.0.1:7000';
 
     async function checkStatus() {
       try {
-        // Check device status
-        const deviceRes = await fetch('/api/device/status');
-        const deviceData = await deviceRes.json();
-
-        document.getElementById('device-id').textContent = deviceData.deviceId || deviceId;
-
-        if (deviceData.registered && deviceData.trusted) {
-          document.getElementById('device-status').textContent = '✅ Trusted';
-          document.getElementById('device-status').className = 'status-value success';
-          document.getElementById('step1').className = 'step complete';
-          document.getElementById('login-btn').disabled = false;
-          document.getElementById('register-device-btn').textContent = '✅ Device Already Registered';
-          document.getElementById('register-device-btn').disabled = true;
-        } else if (deviceData.registered) {
-          document.getElementById('device-status').textContent = '❌ Untrusted';
-          document.getElementById('device-status').className = 'status-value error';
-        } else {
-          document.getElementById('device-status').textContent = '⚠️ Not Registered';
-          document.getElementById('device-status').className = 'status-value warning';
+        // Check device status via local TPM agent
+        let agentData = null;
+        try {
+          const agentRes = await fetch(`${AGENT_URL}/agent/status`);
+          if (agentRes.ok) {
+            agentData = await agentRes.json();
+          }
+        } catch (e) {
+          console.warn("Agent not reachable:", e);
         }
 
-        // Check user auth status
+        if (agentData && agentData.enrolled) {
+          const devStatus = agentData.deviceStatus || agentData.pipStatus || "active";
+          document.getElementById('device-id').textContent = agentData.devId || 'Enrolled';
+
+          if (devStatus === "suspended") {
+            document.getElementById('device-status').textContent = '⚠️ Suspended (Attestation Failed)';
+            document.getElementById('device-status').className = 'status-value warning';
+            document.getElementById('step1').className = 'step';
+            document.getElementById('login-btn').disabled = true;
+            document.getElementById('register-device-btn').textContent = '⚠️ Device Suspended';
+            document.getElementById('register-device-btn').disabled = true;
+          } else if (devStatus === "revoked") {
+            document.getElementById('device-status').textContent = '❌ Revoked';
+            document.getElementById('device-status').className = 'status-value error';
+            document.getElementById('step1').className = 'step';
+            document.getElementById('login-btn').disabled = true;
+            document.getElementById('register-device-btn').textContent = '❌ Device Revoked';
+            document.getElementById('register-device-btn').disabled = true;
+          } else {
+            document.getElementById('device-status').textContent = '✅ Trusted (TPM Attested)';
+            document.getElementById('device-status').className = 'status-value success';
+            document.getElementById('step1').className = 'step complete';
+            document.getElementById('login-btn').disabled = false;
+            document.getElementById('register-device-btn').textContent = '✅ Device Already Registered';
+            document.getElementById('register-device-btn').disabled = true;
+            const codeInput = document.getElementById('enrol-code');
+            if (codeInput) codeInput.style.display = 'none';
+          }
+        } else {
+          document.getElementById('device-id').textContent = '-';
+          document.getElementById('device-status').textContent = '⚠️ Not Registered';
+          document.getElementById('device-status').className = 'status-value warning';
+          document.getElementById('step1').className = 'step';
+          document.getElementById('login-btn').disabled = true;
+          document.getElementById('register-device-btn').textContent = '📱 Step 1: Register Device (TPM)';
+          document.getElementById('register-device-btn').disabled = false;
+          const codeInput = document.getElementById('enrol-code');
+          if (codeInput) codeInput.style.display = 'block';
+        }
+
+        // Check user auth status via portal session
         const authRes = await fetch('/api/auth/check');
         const authData = await authRes.json();
 
@@ -286,7 +316,7 @@
           document.getElementById('username').textContent = authData.username;
           document.getElementById('username-row').style.display = 'flex';
           document.getElementById('step2').className = 'step complete';
-          
+
           document.getElementById('device-section').style.display = 'none';
           document.getElementById('login-section').style.display = 'none';
           document.getElementById('logout-section').style.display = 'block';
@@ -294,8 +324,12 @@
         } else {
           document.getElementById('user-status').textContent = '❌ Not logged in';
           document.getElementById('user-status').className = 'status-value error';
-          document.getElementById('step2').className = 'step';
+          document.getElementById('step2').className = agentData?.enrolled ? 'step active' : 'step';
+          document.getElementById('username-row').style.display = 'none';
+          document.getElementById('logout-section').style.display = 'none';
           document.getElementById('workplace-section').style.display = 'none';
+          document.getElementById('device-section').style.display = 'block';
+          document.getElementById('login-section').style.display = 'block';
         }
 
       } catch (err) {
@@ -306,30 +340,31 @@
     }
 
     async function registerDevice() {
+      const codeInput = document.getElementById('enrol-code');
+      const code = codeInput ? codeInput.value.trim() : '';
+      if (!code) {
+        alert('Please enter an enrolment code from data/dev-enrolment-codes.json');
+        return;
+      }
+
       try {
         document.getElementById('register-device-btn').disabled = true;
-        document.getElementById('register-device-btn').textContent = '⏳ Registering Device...';
+        document.getElementById('register-device-btn').textContent = '⏳ Registering Device with TPM...';
 
-        // Step 1: Init
-        const initRes = await fetch(`/api/device/register/init?deviceId=${deviceId}`);
-        const { nonce, deviceId: newDeviceId } = await initRes.json();
-        
-        deviceId = newDeviceId;
-        localStorage.setItem('deviceId', deviceId);
+        const res = await fetch(`${AGENT_URL}/agent/enrol`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ code }),
+        });
 
-        // Step 2: Run attestation
-        const attestRes = await fetch('/run-attestation');
-        const result = await attestRes.json();
-
-        alert("TPM Registration Successful");
-
-        if (result.canLogin) {
-          document.getElementById('step1').className = 'step complete';
-          checkStatus();
-        } else {
-          document.getElementById('register-device-btn').disabled = false;
-          document.getElementById('register-device-btn').textContent = '🔄 Retry Device Registration';
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.message || data.error || 'Registration failed');
         }
+
+        alert('✅ TPM Device Enrolment Successful!');
+        document.getElementById('step1').className = 'step complete';
+        await checkStatus();
       } catch (err) {
         alert('Device registration failed: ' + err.message);
         document.getElementById('register-device-btn').disabled = false;
@@ -339,28 +374,35 @@
 
     async function handleLogin() {
       try {
-        // 🔐 STEP 1: Explicit TPM re-verification
-        const res = await fetch("/api/device/reverify", {
-          method: "POST",
-          credentials: "include"
+        const res = await fetch(`${AGENT_URL}/agent/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({}),
         });
 
         if (!res.ok) {
-          alert("❌ Device verification failed. Please re-register your TPM.");
+          const err = await res.json();
+          alert('❌ Login start failed: ' + (err.message || err.error));
           return;
         }
 
-        // 🚀 STEP 2: Start Keycloak login (fast, safe)
-        window.location.href = "/login";
-
+        const data = await res.json();
+        const authorizeUrl = data.authorize_url || data.authorizeUrl;
+        if (authorizeUrl) {
+          window.location.href = authorizeUrl;
+        } else {
+          alert('❌ No authorization URL received from agent');
+        }
       } catch (err) {
-        console.error("Login pre-check failed:", err);
-        alert("❌ Unable to verify device. Try again.");
+        console.error('Login initiation failed:', err);
+        alert('❌ Unable to contact TPM Agent: ' + err.message);
       }
     }
 
-
-    function handleLogout() {
+    async function handleLogout() {
+      try {
+        await fetch(`${AGENT_URL}/agent/logout`, { method: 'POST' });
+      } catch (e) {}
       window.location.href = '/logout';
     }
 

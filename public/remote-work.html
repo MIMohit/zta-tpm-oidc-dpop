@@ -163,122 +163,68 @@ Awaiting operator command...
 </div>
 
 <script>
-async function getValidAccessToken() {
-  try {
-    const res = await fetch("/api/session/tokens", { credentials: "include" });
-    if (!res.ok) return null;
-    const { access_token, dpop, device_id } = await res.json();
-    sessionStorage.setItem("access_token", access_token);
-    sessionStorage.setItem("dpop", dpop);
-    localStorage.setItem("device_id", device_id);
-    return access_token;
-  } catch {
-    return null;
-  }
-}
-
-async function getPublicIP() {
-  const res = await fetch("https://api.ipify.org?format=json");
-  const { ip } = await res.json();
-  return ip;
-}
+const AGENT_URL = "http://127.0.0.1:7000";
 
 async function requestAudit() {
   const out = document.getElementById("output");
-  const accessToken = await getValidAccessToken();
-  if (!accessToken) {
-    out.textContent = "⚠ Session active, retry after MFA.";
-    return;
-  }
+  out.textContent = "Connecting to client TPM agent...\nRequesting protected audit report...";
 
-  const dpop = sessionStorage.getItem("dpop");
-  const deviceId = localStorage.getItem("device_id");
-  const publicIP = await getPublicIP();
+  try {
+    const res = await fetch(`${AGENT_URL}/agent/resource/company.audit`);
+    const data = await res.json();
 
-  // 🔥 Invalidate MFA if network changed
-  const lastIP = sessionStorage.getItem("last_public_ip");
-  if (lastIP && lastIP !== publicIP) {
-    sessionStorage.removeItem("mfa_passed");
-  }
-
-  // Save current IP
-  sessionStorage.setItem("last_public_ip", publicIP);
-
-  const mfaPassed = sessionStorage.getItem("mfa_passed") === "true";
-
-
-  const res = await fetch("http://localhost:4000/zta/access/audit", {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      DPoP: dpop,
-      "X-DEVICE-ID": deviceId,
-      "X-MFA-PASSED": mfaPassed ? "true" : "false",
-      "X-PUBLIC-IP": publicIP
+    if (data.step_up || data.stepUp) {
+      out.textContent = "⚠ MULTI-FACTOR AUTH REQUIRED (Step-Up)\nResource sensitivity: HIGH\nCurrent authentication: acr=pwd\nElevated credentials required.";
+      document.getElementById("mfa-box").style.display = "block";
+      return;
     }
-  });
 
-  if (res.status === 401) {
-    out.textContent = "⚠ MFA required. Please verify your identity.";
-    document.getElementById("mfa-box").style.display = "block";
-    return;
+    if (res.status === 403) {
+      out.textContent = `❌ Access denied: ${data.reason || data.error || "Policy Denied"}`;
+      document.getElementById("mfa-box").style.display = "none";
+      return;
+    }
+
+    if (!res.ok) {
+      out.textContent = `❌ Request failed (${res.status}): ${data.message || data.error || res.statusText}`;
+      return;
+    }
+
+    document.getElementById("mfa-box").style.display = "none";
+    out.textContent = JSON.stringify(data, null, 2);
+  } catch (err) {
+    out.textContent = `❌ Agent communication error: ${err.message}`;
   }
-
-  if (res.status === 403) {
-    out.textContent = "❌ Access denied";
-    return;
-  }
-
-  out.textContent = JSON.stringify(await res.json(), null, 2);
 }
-
-const { startAuthentication } = SimpleWebAuthnBrowser;
 
 async function submitMFA() {
   const out = document.getElementById("output");
   const verifyBtn = document.getElementById("mfa-verify-btn");
   verifyBtn.disabled = true;
-  verifyBtn.textContent = "WAITING FOR KEY...";
+  verifyBtn.textContent = "INITIATING STEP-UP AUTHENTICATION...";
 
   try {
-    const optionsResp = await fetch("/mfa/auth/options", { credentials: "include" });
-    if (!optionsResp.ok) {
-      const errData = await optionsResp.json();
-      throw new Error(errData.error || "Failed to retrieve authentication options.");
-    }
-    const options = await optionsResp.json();
-
-    let assertResp;
-    try {
-      assertResp = await startAuthentication({ optionsJSON: options });
-    } catch (err) {
-      throw new Error("WebAuthn ceremony failed: " + err.message);
-    }
-
-    const verifyResp = await fetch("/mfa/verify", {
+    const res = await fetch(`${AGENT_URL}/agent/login`, {
       method: "POST",
-      credentials: "include",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(assertResp)
+      body: JSON.stringify({ acr_values: "mfa" }),
     });
 
-    if (!verifyResp.ok) {
-      const errData = await verifyResp.json();
-      throw new Error(errData.error || "Verification failed.");
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.message || err.error || "Step-up login request failed");
     }
 
-    const verificationResult = await verifyResp.json();
-    if (verificationResult.success) {
-      sessionStorage.setItem("mfa_passed", "true");
-      document.getElementById("mfa-box").style.display = "none";
-      out.textContent = "✅ MFA verified. Retrying…";
-      setTimeout(requestAudit, 200);
-    } else {
-      throw new Error("MFA was not verified by the server.");
+    const data = await res.json();
+    const authorizeUrl = data.authorize_url || data.authorizeUrl;
+    if (!authorizeUrl) {
+      throw new Error("No authorization URL returned by agent");
     }
 
+    // Redirect to IdP authorization endpoint which evaluates acr_values=mfa and routes to stepup.html
+    window.location.href = authorizeUrl;
   } catch (err) {
-    alert("MFA verification failed: " + err.message);
-  } finally {
+    alert("MFA step-up initiation failed: " + err.message);
     verifyBtn.disabled = false;
     verifyBtn.textContent = "VERIFY IDENTITY (SECURITY KEY)";
   }

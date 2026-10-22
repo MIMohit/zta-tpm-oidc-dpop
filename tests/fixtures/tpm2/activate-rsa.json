@@ -1,0 +1,9 @@
+{
+  "ekType": "rsa",
+  "akNameHex": "000b5d43235dc0f7add22f6bebf9a97c70585a117fcef2e9cf3549149883ccf2990a",
+  "secretHex": "04d2b2b28bd3fe12ac6d90b024d2458b9f53a061aac8a7872770d890e2328092",
+  "credentialBlob": "ACAnrYlHXb2MGa6O1TtJ5tIcM7c4Gh0ZZ8vgTiCy0gwnxpMgUVqdvSz1c3y6cO6zHXtN7AZLOfNEfW8W4TXLq5xMSWQ",
+  "encSecret": "QclF4h5tvW8HtRIX9NOmJTp2jPy5Ea5vWjo3QDAKB1xkC-QFWQCbxuPHXhXJ0LhYYkz6Ya4Qt3w7ojnnGd7lPwCZChyNZ7V3RDVso2_3fnB-oJnsTDWnkSQAsxlA_kv4339Xddn_P-gjTOwNTeFofXmBjyszD1TGbaKAlEJGhxfK3xzo8w0I6GG2LdMA7AReR3ByisQQE5pYQ4c_qbKUVaXVR2RFvSb8sld-g1bMP4k-4H2PXauV9QSvvGuL0zvmOrGK7dmYnZVNBK-m8sJPsEtnXbntAP8EMGkeXD9Y8VYgAayOJQqapL_WkwROFmHhL9ml5pHjF_KKhnL2alwBCA",
+  "activatedSecretHex": "04d2b2b28bd3fe12ac6d90b024d2458b9f53a061aac8a7872770d890e2328092",
+  "verified": true
+}

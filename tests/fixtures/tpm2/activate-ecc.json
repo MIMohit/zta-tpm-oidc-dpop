@@ -1,0 +1,9 @@
+{
+  "ekType": "ecc",
+  "akNameHex": "000b5d43235dc0f7add22f6bebf9a97c70585a117fcef2e9cf3549149883ccf2990a",
+  "secretHex": "807601c28343bc190856ff774e5826c2966fce1fffb2f8abf51ccea42b57ec50",
+  "credentialBlob": "ACCzHFGwDzK7Nio0LUZUxTiwwc5KoHmV0L4i4FDKKwfHe8ItQEzODgBGdyZI5uAuqyLxW6YJQUZcLdT43kKyp_uvxqg",
+  "encSecret": "ACATjfghDuOq1w3xpD1i3DPSYLJ-kNOBDJ9WzSWTsFolFQAgenaFFZTVarq7vctlgrDPTBoy2ErAJHBnmD8tehraR2s",
+  "activatedSecretHex": "807601c28343bc190856ff774e5826c2966fce1fffb2f8abf51ccea42b57ec50",
+  "verified": true
+}

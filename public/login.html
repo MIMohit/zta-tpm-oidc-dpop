@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login | Zero-Trust Portal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+  <style>
+    .login-container {
+      width: 100%;
+      max-width: 440px;
+    }
+    .form-group {
+      margin-bottom: 1.25rem;
+      text-align: left;
+    }
+    .form-group label {
+      display: block;
+      color: #94a3b8;
+      font-size: 0.875rem;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+    }
+    .form-input {
+      width: 100%;
+      background: #0f172a;
+      color: #f1f5f9;
+      border: 1px solid #334155;
+      border-radius: 0.5rem;
+      padding: 0.75rem 1rem;
+      font-size: 1rem;
+      font-family: 'Inter', sans-serif;
+      box-sizing: border-box;
+      transition: border-color 0.2s;
+    }
+    .form-input:focus {
+      outline: none;
+      border-color: #06b6d4;
+      box-shadow: 0 0 0 2px rgba(6, 182, 212, 0.2);
+    }
+    .btn-full {
+      width: 100%;
+      padding: 0.85rem;
+      font-size: 1rem;
+      margin-top: 0.5rem;
+    }
+    .icon-header {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+    .card-title {
+      font-size: 1.5rem;
+      color: #f8fafc;
+      margin-bottom: 0.5rem;
+      font-weight: 700;
+    }
+    .card-subtitle {
+      color: #94a3b8;
+      font-size: 0.9rem;
+      margin-bottom: 1.75rem;
+      line-height: 1.4;
+    }
+  </style>
+</head>
+<body>
+
+<div class="card login-container">
+  <div class="icon-header">🔐</div>
+  <h1 class="card-title">Zero-Trust Authentication</h1>
+  <p class="card-subtitle">Enter your enterprise directory credentials. Access is bound to your hardware TPM attestation.</p>
+
+  <form id="login-form" onsubmit="handleLogin(event)">
+    <div class="form-group">
+      <label for="username">Username</label>
+      <input type="text" id="username" name="username" class="form-input" required autocomplete="username" placeholder="e.g. alice">
+    </div>
+
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" class="form-input" required autocomplete="current-password" placeholder="••••••••">
+    </div>
+
+    <button type="submit" id="submit-btn" class="btn-full">Sign In</button>
+  </form>
+
+  <div id="status" class="status-text"></div>
+</div>
+
+<script>
+async function handleLogin(e) {
+  e.preventDefault();
+  const username = document.getElementById("username").value.trim();
+  const password = document.getElementById("password").value;
+  const statusDiv = document.getElementById("status");
+  const submitBtn = document.getElementById("submit-btn");
+
+  statusDiv.className = "status-text";
+  statusDiv.textContent = "Authenticating with Zero-Trust IdP...";
+  submitBtn.disabled = true;
+
+  try {
+    const res = await fetch("/oauth/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+      },
+      body: JSON.stringify({ username, password }),
+      credentials: "include",
+    });
+
+    const data = await res.json().catch(() => ({}));
+
+    if (res.ok) {
+      if (data.redirect) {
+        statusDiv.className = "status-text success";
+        statusDiv.textContent = "✅ Authentication passed! Redirecting...";
+        window.location.href = data.redirect;
+      } else {
+        window.location.href = "/post-login";
+      }
+    } else {
+      statusDiv.className = "status-text error";
+      statusDiv.textContent = data.message || data.error_description || data.error || "Authentication failed";
+      submitBtn.disabled = false;
+    }
+  } catch (err) {
+    statusDiv.className = "status-text error";
+    statusDiv.textContent = "Network error: " + err.message;
+    submitBtn.disabled = false;
+  }
+}
+</script>
+
+</body>
+</html>

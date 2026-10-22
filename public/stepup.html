@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Step-Up Authentication | Zero-Trust Portal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+  <style>
+    .stepup-container {
+      width: 100%;
+      max-width: 480px;
+    }
+    .icon-header {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+    .card-title {
+      font-size: 1.5rem;
+      color: #f8fafc;
+      margin-bottom: 0.5rem;
+      font-weight: 700;
+    }
+    .card-subtitle {
+      color: #94a3b8;
+      font-size: 0.9rem;
+      margin-bottom: 2rem;
+      line-height: 1.5;
+    }
+    .btn-full {
+      width: 100%;
+      padding: 0.85rem;
+      font-size: 1rem;
+      margin-top: 0.5rem;
+    }
+    .risk-banner {
+      background: rgba(234, 179, 8, 0.1);
+      border: 1px solid rgba(234, 179, 8, 0.3);
+      color: #fbbf24;
+      border-radius: 0.5rem;
+      padding: 0.75rem;
+      font-size: 0.85rem;
+      margin-bottom: 1.5rem;
+    }
+  </style>
+</head>
+<body>
+
+<div class="card stepup-container">
+  <div class="icon-header">🛡️</div>
+  <h1 class="card-title">Step-Up Verification Required</h1>
+  
+  <div class="risk-banner">
+    ⚠️ Elevated context risk score or privileged resource requested. User presence verification is enforced.
+  </div>
+
+  <p class="card-subtitle">
+    Please authenticate with your registered platform authenticator (TouchID, FaceID, or hardware security key) to elevate your authentication context to <code>acr=mfa</code>.
+  </p>
+
+  <button type="button" id="verify-btn" class="btn-full" onclick="performStepUp()">
+    Verify Security Key
+  </button>
+
+  <div id="status" class="status-text"></div>
+</div>
+
+<script src="https://unpkg.com/@simplewebauthn/browser/dist/bundle/index.umd.min.js"></script>
+<script>
+async function performStepUp() {
+  const statusDiv = document.getElementById("status");
+  const verifyBtn = document.getElementById("verify-btn");
+
+  statusDiv.className = "status-text";
+  statusDiv.textContent = "Requesting WebAuthn challenge...";
+  verifyBtn.disabled = true;
+
+  try {
+    const optRes = await fetch("/mfa/auth/options", { credentials: "include" });
+    if (!optRes.ok) {
+      const errData = await optRes.json().catch(() => ({}));
+      throw new Error(errData.message || "Failed to load authentication options");
+    }
+    const options = await optRes.json();
+
+    statusDiv.textContent = "Please touch your security key or use biometric sensor...";
+
+    let authResp;
+    try {
+      authResp = await SimpleWebAuthnBrowser.startAuthentication({ optionsJSON: options });
+    } catch (browserErr) {
+      throw new Error(`WebAuthn error: ${browserErr.message}`);
+    }
+
+    statusDiv.textContent = "Verifying biometric assertion with IdP...";
+
+    const verifyRes = await fetch("/mfa/verify", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(authResp),
+      credentials: "include",
+    });
+
+    const verifyData = await verifyRes.json().catch(() => ({}));
+
+    if (verifyRes.ok && (verifyData.success || verifyData.redirect)) {
+      statusDiv.className = "status-text success";
+      statusDiv.textContent = "✅ Step-up verification succeeded! Elevating session...";
+      setTimeout(() => {
+        if (verifyData.redirect) {
+          window.location.href = verifyData.redirect;
+        } else {
+          window.location.href = "/remote-work.html";
+        }
+      }, 800);
+    } else {
+      throw new Error(verifyData.error || verifyData.message || "Verification rejected by server");
+    }
+  } catch (err) {
+    statusDiv.className = "status-text error";
+    statusDiv.textContent = err.message;
+    verifyBtn.disabled = false;
+  }
+}
+</script>
+
+</body>
+</html>

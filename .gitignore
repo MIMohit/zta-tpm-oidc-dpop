@@ -4,12 +4,28 @@
 !.env.example
 firebase.json
 serviceAccountKey.json
+*.jwk
+
+# Data
+data/*
+!data/.gitkeep
 
 # TPM / Attestation artifacts
 attestation-data.json
+.tpm-sim/
+data/tpm-sim/
+data/ek-ca-dev/
 
 # Node
 node_modules/
 
 # Logs
 *.log
+
+# Experiment output
+results/
+
+# Testbed runtime state (swtpm state, CA private keys, VM images)
+testbed/state/
+testbed/ca/
+testbed/images/
