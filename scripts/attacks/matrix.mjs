@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 /**
  * @file scripts/attacks/matrix.mjs
- * Full E1 matrix evaluator (31 configurations × 24 attacks).
+ * Full E1 matrix evaluator (33 configurations × 25 attacks).
  * Generates matrix.csv, matrix.md, prediction-diff.md, necessity.json, and manifest.json.
  *
  * Usage:
- *   node scripts/attacks/matrix.mjs [--reps 1|10] [--out /tmp/e1-dev] [--mode inproc|live]
+ *   node scripts/attacks/matrix.mjs [--reps 1|10] [--out /tmp/e1-dev] [--mode inproc|live] [--tpm sim|swtpm] [--orchestrate] [--idp keycloak|local]
  */
 
 import fs from "node:fs";
@@ -15,8 +15,10 @@ import crypto from "node:crypto";
 
 import { ATTACKS } from "./index.mjs";
 import { createContext } from "./lib/context.mjs";
+import { killAllSwtpm } from "./lib/swtpm-fleet.mjs";
 import {
   normaliseResult,
+  infrastructureFailure,
   appendJsonlRow,
   buildMatrix,
   formatMatrixCsv,
@@ -24,14 +26,30 @@ import {
   formatPredictionDiff,
   analyzeNecessity,
 } from "./lib/result.mjs";
-import { expectedOutcome } from "./lib/expected.mjs";
+import { expectedOutcome, expectedVariantOutcome } from "./lib/expected.mjs";
 import { configManifest, writeJson } from "./lib/manifest.mjs";
 import { allConfigs, parseConfigLabel, MECHANISMS, runManifest, writeRunManifest, configureAblation, state } from "../../lib/ablation.js";
+
+/** Rejects after ms, so one hung trial (e.g. a stuck TPM) cannot stall the whole run. */
+function withTimeout(promise, ms, what) {
+  let timer;
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => {
+      timer = setTimeout(() => reject(new Error(`${what} timed out after ${ms} ms`)), ms);
+    }),
+  ]).finally(() => clearTimeout(timer));
+}
+
+const TRIAL_TIMEOUT_MS = Number(process.env.ZTA_TRIAL_TIMEOUT_MS || 120000);
 
 const args = process.argv.slice(2);
 let repsArg = 10;
 let outArg = null;
 let modeArg = "inproc";
+let tpmArg = "sim";
+let orchestrateArg = false;
+let idpArg = "keycloak";
 let testbedArg = null;
 let seedArg = null;
 
@@ -49,6 +67,14 @@ for (let i = 0; i < args.length; i++) {
     modeArg = args[++i];
   } else if (arg.startsWith("--mode=")) {
     modeArg = arg.split("=")[1];
+  } else if (arg === "--orchestrate") {
+    orchestrateArg = true;
+  } else if (arg === "--idp" && args[i + 1]) {
+    idpArg = args[++i];
+  } else if (arg === "--tpm" && args[i + 1]) {
+    tpmArg = args[++i];
+  } else if (arg.startsWith("--tpm=")) {
+    tpmArg = arg.split("=")[1];
   } else if (arg === "--testbed" && args[i + 1]) {
     testbedArg = args[++i];
   } else if (arg.startsWith("--testbed=")) {
@@ -72,16 +98,16 @@ async function main() {
   const necessityPath = path.join(outDir, "necessity.json");
   const manifestPath = path.join(outDir, "manifest.json");
 
-  const configs = allConfigs(); // 31 configurations
+  const configs = allConfigs(); // 33 configurations
   const attacks = [...ATTACKS]; // 24 attacks
 
   console.log("================================================================================");
   console.log(`📊 ZTA ATTACK MATRIX GENERATOR (E1) [${runId}]`);
-  console.log(`Configurations: ${configs.length} | Attacks: ${attacks.length} | Repetitions: ${repsArg} | Mode: ${modeArg}`);
+  console.log(`Configurations: ${configs.length} | Attacks: ${attacks.length} | Repetitions: ${repsArg} | Mode: ${modeArg} | TPM: ${tpmArg}`);
   console.log(`Output Directory: ${outDir}`);
   console.log("================================================================================\n");
 
-  const manifest = runManifest({ runId, mode: modeArg });
+  const manifest = runManifest({ runId, mode: modeArg, tpm: tpmArg, ...(modeArg === "live" ? { idp: idpArg, orchestrated: orchestrateArg } : {}) });
   const manifestsDir = path.join(outDir, "manifests");
   fs.mkdirSync(manifestsDir, { recursive: true });
   const configManifests = new Map();
@@ -110,7 +136,7 @@ async function main() {
         hash: crypto.createHash("sha256").update(JSON.stringify(parsedCfg.off)).digest("hex").slice(0, 12),
       };
     }
-    const cfgManifest = configManifest({ runId, mode: modeArg, config: cfgLabel, ablation: ablationInfo });
+    const cfgManifest = configManifest({ runId, mode: modeArg, tpm: tpmArg, config: cfgLabel, ablation: ablationInfo });
     writeJson(path.join(manifestsDir, `${cfgLabel}.json`), cfgManifest);
     configManifests.set(cfgLabel, cfgManifest);
 
@@ -121,12 +147,13 @@ async function main() {
 
         for (const variant of variants) {
           // Check applicability
-          const appCheck = typeof mod.applicable === "function" ? mod.applicable(parsedCfg, modeArg) : true;
+          const appCheck = typeof mod.applicable === "function" ? mod.applicable(parsedCfg, modeArg, { tpm: tpmArg, variant }) : true;
           if (appCheck !== true) {
             const reason = typeof appCheck === "string" ? appCheck : "not applicable";
             const row = normaliseResult({
               runId,
               mode: modeArg,
+              tpm: tpmArg,
               config: cfgLabel,
               baseline: cfgManifest.baseline,
               mechanismsOff: cfgManifest.off,
@@ -142,7 +169,7 @@ async function main() {
               goal: attack.goal,
               adversary: attack.adversary,
               expected: attack.expected,
-              predicted: expectedOutcome(attack.id, cfgLabel),
+              predicted: "n/a",
               outcome: "n/a",
               stoppedAt: { service: null, status: null, reason },
               durationMs: 0,
@@ -158,6 +185,7 @@ async function main() {
             const row = normaliseResult({
               runId,
               mode: modeArg,
+              tpm: tpmArg,
               config: cfgLabel,
               baseline: cfgManifest.baseline,
               mechanismsOff: cfgManifest.off,
@@ -173,7 +201,7 @@ async function main() {
               goal: attack.goal,
               adversary: attack.adversary,
               expected: attack.expected,
-              predicted: expectedOutcome(attack.id, cfgLabel),
+              predicted: variant ? expectedVariantOutcome(attack.id, variant, cfgLabel) : expectedOutcome(attack.id, cfgLabel),
               outcome: "n/a",
               stoppedAt: { service: null, status: null, reason: "live mode not implemented" },
               durationMs: 0,
@@ -189,24 +217,44 @@ async function main() {
           let ctx = null;
           let outcome = "error";
           let stoppedAt = null;
+          let evidence = null;
+          let stackInfo = null;
 
           try {
-            ctx = await createContext({ mode: modeArg, config: cfgLabel, testbedPath: testbedArg });
-            const res = await (modeArg === "live" ? mod.runLive(ctx, { variant }) : mod.run(ctx, { variant }));
+            const res = await withTimeout(
+              (async () => {
+                ctx = await createContext({ mode: modeArg, tpm: tpmArg, config: cfgLabel, testbedPath: testbedArg, orchestrate: orchestrateArg, idp: idpArg });
+                return await (modeArg === "live" ? mod.runLive(ctx, { variant }) : mod.run(ctx, { variant }));
+              })(),
+              TRIAL_TIMEOUT_MS,
+              "Trial"
+            );
             outcome = res.outcome;
             stoppedAt = res.stoppedAt;
+            evidence = res.evidence ?? null;
+            stackInfo = ctx?.stackInfo ?? null;
+            const infra = infrastructureFailure(res);
+            if (infra) {
+              totalErrors++;
+              outcome = "error";
+              stoppedAt = { service: res.stoppedAt?.service ?? null, status: null, reason: `infrastructure failure: ${infra}` };
+            }
           } catch (err) {
             totalErrors++;
             outcome = "error";
             stoppedAt = { service: null, status: null, reason: err.message };
+            if (/timed out/.test(err.message)) {
+              const killed = killAllSwtpm();
+              if (killed) console.error(`⚠️ Killed ${killed} swtpm process(es) left by the timed-out trial`);
+            }
           } finally {
             if (ctx && typeof ctx.cleanup === "function") {
-              await ctx.cleanup().catch(() => {});
+              await withTimeout(ctx.cleanup(), 30000, "Cleanup").catch((err) => console.error(`⚠️ ${err.message}`));
             }
           }
 
           const durationMs = Date.now() - startTs;
-          const predicted = expectedOutcome(attack.id, cfgLabel);
+          const predicted = variant ? expectedVariantOutcome(attack.id, variant, cfgLabel) : expectedOutcome(attack.id, cfgLabel);
           const liveAblation = ctx?.ablation ?? {
             label: cfgManifest.label,
             baseline: cfgManifest.baseline,
@@ -217,6 +265,7 @@ async function main() {
           const row = normaliseResult({
             runId,
             mode: modeArg,
+            tpm: tpmArg,
             config: cfgLabel,
             baseline: liveAblation.baseline,
             mechanismsOff: liveAblation.off,
@@ -230,6 +279,8 @@ async function main() {
             predicted,
             outcome,
             stoppedAt,
+            evidence,
+            stack: stackInfo,
             durationMs,
             codeHash: cfgManifest.code?.sha256 ?? null,
             manifestHash: cfgManifest.manifestHash,
@@ -271,6 +322,7 @@ async function main() {
     schema: "zta-run-manifest/1",
     runId,
     mode: modeArg,
+    tpm: tpmArg,
     startedAt: manifest.startedAt,
     completedAt: new Date().toISOString(),
     git: manifest.git,

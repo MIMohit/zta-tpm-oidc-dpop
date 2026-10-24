@@ -73,3 +73,35 @@ if command -v gpg >/dev/null 2>&1 && [ -f "${CACHE_DIR}/SHA256SUMS.gpg" ]; then
 fi
 
 log_info "Image cached at ${CACHE_DIR}/${IMAGE_FILENAME}"
+
+# Node.js for the fleet agents. The VMs run it from the read-only repo mount,
+# so they need no internet or apt. Official linux build of the host's version.
+NODE_VERSION="${NODE_VERSION:-$(node -v 2>/dev/null | sed 's/^v//')}"
+if [ -z "${NODE_VERSION}" ]; then
+  log_err "NODE_VERSION is not set and node is not on PATH."
+  exit 1
+fi
+if [ "${UBUNTU_ARCH}" = "amd64" ]; then NODE_ARCH="x64"; else NODE_ARCH="arm64"; fi
+NODE_TARBALL="node-v${NODE_VERSION}-linux-${NODE_ARCH}.tar.xz"
+NODE_BASE_URL="https://nodejs.org/dist/v${NODE_VERSION}"
+
+if [ ! -x "${CACHE_DIR}/node/bin/node" ] || [ "$("${CACHE_DIR}/node/bin/node" -v 2>/dev/null)" != "v${NODE_VERSION}" ]; then
+  log_info "Downloading ${NODE_TARBALL}..."
+  curl -fSL "${NODE_BASE_URL}/${NODE_TARBALL}" -o "${CACHE_DIR}/${NODE_TARBALL}"
+  curl -fsSL "${NODE_BASE_URL}/SHASUMS256.txt" -o "${CACHE_DIR}/NODE_SHASUMS256.txt"
+  (
+    cd "${CACHE_DIR}"
+    EXPECTED_SUM="$(grep " ${NODE_TARBALL}$" NODE_SHASUMS256.txt | awk '{print $1}')"
+    ACTUAL_SUM="$(sha256sum "${NODE_TARBALL}" | awk '{print $1}')"
+    if [ -z "${EXPECTED_SUM}" ] || [ "${EXPECTED_SUM}" != "${ACTUAL_SUM}" ]; then
+      log_err "Node checksum mismatch for ${NODE_TARBALL}"
+      exit 1
+    fi
+    log_info "Node checksum OK."
+  )
+  rm -rf "${CACHE_DIR}/node"
+  mkdir -p "${CACHE_DIR}/node"
+  tar -xJf "${CACHE_DIR}/${NODE_TARBALL}" -C "${CACHE_DIR}/node" --strip-components=1
+  rm -f "${CACHE_DIR}/${NODE_TARBALL}"
+fi
+log_info "Node $("${CACHE_DIR}/node/bin/node" -v) cached at ${CACHE_DIR}/node"

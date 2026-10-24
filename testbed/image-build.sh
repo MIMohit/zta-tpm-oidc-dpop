@@ -71,6 +71,10 @@ EOF
 # Generate user-data
 cat << EOF > "${CI_DIR}/user-data"
 #cloud-config
+# Golden boot measurements must not drift: no package changes at first boot
+package_update: false
+package_upgrade: false
+# The tss group already exists in the Ubuntu cloud image
 users:
   - name: zta
     gecos: ZTA Fleet Agent
@@ -112,8 +116,9 @@ write_files:
     content: |
       [Unit]
       Description=ZTA Real TPM Agent
-      After=network.target zta-eventlog.service
-      Wants=zta-eventlog.service
+      After=network-online.target zta-eventlog.service
+      Wants=network-online.target zta-eventlog.service
+      RequiresMountsFor=/mnt/repo /mnt/devstate
 
       [Service]
       Type=simple
@@ -123,20 +128,38 @@ write_files:
       Environment=TPM_DEVICE=linux
       Environment=TPM_EVENTLOG_PATH=/run/zta/binary_bios_measurements
       Environment=PORT=7101
+      Environment=HOST=0.0.0.0
+      Environment=TPM_STATE_DIR=/var/lib/zta-agent/tpm
+      Environment=ZTA_DATA_DIR=/var/lib/zta-agent/data
+      # Per-device settings written by vm.sh on the host (AGENT_ID, server URLs)
+      EnvironmentFile=/mnt/devstate/agent.env
       WorkingDirectory=/mnt/repo
-      ExecStart=/usr/bin/env node tpm-agent.js
+      # Node comes from the host's checksum-verified download (image-fetch.sh)
+      ExecStart=/mnt/repo/testbed/cache/node/bin/node tpm-agent.js
       Restart=always
+      RestartSec=2
 
       [Install]
       WantedBy=multi-user.target
 
+  - path: /etc/udev/rules.d/60-zta-tpm.rules
+    permissions: '0644'
+    content: |
+      KERNEL=="tpmrm[0-9]*", GROUP="tss", MODE="0660"
+
 mounts:
   - [ repo, /mnt/repo, 9p, "trans=virtio,version=9p2000.L,ro", "0", "0" ]
+  - [ devstate, /mnt/devstate, 9p, "trans=virtio,version=9p2000.L,ro", "0", "0" ]
 
 runcmd:
-  - mkdir -p /run/zta /mnt/repo
+  - mkdir -p /run/zta /mnt/repo /mnt/devstate
+  - install -d -o zta -g tss -m 0750 /var/lib/zta-agent /var/lib/zta-agent/tpm /var/lib/zta-agent/data
+  - udevadm control --reload && udevadm trigger --subsystem-match=tpmrm
+  - systemctl disable --now apt-daily.timer apt-daily-upgrade.timer unattended-upgrades.service || true
+  # The official Node build needs libatomic; user space only, so PCR0-7 are unaffected
+  - apt-get update -y && apt-get install -y --no-install-recommends libatomic1
   - systemctl daemon-reload
-  - systemctl enable zta-eventlog.service
+  - systemctl enable --now zta-eventlog.service zta-agent.service
 EOF
 
 # For tampered image: modify measured kernel binary loaded by bootloader (per X5)
@@ -144,8 +167,13 @@ if [ "${TARGET}" = "tampered" ]; then
   cat << 'EOF' >> "${CI_DIR}/user-data"
   # Finding X5: Kernel binary is measured into PCR4 via EFI stub LoadImage.
   # Alter default kernel binary to trigger genuine PCR4 deviation.
-  - apt-get update -y && apt-get install -y linux-image-generic-hwe-24.04 || true
-  - update-grub || true
+  # No "|| true": an untampered dev-tampered would silently invalidate A06
+  - apt-get update -y && apt-get install -y --no-install-recommends linux-image-generic-hwe-24.04
+  - update-grub
+# The new kernel is measured only once it boots
+power_state:
+  mode: reboot
+  condition: true
 EOF
 fi
 

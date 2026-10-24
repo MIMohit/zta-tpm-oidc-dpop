@@ -65,6 +65,12 @@ export const RULES = {
     race_registration: { any: [["M25"]] },
   },
   A24: { "*": { any: [["M26"]] } },
+  // A new login from far away is stopped only at login (M27): the attacker's own login enters the
+  // history the per-request score uses. A session moved after login is seen only by the PDP (M28).
+  A25: {
+    new_login: { any: [["M27"]] },
+    moved_session: { any: [["M28"]] },
+  },
 };
 
 function ruleFor(attackId, variant) {

@@ -29,3 +29,14 @@ results/
 testbed/state/
 testbed/ca/
 testbed/images/
+testbed/cache/
+# Live stack targets (tokens)
+testbed/attack-targets.json
+
+# Figure environment
+.venv-figures/
+paper-figures/out/
+
+# Python bytecode
+__pycache__/
+*.pyc

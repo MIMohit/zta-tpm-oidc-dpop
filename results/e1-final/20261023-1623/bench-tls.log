@@ -1,0 +1,783 @@
+== 2026-10-23T20:59:01+06:00 CPUs: stack 0,2,4,6, clients 8,10, TPM micro 10
+== 2026-10-23T20:59:01+06:00 TLS on: CA /home/mimohit/zta/testbed/state/tls/ca.pem
+== 2026-10-23T20:59:01+06:00 stopping the idle fleet VMs (background noise)
+[testbed] Stopping fleet: dev-good dev-tampered dev-rogue dev-foreign...
+[testbed] Stopping VM for dev-good...
+[testbed] VM dev-good stopped.
+[testbed] Stopping VM for dev-tampered...
+[testbed] VM dev-tampered stopped.
+[testbed] Stopping VM for dev-rogue...
+[testbed] VM dev-rogue stopped.
+[testbed] Stopping VM for dev-foreign...
+[testbed] VM dev-foreign stopped.
+[testbed] Fleet is stopped.
+power profile unchanged (needs an active session)
+== 2026-10-23T20:59:01+06:00 E3 end-to-end costs (Full, B0-B3)
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+full   enrol 34.6 ms (TPM 16.6) | re-attestation 11.2 ms (TPM 2.0) | login 145.5 ms (TPM 3.6) | request 10.6 ms (TPM 1.6) | login + step-up 159.6 ms (TPM 3.8)  [46 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+B0     enrol 29.9 ms (TPM 15.9) | re-attestation 10.5 ms (TPM 1.9) | login 130.7 ms (TPM 3.5) | request 10.4 ms (TPM 1.5) | login + step-up 139.9 ms (TPM 3.5)  [41 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+B1     enrol 29.7 ms (TPM 15.8) | re-attestation 10.5 ms (TPM 1.9) | login 127.3 ms (TPM 3.5) | request 10.4 ms (TPM 1.5) | login + step-up 134.8 ms (TPM 3.5)  [40 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+B2     enrol 33.2 ms (TPM 15.8) | re-attestation 11.0 ms (TPM 1.9) | login 132.0 ms (TPM 3.5) | request 10.3 ms (TPM 1.5) | login + step-up 139.7 ms (TPM 3.5)  [41 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+B3     enrol 33.2 ms (TPM 15.6) | re-attestation 10.9 ms (TPM 1.9) | login 131.5 ms (TPM 3.5) | request 10.4 ms (TPM 1.5) | login + step-up 139.0 ms (TPM 3.4)  [41 s]
+Wrote /home/mimohit/zta/results/e1-final/20261023-1623/bench-tls/e3-costs.json
+== 2026-10-23T21:02:33+06:00 E3 end-to-end costs on the hardware fTPM (Full)
+[RealTpm] SRK handle: 0x81000101
+[RealTpm] SRK handle: 0x81000101
+[RealTpm] SRK handle: 0x81000101
+[RealTpm] SRK handle: 0x81000101
+[RealTpm] SRK handle: 0x81000101
+full   enrol 3204.7 ms (TPM 3021.5) | re-attestation 344.6 ms (TPM 328.2) | login 671.2 ms (TPM 492.4) | request 177.3 ms (TPM 164.7) | login + step-up 639.9 ms (TPM 493.2)  [173 s]
+Wrote /home/mimohit/zta/results/e1-final/20261023-1623/bench-tls/e3-hw-costs.json
+== 2026-10-23T21:05:26+06:00 E5 revocation latency
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+full trial 1/100: Delta 66.2 ms (34 polls)
+full trial 2/100: Delta 12.3 ms (43 polls)
+full trial 3/100: Delta 25.0 ms (26 polls)
+full trial 4/100: Delta 25.3 ms (22 polls)
+full trial 5/100: Delta 12.2 ms (30 polls)
+full trial 6/100: Delta 22.8 ms (48 polls)
+full trial 7/100: Delta 19.7 ms (20 polls)
+full trial 8/100: Delta 14.3 ms (28 polls)
+full trial 9/100: Delta 11.7 ms (45 polls)
+full trial 10/100: Delta 10.3 ms (27 polls)
+full trial 11/100: Delta 15.7 ms (22 polls)
+full trial 12/100: Delta 19.5 ms (15 polls)
+full trial 13/100: Delta 25.7 ms (36 polls)
+full trial 14/100: Delta 14.3 ms (47 polls)
+full trial 15/100: Delta 10.3 ms (30 polls)
+full trial 16/100: Delta 10.3 ms (15 polls)
+full trial 17/100: Delta 15.8 ms (21 polls)
+full trial 18/100: Delta 10.6 ms (20 polls)
+full trial 19/100: Delta 23.2 ms (47 polls)
+full trial 20/100: Delta 29.3 ms (16 polls)
+full trial 21/100: Delta 19.0 ms (26 polls)
+full trial 22/100: Delta 25.8 ms (39 polls)
+full trial 23/100: Delta 23.1 ms (40 polls)
+full trial 24/100: Delta 8.7 ms (33 polls)
+full trial 25/100: Delta 9.8 ms (28 polls)
+full trial 26/100: Delta 23.9 ms (42 polls)
+full trial 27/100: Delta 24.9 ms (14 polls)
+full trial 28/100: Delta 12.6 ms (23 polls)
+full trial 29/100: Delta 12.9 ms (20 polls)
+full trial 30/100: Delta 12.3 ms (21 polls)
+full trial 31/100: Delta 17.1 ms (17 polls)
+full trial 32/100: Delta 15.4 ms (19 polls)
+full trial 33/100: Delta 22.1 ms (42 polls)
+full trial 34/100: Delta 22.3 ms (43 polls)
+full trial 35/100: Delta 9.4 ms (50 polls)
+full trial 36/100: Delta 25.0 ms (18 polls)
+full trial 37/100: Delta 28.1 ms (21 polls)
+full trial 38/100: Delta 10.1 ms (39 polls)
+full trial 39/100: Delta 23.8 ms (35 polls)
+full trial 40/100: Delta 19.9 ms (49 polls)
+full trial 41/100: Delta 14.1 ms (14 polls)
+full trial 42/100: Delta 27.0 ms (38 polls)
+full trial 43/100: Delta 13.1 ms (38 polls)
+full trial 44/100: Delta 26.1 ms (51 polls)
+full trial 45/100: Delta 15.0 ms (41 polls)
+full trial 46/100: Delta 18.6 ms (17 polls)
+full trial 47/100: Delta 19.9 ms (20 polls)
+full trial 48/100: Delta 8.9 ms (42 polls)
+full trial 49/100: Delta 22.0 ms (28 polls)
+full trial 50/100: Delta 20.0 ms (47 polls)
+full trial 51/100: Delta 24.8 ms (30 polls)
+full trial 52/100: Delta 18.9 ms (23 polls)
+full trial 53/100: Delta 21.4 ms (50 polls)
+full trial 54/100: Delta 26.5 ms (45 polls)
+full trial 55/100: Delta 15.2 ms (46 polls)
+full trial 56/100: Delta 12.2 ms (12 polls)
+full trial 57/100: Delta 25.8 ms (30 polls)
+full trial 58/100: Delta 8.6 ms (13 polls)
+full trial 59/100: Delta 26.8 ms (25 polls)
+full trial 60/100: Delta 10.4 ms (46 polls)
+full trial 61/100: Delta 23.2 ms (39 polls)
+full trial 62/100: Delta 15.4 ms (28 polls)
+full trial 63/100: Delta 26.9 ms (12 polls)
+full trial 64/100: Delta 13.4 ms (46 polls)
+full trial 65/100: Delta 10.1 ms (50 polls)
+full trial 66/100: Delta 10.2 ms (20 polls)
+full trial 67/100: Delta 17.9 ms (20 polls)
+full trial 68/100: Delta 26.9 ms (14 polls)
+full trial 69/100: Delta 21.1 ms (26 polls)
+full trial 70/100: Delta 18.8 ms (17 polls)
+full trial 71/100: Delta 19.2 ms (33 polls)
+full trial 72/100: Delta 12.0 ms (49 polls)
+full trial 73/100: Delta 8.8 ms (40 polls)
+full trial 74/100: Delta 17.4 ms (37 polls)
+full trial 75/100: Delta 28.6 ms (18 polls)
+full trial 76/100: Delta 21.2 ms (31 polls)
+full trial 77/100: Delta 20.1 ms (17 polls)
+full trial 78/100: Delta 21.0 ms (50 polls)
+full trial 79/100: Delta 17.2 ms (34 polls)
+full trial 80/100: Delta 15.7 ms (15 polls)
+full trial 81/100: Delta 19.8 ms (34 polls)
+full trial 82/100: Delta 9.1 ms (13 polls)
+full trial 83/100: Delta 18.5 ms (13 polls)
+full trial 84/100: Delta 26.4 ms (28 polls)
+full trial 85/100: Delta 11.8 ms (42 polls)
+full trial 86/100: Delta 17.9 ms (28 polls)
+full trial 87/100: Delta 10.1 ms (43 polls)
+full trial 88/100: Delta 24.3 ms (31 polls)
+full trial 89/100: Delta 24.7 ms (15 polls)
+full trial 90/100: Delta 15.5 ms (33 polls)
+full trial 91/100: Delta 18.2 ms (39 polls)
+full trial 92/100: Delta 15.3 ms (30 polls)
+full trial 93/100: Delta 11.5 ms (20 polls)
+full trial 94/100: Delta 9.3 ms (44 polls)
+full trial 95/100: Delta 11.4 ms (26 polls)
+full trial 96/100: Delta 10.1 ms (15 polls)
+full trial 97/100: Delta 8.7 ms (37 polls)
+full trial 98/100: Delta 23.3 ms (28 polls)
+full trial 99/100: Delta 23.0 ms (34 polls)
+full trial 100/100: Delta 19.3 ms (20 polls)
+{
+ "full": {
+  "n": 100,
+  "median": 18.361187502741814,
+  "q1": 12.168191254138947,
+  "q3": 23.20814375579357,
+  "p95": 26.930035557597876,
+  "p99": 29.666191245019625,
+  "min": 8.604139000177383,
+  "max": 66.16543701291084,
+  "ci95": [
+   15.46060776244849,
+   19.811693504452705
+  ],
+  "notObserved": 0
+ }
+}
+== 2026-10-23T21:06:49+06:00 E4 PEP under load
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+E4: 64 clients, rates 50,100,200,400,600,800,1000 req/s, 60s (+10s warm-up) x 5 runs, stack on CPUs 0,2,4,6
+run 1 rate    50: achieved    50/s  p50 9.0 p95 11.1 p99 16.0 ms  errors 0.00% {"200":3000}
+run 1 rate   100: achieved   100/s  p50 9.0 p95 10.5 p99 13.7 ms  errors 0.00% {"200":6000}
+run 1 rate   200: achieved   200/s  p50 8.5 p95 11.1 p99 17.7 ms  errors 0.00% {"200":12000}
+run 1 rate   400: achieved   379/s  p50 6354.6 p95 14484.4 p99 15327.3 ms  errors 5.28% {"0":948,"200":22733,"401":319}
+run 1 rate   600: achieved   313/s  p50 14976.6 p95 26406.3 p99 28578.0 ms  errors 47.86% {"0":1202,"200":18772,"401":16026}
+run 1 rate   800: achieved   295/s  p50 24397.5 p95 31244.2 p99 31323.4 ms  errors 63.18% {"0":1754,"200":17676,"401":28570}
+run 1 rate  1000: achieved   197/s  p50 24370.7 p95 31284.6 p99 31359.4 ms  errors 80.34% {"0":1620,"200":11794,"401":46586}
+run 2 rate    50: achieved    50/s  p50 8.8 p95 10.9 p99 15.1 ms  errors 0.07% {"200":2998,"401":2}
+run 2 rate   100: achieved   100/s  p50 9.0 p95 11.3 p99 14.2 ms  errors 0.00% {"200":6000}
+run 2 rate   200: achieved   200/s  p50 9.1 p95 11.9 p99 20.8 ms  errors 0.00% {"200":12000}
+run 2 rate   400: achieved   378/s  p50 5915.3 p95 13671.6 p99 17700.5 ms  errors 5.43% {"0":1029,"200":22697,"401":274}
+run 2 rate   600: achieved   325/s  p50 14434.8 p95 25995.8 p99 28403.1 ms  errors 45.90% {"0":1230,"200":19476,"401":15294}
+run 2 rate   800: achieved   300/s  p50 25297.6 p95 31270.0 p99 31310.9 ms  errors 62.49% {"0":1668,"200":18007,"401":28325}
+run 2 rate  1000: achieved   192/s  p50 24000.9 p95 31271.8 p99 31348.3 ms  errors 80.77% {"0":1370,"200":11536,"401":47094}
+run 3 rate    50: achieved    50/s  p50 9.0 p95 10.2 p99 14.5 ms  errors 0.00% {"200":3000}
+run 3 rate   100: achieved   100/s  p50 8.8 p95 11.0 p99 13.3 ms  errors 0.00% {"200":6000}
+run 3 rate   200: achieved   200/s  p50 8.6 p95 11.5 p99 19.0 ms  errors 0.00% {"200":12000}
+run 3 rate   400: achieved   371/s  p50 5756.0 p95 13072.8 p99 13731.4 ms  errors 7.24% {"0":1153,"200":22263,"401":584}
+run 3 rate   600: achieved   408/s  p50 19480.5 p95 30658.4 p99 31291.3 ms  errors 31.99% {"0":1621,"200":24485,"401":9894}
+run 3 rate   800: achieved   261/s  p50 22428.1 p95 31258.4 p99 31340.7 ms  errors 67.39% {"0":1307,"200":15653,"401":31040}
+run 3 rate  1000: achieved   138/s  p50 26015.2 p95 31195.5 p99 31294.7 ms  errors 86.22% {"0":1092,"200":8268,"401":50640}
+run 4 rate    50: achieved    50/s  p50 9.0 p95 10.8 p99 15.1 ms  errors 0.00% {"200":3000}
+run 4 rate   100: achieved   100/s  p50 8.8 p95 11.3 p99 13.9 ms  errors 0.00% {"200":6000}
+run 4 rate   200: achieved   200/s  p50 9.1 p95 11.9 p99 18.9 ms  errors 0.00% {"200":12000}
+run 4 rate   400: achieved   369/s  p50 5535.5 p95 12914.1 p99 13670.8 ms  errors 7.69% {"0":1032,"200":22155,"401":813}
+run 4 rate   600: achieved   314/s  p50 21011.3 p95 31133.3 p99 31313.2 ms  errors 47.61% {"0":1586,"200":18859,"401":15555}
+run 4 rate   800: achieved   327/s  p50 23513.5 p95 31289.8 p99 31354.9 ms  errors 59.12% {"0":1796,"200":19623,"401":26581}
+run 4 rate  1000: achieved   188/s  p50 23368.3 p95 31276.8 p99 31373.8 ms  errors 81.23% {"0":981,"200":11263,"401":47756}
+run 5 rate    50: achieved    50/s  p50 9.2 p95 10.6 p99 13.3 ms  errors 0.00% {"200":3000}
+run 5 rate   100: achieved   100/s  p50 8.6 p95 11.1 p99 13.6 ms  errors 0.03% {"200":5998,"401":2}
+run 5 rate   200: achieved   200/s  p50 8.9 p95 11.6 p99 19.6 ms  errors 0.00% {"200":12000}
+run 5 rate   400: achieved   379/s  p50 5688.8 p95 17260.5 p99 18048.1 ms  errors 5.34% {"0":966,"200":22718,"401":316}
+run 5 rate   600: achieved   336/s  p50 17288.8 p95 27235.8 p99 30491.4 ms  errors 44.01% {"0":1258,"200":20158,"401":14584}
+run 5 rate   800: achieved   302/s  p50 24269.2 p95 31301.4 p99 31395.1 ms  errors 62.28% {"0":2002,"200":18108,"401":27890}
+run 5 rate  1000: achieved   141/s  p50 26275.6 p95 31283.1 p99 31415.1 ms  errors 85.88% {"0":1670,"200":8474,"401":49856}
+== 2026-10-23T22:13:07+06:00 E7 verifier throughput vs fleet size
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+N=  10: 80.1 appraisals/s, latency p50 112.8 p95 208.9 ms, verifier CPU 140%, errors 0
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+N=  25: 75.1 appraisals/s, latency p50 308.5 p95 550.1 ms, verifier CPU 139%, errors 0
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+N=  50: 71.1 appraisals/s, latency p50 649.4 p95 1071.8 ms, verifier CPU 138%, errors 0
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+N= 100: 61.8 appraisals/s, latency p50 1455.9 p95 2268.3 ms, verifier CPU 131%, errors 0
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+N= 200: 48.9 appraisals/s, latency p50 4145.4 p95 4933.1 ms, verifier CPU 110%, errors 0
+== 2026-10-23T22:16:34+06:00 E9 per-mechanism cost (all configurations)
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+full   enrol 36.9 ms (TPM 18.2) | re-attestation 12.0 ms (TPM 2.2) | login 136.6 ms (TPM 4.1) | request 13.0 ms (TPM 1.8) | login + step-up 148.1 ms (TPM 4.0)  [16 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+-M1    enrol 32.4 ms (TPM 16.7) | re-attestation 11.4 ms (TPM 2.1) | login 131.5 ms (TPM 3.8) | request 12.5 ms (TPM 1.7) | login + step-up 142.7 ms (TPM 4.0)  [15 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+-M2    enrol 34.4 ms (TPM 16.5) | re-attestation 11.3 ms (TPM 2.0) | login 132.8 ms (TPM 3.7) | request 12.5 ms (TPM 1.7) | login + step-up 141.0 ms (TPM 3.8)  [15 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+-M3    enrol 35.4 ms (TPM 16.4) | re-attestation 11.5 ms (TPM 2.0) | login 134.0 ms (TPM 3.7) | request 12.6 ms (TPM 1.7) | login + step-up 142.4 ms (TPM 3.7)  [15 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+-M4    enrol 35.0 ms (TPM 16.2) | re-attestation 11.5 ms (TPM 2.0) | login 132.0 ms (TPM 3.7) | request 12.5 ms (TPM 1.7) | login + step-up 140.8 ms (TPM 3.7)  [15 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+-M5    enrol 34.5 ms (TPM 16.4) | re-attestation 10.9 ms (TPM 2.0) | login 133.4 ms (TPM 3.7) | request 12.5 ms (TPM 1.6) | login + step-up 140.4 ms (TPM 3.7)  [17 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+-M6    enrol 34.5 ms (TPM 16.2) | re-attestation 11.3 ms (TPM 2.0) | login 131.3 ms (TPM 3.6) | request 12.5 ms (TPM 1.6) | login + step-up 142.2 ms (TPM 3.7)  [15 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+-M7    enrol 34.2 ms (TPM 16.1) | re-attestation 11.3 ms (TPM 2.0) | login 132.6 ms (TPM 3.7) | request 12.5 ms (TPM 1.6) | login + step-up 142.8 ms (TPM 3.7)  [17 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+-M8    enrol 34.3 ms (TPM 16.1) | re-attestation 11.4 ms (TPM 2.0) | login 131.0 ms (TPM 3.7) | request 12.6 ms (TPM 1.7) | login + step-up 141.3 ms (TPM 3.6)  [15 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+-M9    enrol 34.7 ms (TPM 16.1) | re-attestation 11.4 ms (TPM 2.0) | login 126.1 ms (TPM 3.7) | request 12.4 ms (TPM 1.6) | login + step-up 134.7 ms (TPM 3.7)  [15 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+-M10   enrol 34.2 ms (TPM 16.4) | re-attestation 11.1 ms (TPM 2.0) | login 130.0 ms (TPM 3.7) | request 12.5 ms (TPM 1.6) | login + step-up 141.6 ms (TPM 3.7)  [15 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+-M11   enrol 34.3 ms (TPM 16.2) | re-attestation 11.3 ms (TPM 2.0) | login 130.4 ms (TPM 3.6) | request 12.5 ms (TPM 1.6) | login + step-up 142.4 ms (TPM 3.7)  [15 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+-M12   enrol 34.7 ms (TPM 16.1) | re-attestation 11.2 ms (TPM 2.0) | login 127.9 ms (TPM 3.6) | request 12.4 ms (TPM 1.6) | login + step-up 139.3 ms (TPM 3.7)  [15 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+-M13   enrol 34.0 ms (TPM 16.1) | re-attestation 11.3 ms (TPM 1.9) | login 129.7 ms (TPM 3.6) | request 12.4 ms (TPM 1.6) | login + step-up 137.4 ms (TPM 3.7)  [15 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+-M14   enrol 34.0 ms (TPM 15.9) | re-attestation 11.2 ms (TPM 1.9) | login 129.9 ms (TPM 3.6) | request 12.4 ms (TPM 1.6) | login + step-up 139.2 ms (TPM 3.7)  [15 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+-M15   enrol 34.1 ms (TPM 15.7) | re-attestation 11.2 ms (TPM 1.9) | login 130.9 ms (TPM 3.6) | request 12.5 ms (TPM 1.6) | login + step-up 140.4 ms (TPM 3.6)  [15 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+-M16   enrol 34.4 ms (TPM 16.0) | re-attestation 11.3 ms (TPM 2.0) | login 131.2 ms (TPM 3.6) | request 12.2 ms (TPM 1.6) | login + step-up 138.8 ms (TPM 3.6)  [15 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+-M17   enrol 34.4 ms (TPM 15.9) | re-attestation 11.2 ms (TPM 1.9) | login 130.4 ms (TPM 3.6) | request 12.4 ms (TPM 1.6) | login + step-up 140.0 ms (TPM 3.6)  [17 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+-M18   enrol 33.6 ms (TPM 16.0) | re-attestation 11.0 ms (TPM 1.9) | login 129.5 ms (TPM 3.6) | request 12.2 ms (TPM 1.6) | login + step-up 140.5 ms (TPM 3.6)  [15 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+-M19   enrol 34.2 ms (TPM 16.2) | re-attestation 11.1 ms (TPM 2.0) | login 129.1 ms (TPM 3.6) | request 12.3 ms (TPM 1.6) | login + step-up 137.3 ms (TPM 3.7)  [15 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:34095
+-M20   enrol 33.8 ms (TPM 15.9) | re-attestation 11.2 ms (TPM 2.0) | login 129.5 ms (TPM 3.6) | request 12.5 ms (TPM 1.6) | login + step-up 141.0 ms (TPM 3.7)  [15 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:43481
+-M21   enrol 34.1 ms (TPM 15.8) | re-attestation 11.1 ms (TPM 2.0) | login 129.1 ms (TPM 3.6) | request 12.4 ms (TPM 1.6) | login + step-up 138.5 ms (TPM 3.6)  [15 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:38959
+-M22   enrol 33.6 ms (TPM 15.8) | re-attestation 11.1 ms (TPM 2.0) | login 129.2 ms (TPM 3.6) | request 12.3 ms (TPM 1.6) | login + step-up 136.8 ms (TPM 3.6)  [15 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:36447
+-M23   enrol 34.0 ms (TPM 15.9) | re-attestation 11.0 ms (TPM 1.9) | login 129.9 ms (TPM 3.6) | request 12.4 ms (TPM 1.6) | login + step-up 139.3 ms (TPM 3.7)  [15 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:33723
+-M24   enrol 33.8 ms (TPM 15.9) | re-attestation 10.9 ms (TPM 1.9) | login 129.5 ms (TPM 3.6) | request 12.3 ms (TPM 1.6) | login + step-up 138.3 ms (TPM 3.6)  [15 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:46621
+-M25   enrol 33.5 ms (TPM 15.6) | re-attestation 11.1 ms (TPM 1.9) | login 128.4 ms (TPM 3.6) | request 12.4 ms (TPM 1.6) | login + step-up 138.9 ms (TPM 3.7)  [15 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:44717
+-M26   enrol 33.9 ms (TPM 16.0) | re-attestation 11.2 ms (TPM 1.9) | login 129.6 ms (TPM 3.6) | request 12.3 ms (TPM 1.6) | login + step-up 138.2 ms (TPM 3.6)  [15 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:45917
+-M27   enrol 33.8 ms (TPM 15.7) | re-attestation 11.2 ms (TPM 1.9) | login 129.1 ms (TPM 3.6) | request 12.5 ms (TPM 1.6) | login + step-up 138.3 ms (TPM 3.6)  [15 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+-M28   enrol 33.9 ms (TPM 15.8) | re-attestation 11.0 ms (TPM 1.9) | login 129.9 ms (TPM 3.6) | request 12.3 ms (TPM 1.6) | login + step-up 137.2 ms (TPM 3.6)  [15 s]
+⚠️ [ZtaClient] Re-attestation cycle failed: device_not_active
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+B0     enrol 29.7 ms (TPM 15.8) | re-attestation 10.7 ms (TPM 1.9) | login 121.6 ms (TPM 3.6) | request 12.1 ms (TPM 1.6) | login + step-up 131.1 ms (TPM 3.6)  [14 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:36395
+B1     enrol 29.8 ms (TPM 15.8) | re-attestation 10.6 ms (TPM 2.0) | login 121.9 ms (TPM 3.6) | request 12.3 ms (TPM 1.6) | login + step-up 130.4 ms (TPM 3.6)  [14 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:33875
+B2     enrol 33.1 ms (TPM 15.8) | re-attestation 11.0 ms (TPM 2.0) | login 129.2 ms (TPM 3.6) | request 12.1 ms (TPM 1.6) | login + step-up 141.7 ms (TPM 3.7)  [15 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:40255
+B3     enrol 34.0 ms (TPM 16.3) | re-attestation 11.1 ms (TPM 2.0) | login 129.5 ms (TPM 3.6) | request 12.3 ms (TPM 1.6) | login + step-up 137.7 ms (TPM 3.6)  [15 s]
+Wrote /home/mimohit/zta/results/e1-final/20261023-1623/bench-tls/e9-costs.json
+== 2026-10-23T22:24:52+06:00 benchmarks done

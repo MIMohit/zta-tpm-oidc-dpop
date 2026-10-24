@@ -1,6 +1,6 @@
 /**
  * @file scripts/attacks/index.mjs
- * Registry of all 24 attacks (A01–A24) across the 4 security goals (G1–G4).
+ * Registry of all 25 attacks (A01–A25) across the 4 security goals (G1–G4).
  * Stubs (A01–A09, A22) point to WP-D2 placeholder modules.
  * Attacks A10–A21, A23, A24 are fully implemented for WP-D1.
  */
@@ -29,6 +29,7 @@ import a21 from "./a21-revocation-enforcement.mjs";
 import a22 from "./a22-remote-suspension-dos.mjs";
 import a23 from "./a23-stepup-bypass.mjs";
 import a24 from "./a24-direct-resource-server.mjs";
+import a25 from "./a25-high-risk-login-without-mfa.mjs";
 
 export const ATTACKS = [
   { id: "A01", title: a01.title, goal: a01.goal, adversary: a01.adversary, expected: a01.expected, module: a01 },
@@ -55,6 +56,7 @@ export const ATTACKS = [
   { id: "A22", title: a22.title, goal: a22.goal, adversary: a22.adversary, expected: a22.expected, module: a22 },
   { id: "A23", title: a23.title, goal: a23.goal, adversary: a23.adversary, expected: a23.expected, module: a23 },
   { id: "A24", title: a24.title, goal: a24.goal, adversary: a24.adversary, expected: a24.expected, module: a24 },
+  { id: "A25", title: a25.title, goal: a25.goal, adversary: a25.adversary, expected: a25.expected, module: a25 },
 ];
 
 export const ATTACK_MAP = new Map(ATTACKS.map((a) => [a.id, a]));

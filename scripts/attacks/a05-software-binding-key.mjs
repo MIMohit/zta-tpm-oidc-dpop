@@ -7,6 +7,7 @@
 import crypto from "node:crypto";
 import * as jose from "jose";
 import { signProof } from "../../lib/dpop.js";
+import { enrolExtras } from "./lib/enrol-extras.mjs";
 
 export default {
   id: "A05",
@@ -49,6 +50,7 @@ export default {
         akPublic: ak.publicArea,
         kbPublic,
         user: "alice",
+        ...(await enrolExtras(tpm)),
       }),
     });
 
@@ -193,18 +195,11 @@ export default {
     }
 
     const { request_uri } = await parRes.json();
-    const authRes = await fetch(`${ctx.urls.idpUrl}/oauth/authorize?client_id=zta-agent&request_uri=${encodeURIComponent(request_uri)}`);
-    const cookie = (authRes.headers.get("set-cookie") || "").split(";")[0];
+    const authResAuth = await ctx.authorize(`${ctx.urls.idpUrl}/oauth/authorize?client_id=zta-agent&request_uri=${encodeURIComponent(request_uri)}`);
+    const authRes = authResAuth.res;
+    const cookie = authResAuth.cookie;
 
-    const loginRes = await fetch(`${ctx.urls.idpUrl}/oauth/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Cookie: cookie,
-      },
-      body: JSON.stringify({ username: "alice", password: "alice-pass" }),
-    });
+    const loginRes = await ctx.primaryLogin({ auth: authResAuth, username: "alice", password: "alice-pass" });
     if (!loginRes.ok) {
       return {
         outcome: "rejected",

@@ -1,0 +1,122 @@
+{
+  "proverif": "Proverif 2.05. Cryptographic protocol verifier, by Bruno Blanchet, Vincent Cheval, and Marc Sylvestre",
+  "queries": [
+    [
+      "boot",
+      "G1 boot state",
+      "Appraised(d, n) ⇒ DeviceGood(d)"
+    ],
+    [
+      "fresh",
+      "G1 freshness and AK binding",
+      "Appraised(d, n) ⇒ TPMQuoted(d, n)"
+    ],
+    [
+      "bind",
+      "G2 attested key binding",
+      "Issued(u, d, j) ⇒ TPMHoldsKB(d, j) ∧ Enrolled(d, j, u)"
+    ],
+    [
+      "sender",
+      "G3 sender constraint (injective)",
+      "inj Accepted(u, d, j, r, n) ⇒ inj TPMSignedProof(j, r, n)"
+    ],
+    [
+      "sanity",
+      "Honest flow executable",
+      "Accepted reachable (expected: false)"
+    ]
+  ],
+  "variants": {
+    "full": {
+      "verdicts": {
+        "boot": "true",
+        "fresh": "true",
+        "bind": "true",
+        "sender": "true",
+        "sanity": "false"
+      },
+      "seconds": 0.07
+    },
+    "M3": {
+      "verdicts": {
+        "boot": "false",
+        "fresh": "false",
+        "bind": "false",
+        "sender": "false",
+        "sanity": "false"
+      },
+      "seconds": 0.18
+    },
+    "M4": {
+      "verdicts": {
+        "boot": "true",
+        "fresh": "false",
+        "bind": "true",
+        "sender": "true",
+        "sanity": "false"
+      },
+      "seconds": 0.08
+    },
+    "M6": {
+      "verdicts": {
+        "boot": "false",
+        "fresh": "true",
+        "bind": "true",
+        "sender": "true",
+        "sanity": "false"
+      },
+      "seconds": 0.11
+    },
+    "M8": {
+      "verdicts": {
+        "boot": "true",
+        "fresh": "true",
+        "bind": "false",
+        "sender": "false",
+        "sanity": "false"
+      },
+      "seconds": 0.1
+    },
+    "M10": {
+      "verdicts": {
+        "boot": "true",
+        "fresh": "true",
+        "bind": "false",
+        "sender": "false",
+        "sanity": "false"
+      },
+      "seconds": 0.09
+    },
+    "M12": {
+      "verdicts": {
+        "boot": "true",
+        "fresh": "true",
+        "bind": "false",
+        "sender": "true",
+        "sanity": "false"
+      },
+      "seconds": 0.08
+    },
+    "M16": {
+      "verdicts": {
+        "boot": "true",
+        "fresh": "true",
+        "bind": "true",
+        "sender": "false",
+        "sanity": "false"
+      },
+      "seconds": 0.08
+    },
+    "M17": {
+      "verdicts": {
+        "boot": "true",
+        "fresh": "true",
+        "bind": "true",
+        "sender": "false",
+        "sanity": "false"
+      },
+      "seconds": 0.09
+    }
+  }
+}

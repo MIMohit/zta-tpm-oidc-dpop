@@ -1,0 +1,164 @@
+(* formal/zta.pv.in - ProVerif model of the protocol as built (Section "System design").
+   Template: formal/run.py generates one model per variant. A line tagged (*@Mi+*) is
+   removed in variant -Mi; a line tagged (*@Mi-*) is present only in variant -Mi.
+
+   Threat model: Dolev-Yao network; every device's HOST is compromised, so the attacker
+   drives the agent and may use the TPM's interface (quote, certify, activate, sign) as an
+   oracle, but cannot extract TPM keys. The attacker knows alice's password (credential
+   thief), sees every token (token thief), and owns a genuine TPM that is not in the
+   inventory (rogue device). One of alice's devices boots a tampered kernel that changes
+   only PCRs outside PCR0-7 (pitfall P-2). *)
+
+free c: channel.
+
+type key.
+type pkey.
+
+fun pk(key): pkey.
+fun sign(bitstring, key): bitstring.
+reduc forall m: bitstring, k: key; checksign(sign(m, k), pk(k)) = m.
+fun thumb(pkey): bitstring.
+fun name(pkey): bitstring.
+
+(* EK certificates from the TPM vendor CA *)
+fun cert(pkey, key): bitstring.
+reduc forall p: pkey, k: key; checkcert(cert(p, k), pk(k)) = p.
+
+(* Credential activation: only the TPM holding EK, with an object of the given name loaded *)
+fun mkcred(pkey, bitstring, bitstring): bitstring.
+reduc forall k: key, n: bitstring, s: bitstring; activate(mkcred(pk(k), n, s), k, n) = s.
+
+(* Boot state: the tampered kernel is measured into PCR8/9 only, so the PCR0-7 digest is
+   identical to the golden one *)
+const golden, tampered: bitstring.
+const sel09, sel07: bitstring.
+fun dig(bitstring, bitstring): bitstring.
+equation dig(tampered, sel07) = dig(golden, sel07).
+
+(* Structure tags *)
+const tq, tc, td, tar, tat, tokenEp: bitstring.
+
+(* Long-term secrets *)
+free caSk: key [private].
+free skV: key [private].
+free skIdP: key [private].
+fun password(bitstring): bitstring [private].
+const alice, bob: bitstring.
+
+table inventory(pkey, bitstring).                 (* EK, owner *)
+table registry(bitstring, pkey, pkey, bitstring).  (* devId, AK, K_B, owner *)
+
+event TPMHoldsKB(bitstring, bitstring).              (* devId, jkt: K_B created in that TPM *)
+event DeviceGood(bitstring).                         (* devId boots the golden state *)
+event TPMQuoted(bitstring, bitstring).               (* devId, nonce *)
+event Appraised(bitstring, bitstring).               (* devId, nonce *)
+event Enrolled(bitstring, bitstring, bitstring).     (* devId, jkt, owner *)
+event Issued(bitstring, bitstring, bitstring).       (* user, devId, jkt *)
+event TPMSignedProof(bitstring, bitstring, bitstring).          (* jkt, request, nonce *)
+event Accepted(bitstring, bitstring, bitstring, bitstring, bitstring). (* user, devId, jkt, request, nonce *)
+
+(* G1 boot state: an accepted appraisal implies the device boots the golden state *)
+query d: bitstring, n: bitstring; event(Appraised(d, n)) ==> event(DeviceGood(d)).
+(* G1 freshness and AK binding: an accepted appraisal implies that TPM quoted this nonce *)
+query d: bitstring, n: bitstring; event(Appraised(d, n)) ==> event(TPMQuoted(d, n)).
+(* G2 attested binding: a token for (u, d, jkt) implies K_B with thumbprint jkt lives in the
+   TPM of device d, which was enrolled to u with that key *)
+query u: bitstring, d: bitstring, j: bitstring; event(Issued(u, d, j)) ==> (event(TPMHoldsKB(d, j)) && event(Enrolled(d, j, u))).
+(* G3 sender constraint: every accepted request was signed by the TPM, once *)
+query u: bitstring, d: bitstring, j: bitstring, r: bitstring, n: bitstring;
+  inj-event(Accepted(u, d, j, r, n)) ==> inj-event(TPMSignedProof(j, r, n)).
+(* Sanity: the honest flow is executable (expected result: false = reachable) *)
+query u: bitstring, d: bitstring, j: bitstring, r: bitstring, n: bitstring; event(Accepted(u, d, j, r, n)).
+
+(* TPM interface, reachable by the attacker through the compromised host *)
+let TPM(ek: key, ak: key, kb: key, st: bitstring) =
+    ( ! in(c, (=tq, n: bitstring, sel: bitstring));
+        event TPMQuoted(thumb(pk(ek)), n);
+        out(c, sign((tq, n, sel, dig(st, sel)), ak)) )
+  | ( ! in(c, (=tc, n: bitstring));
+        out(c, sign((tc, n, pk(kb)), ak)) )
+  | ( ! in(c, blob: bitstring);
+        out(c, activate(blob, ek, name(pk(ak)))) )
+  | ( ! in(c, (=td, r: bitstring, n: bitstring));
+        event TPMSignedProof(thumb(pk(kb)), r, n);
+        out(c, sign((td, r, n), kb)) ).
+
+let Device(u: bitstring, st: bitstring) =
+  new ek: key; new ak: key; new kb: key;
+  let d = thumb(pk(ek)) in
+  insert inventory(pk(ek), u);
+  event TPMHoldsKB(d, thumb(pk(kb)));
+  out(c, (pk(ek), cert(pk(ek), caSk), pk(ak), pk(kb)));
+  if st = golden then (event DeviceGood(d); TPM(ek, ak, kb, st)) else TPM(ek, ak, kb, st).
+
+(* Genuine TPM owned by the attacker, not in the inventory *)
+let Rogue =
+  new ekR: key; new akR: key; new kbR: key;
+  out(c, (ekR, akR, kbR, cert(pk(ekR), caSk))).
+
+(* Algorithm 1 + 2: enrolment *)
+let VerifierEnrol =
+  in(c, (ekp: pkey, ce: bitstring, akp: pkey, kbp: pkey));
+  if checkcert(ce, pk(caSk)) = ekp then                         (* M1 *)
+  get inventory(=ekp, u) in                                     (* M2 *)
+  new s: bitstring; new n: bitstring;
+  out(c, (mkcred(ekp, name(akp), s), n, sel09));
+  in(c, (s2: bitstring, q: bitstring, cb: bitstring));
+  if s2 = s then                                                (*@M3+*)
+  let (=tq, =n, sel: bitstring, dd: bitstring) = checksign(q, akp) in      (*@M4+*)
+  let (=tq, nq: bitstring, sel: bitstring, dd: bitstring) = checksign(q, akp) in (*@M4-*)
+  if sel = sel09 then                                           (*@M6+*)
+  if dd = dig(golden, sel) then                                 (* M7 *)
+  let (=tc, =n, =kbp) = checksign(cb, akp) in                   (*@M8+*)
+  let d = thumb(ekp) in
+  event Appraised(d, n);
+  event Enrolled(d, thumb(kbp), u);
+  insert registry(d, akp, kbp, u);
+  out(c, sign((tar, d, thumb(kbp)), skV)).
+
+(* Algorithm 2: re-attestation *)
+let VerifierAppraise =
+  in(c, d: bitstring);
+  get registry(=d, akp, kbp, u) in
+  new n: bitstring;
+  out(c, (n, sel09));
+  in(c, q: bitstring);
+  let (=tq, =n, sel: bitstring, dd: bitstring) = checksign(q, akp) in      (*@M4+*)
+  let (=tq, nq: bitstring, sel: bitstring, dd: bitstring) = checksign(q, akp) in (*@M4-*)
+  if sel = sel09 then                                           (*@M6+*)
+  if dd = dig(golden, sel) then
+  event Appraised(d, n);
+  out(c, sign((tar, d, thumb(kbp)), skV)).
+
+(* Algorithm 3: login (Keycloak's password check abstracted as the password) and token *)
+let IdP =
+  in(c, (ar: bitstring, jktReq: bitstring, u: bitstring, pw: bitstring));
+  if pw = password(u) then
+  let (=tar, d: bitstring, jktAR: bitstring) = checksign(ar, pk(skV)) in  (* M9 *)
+  if jktAR = jktReq then                                        (*@M10+*)
+  get registry(=d, akp, kbp, =u) in                             (*@M12+*)
+  get registry(=d, akp, kbp, uu) in                             (*@M12-*)
+  new nD: bitstring;
+  out(c, nD);
+  in(c, (kbq: pkey, prf: bitstring));
+  if thumb(kbq) = jktReq then                                   (* M13 *)
+  let (=td, =tokenEp, =nD) = checksign(prf, kbq) in
+  event Issued(u, d, jktReq);
+  out(c, sign((tat, u, d, jktReq), skIdP)).
+
+(* Algorithm 5: PEP *)
+let PEP =
+  new nS: bitstring;
+  out(c, nS);
+  in(c, (at: bitstring, kbq: pkey, prf: bitstring, r: bitstring));
+  let (=tat, u: bitstring, d: bitstring, j: bitstring) = checksign(at, pk(skIdP)) in
+  if thumb(kbq) = j then                                        (*@M16+*)
+  let (=td, =r, =nS) = checksign(prf, kbq) in                   (*@M17+*)
+  event Accepted(u, d, j, r, nS).                               (*@M17+*)
+  let (=td, =r, np: bitstring) = checksign(prf, kbq) in         (*@M17-*)
+  event Accepted(u, d, j, r, np).                               (*@M17-*)
+
+process
+  out(c, password(alice));
+  ( ! VerifierEnrol | ! VerifierAppraise | ! IdP | ! PEP
+  | Device(alice, golden) | Device(alice, tampered) | Device(bob, golden) | Rogue )

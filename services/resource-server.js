@@ -5,6 +5,7 @@ import { requireInternal } from "../lib/internal-auth.js";
 import { isMain } from "../lib/main.js";
 import { on, printBannerOnce } from "../lib/ablation.js";
 import { mountHealth } from "../lib/health.js";
+import { listen } from "../lib/tls.js";
 
 const DEFAULT_AUDIT_DATA = {
   confidential_metrics: {
@@ -122,9 +123,7 @@ if (isMain(import.meta.url)) {
   const cfg = loadConfig();
   const PORT = process.env.PORT || 5001;
   const HOST = "127.0.0.1";
-  createApp(cfg).listen(PORT, HOST, () =>
-    console.log(`📊 Resource Server running on http://${HOST}:${PORT}`)
-  );
+  listen(createApp(cfg), PORT, HOST, (url) => console.log(`📊 Resource Server running on ${url}`));
 }
 
 export default { createApp };

@@ -1,0 +1,512 @@
+== 2026-10-24T04:37:10+06:00 E3 paired (Full, B0-B3)
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+full   enrol 34.7 ms (TPM 16.7) | re-attestation 11.3 ms (TPM 2.0) | login 124.6 ms (TPM 3.6) | request 10.5 ms (TPM 1.5) | login + step-up 134.0 ms (TPM 3.8)  [41 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+B0     enrol 29.8 ms (TPM 15.9) | re-attestation 10.4 ms (TPM 1.9) | login 117.5 ms (TPM 3.5) | request 10.3 ms (TPM 1.5) | login + step-up 125.3 ms (TPM 3.5)  [39 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+B1     enrol 29.6 ms (TPM 15.9) | re-attestation 10.5 ms (TPM 1.9) | login 117.3 ms (TPM 3.5) | request 10.3 ms (TPM 1.5) | login + step-up 124.7 ms (TPM 3.5)  [39 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+full   enrol 33.9 ms (TPM 16.0) | re-attestation 11.1 ms (TPM 1.9) | login 124.1 ms (TPM 3.5) | request 10.4 ms (TPM 1.5) | login + step-up 132.5 ms (TPM 3.6)  [43 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+full   enrol 33.6 ms (TPM 15.8) | re-attestation 11.0 ms (TPM 1.9) | login 123.9 ms (TPM 3.5) | request 10.4 ms (TPM 1.5) | login + step-up 132.2 ms (TPM 3.5)  [47 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+B2     enrol 32.8 ms (TPM 15.5) | re-attestation 11.0 ms (TPM 1.9) | login 123.5 ms (TPM 3.4) | request 10.4 ms (TPM 1.5) | login + step-up 131.8 ms (TPM 3.5)  [40 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+B3     enrol 33.2 ms (TPM 15.5) | re-attestation 10.9 ms (TPM 1.9) | login 123.0 ms (TPM 3.5) | request 10.5 ms (TPM 1.5) | login + step-up 131.2 ms (TPM 3.5)  [40 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+full   enrol 33.4 ms (TPM 15.7) | re-attestation 10.9 ms (TPM 1.9) | login 123.8 ms (TPM 3.5) | request 10.4 ms (TPM 1.5) | login + step-up 131.9 ms (TPM 3.5)  [48 s]
+Wrote /home/mimohit/zta/results/e1-final/20261023-1623/bench-tls/paired/e3-costs.json
+== 2026-10-24T04:42:47+06:00 E9 paired (all configurations)
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+full   enrol 36.4 ms (TPM 18.2) | re-attestation 11.7 ms (TPM 2.2) | login 128.5 ms (TPM 3.9) | request 12.6 ms (TPM 1.7) | login + step-up 140.0 ms (TPM 4.0)  [15 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+-M1    enrol 31.5 ms (TPM 16.4) | re-attestation 11.1 ms (TPM 2.0) | login 125.5 ms (TPM 3.6) | request 12.3 ms (TPM 1.5) | login + step-up 136.9 ms (TPM 3.7)  [14 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+-M2    enrol 33.6 ms (TPM 16.2) | re-attestation 11.0 ms (TPM 2.0) | login 128.9 ms (TPM 3.6) | request 12.3 ms (TPM 1.5) | login + step-up 137.1 ms (TPM 3.5)  [15 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+full   enrol 35.2 ms (TPM 17.1) | re-attestation 11.4 ms (TPM 2.0) | login 127.3 ms (TPM 3.6) | request 12.3 ms (TPM 1.6) | login + step-up 138.5 ms (TPM 3.6)  [15 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+full   enrol 34.7 ms (TPM 16.4) | re-attestation 11.2 ms (TPM 2.0) | login 127.0 ms (TPM 3.6) | request 12.2 ms (TPM 1.5) | login + step-up 137.3 ms (TPM 3.6)  [16 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+-M3    enrol 34.0 ms (TPM 16.0) | re-attestation 11.0 ms (TPM 1.9) | login 124.9 ms (TPM 3.5) | request 12.2 ms (TPM 1.5) | login + step-up 135.9 ms (TPM 3.5)  [17 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+-M4    enrol 33.6 ms (TPM 15.8) | re-attestation 10.9 ms (TPM 1.9) | login 125.6 ms (TPM 3.5) | request 12.1 ms (TPM 1.5) | login + step-up 136.4 ms (TPM 3.5)  [15 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+full   enrol 34.3 ms (TPM 16.2) | re-attestation 11.1 ms (TPM 2.0) | login 126.4 ms (TPM 3.6) | request 12.2 ms (TPM 1.5) | login + step-up 136.8 ms (TPM 3.6)  [17 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+full   enrol 34.2 ms (TPM 16.1) | re-attestation 11.1 ms (TPM 1.9) | login 126.0 ms (TPM 3.5) | request 12.2 ms (TPM 1.5) | login + step-up 136.1 ms (TPM 3.5)  [17 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+-M5    enrol 33.0 ms (TPM 15.8) | re-attestation 10.6 ms (TPM 1.9) | login 125.5 ms (TPM 3.5) | request 12.1 ms (TPM 1.5) | login + step-up 136.0 ms (TPM 3.5)  [15 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+-M6    enrol 33.7 ms (TPM 15.8) | re-attestation 10.7 ms (TPM 1.9) | login 125.0 ms (TPM 3.5) | request 12.2 ms (TPM 1.5) | login + step-up 135.7 ms (TPM 3.5)  [15 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+full   enrol 34.1 ms (TPM 16.0) | re-attestation 11.1 ms (TPM 1.9) | login 126.0 ms (TPM 3.5) | request 12.2 ms (TPM 1.5) | login + step-up 136.1 ms (TPM 3.5)  [18 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+full   enrol 34.1 ms (TPM 16.0) | re-attestation 11.0 ms (TPM 1.9) | login 125.7 ms (TPM 3.5) | request 12.2 ms (TPM 1.5) | login + step-up 136.0 ms (TPM 3.5)  [19 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+-M7    enrol 33.4 ms (TPM 15.7) | re-attestation 10.8 ms (TPM 1.9) | login 125.4 ms (TPM 3.5) | request 12.1 ms (TPM 1.5) | login + step-up 135.2 ms (TPM 3.5)  [16 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+-M8    enrol 32.8 ms (TPM 15.6) | re-attestation 10.8 ms (TPM 1.9) | login 124.6 ms (TPM 3.5) | request 12.0 ms (TPM 1.5) | login + step-up 134.7 ms (TPM 3.4)  [14 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+full   enrol 34.0 ms (TPM 15.9) | re-attestation 11.0 ms (TPM 1.9) | login 125.6 ms (TPM 3.5) | request 12.2 ms (TPM 1.5) | login + step-up 136.0 ms (TPM 3.5)  [20 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+full   enrol 33.9 ms (TPM 15.9) | re-attestation 10.9 ms (TPM 1.9) | login 125.6 ms (TPM 3.5) | request 12.1 ms (TPM 1.5) | login + step-up 135.7 ms (TPM 3.5)  [20 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+-M9    enrol 33.1 ms (TPM 15.4) | re-attestation 10.9 ms (TPM 1.9) | login 119.1 ms (TPM 3.5) | request 12.0 ms (TPM 1.5) | login + step-up 130.0 ms (TPM 3.5)  [14 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+-M10   enrol 33.2 ms (TPM 15.5) | re-attestation 10.8 ms (TPM 1.9) | login 123.8 ms (TPM 3.5) | request 12.0 ms (TPM 1.5) | login + step-up 134.0 ms (TPM 3.5)  [14 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:38163
+full   enrol 33.8 ms (TPM 15.8) | re-attestation 10.9 ms (TPM 1.9) | login 125.5 ms (TPM 3.5) | request 12.1 ms (TPM 1.5) | login + step-up 135.6 ms (TPM 3.5)  [21 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:40673
+full   enrol 33.8 ms (TPM 15.8) | re-attestation 10.9 ms (TPM 1.9) | login 125.4 ms (TPM 3.5) | request 12.1 ms (TPM 1.5) | login + step-up 135.2 ms (TPM 3.5)  [23 s]
+⚠️ [ZtaClient] Re-attestation cycle failed: fetch failed
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:42905
+-M11   enrol 33.3 ms (TPM 15.6) | re-attestation 10.8 ms (TPM 1.9) | login 124.4 ms (TPM 3.4) | request 12.1 ms (TPM 1.5) | login + step-up 132.5 ms (TPM 3.5)  [14 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:35331
+-M12   enrol 32.9 ms (TPM 15.5) | re-attestation 10.8 ms (TPM 1.9) | login 123.6 ms (TPM 3.4) | request 12.0 ms (TPM 1.5) | login + step-up 132.0 ms (TPM 3.5)  [14 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:40583
+full   enrol 33.7 ms (TPM 15.8) | re-attestation 10.9 ms (TPM 1.9) | login 125.4 ms (TPM 3.5) | request 12.1 ms (TPM 1.5) | login + step-up 135.2 ms (TPM 3.5)  [23 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:35703
+full   enrol 33.6 ms (TPM 15.8) | re-attestation 10.9 ms (TPM 1.9) | login 125.4 ms (TPM 3.5) | request 12.1 ms (TPM 1.5) | login + step-up 135.1 ms (TPM 3.5)  [24 s]
+⚠️ [ZtaClient] Re-attestation cycle failed: fetch failed
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:37675
+-M13   enrol 33.0 ms (TPM 15.4) | re-attestation 10.8 ms (TPM 1.9) | login 124.7 ms (TPM 3.4) | request 11.9 ms (TPM 1.5) | login + step-up 134.4 ms (TPM 3.5)  [14 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+-M14   enrol 33.0 ms (TPM 15.5) | re-attestation 10.8 ms (TPM 1.9) | login 124.2 ms (TPM 3.5) | request 11.9 ms (TPM 1.5) | login + step-up 135.1 ms (TPM 3.4)  [14 s]
+⚠️ [ZtaClient] Re-attestation cycle failed: fetch failed
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+full   enrol 33.6 ms (TPM 15.8) | re-attestation 10.9 ms (TPM 1.9) | login 125.4 ms (TPM 3.5) | request 12.1 ms (TPM 1.5) | login + step-up 135.0 ms (TPM 3.5)  [25 s]
+⚠️ [ZtaClient] Re-attestation cycle failed: fetch failed
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:45671
+full   enrol 33.6 ms (TPM 15.7) | re-attestation 10.9 ms (TPM 1.9) | login 125.3 ms (TPM 3.5) | request 12.1 ms (TPM 1.5) | login + step-up 134.9 ms (TPM 3.5)  [26 s]
+⚠️ [ZtaClient] Re-attestation cycle failed: fetch failed
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+-M15   enrol 33.2 ms (TPM 15.5) | re-attestation 10.8 ms (TPM 1.9) | login 124.2 ms (TPM 3.5) | request 12.0 ms (TPM 1.5) | login + step-up 133.5 ms (TPM 3.4)  [14 s]
+⚠️ [ZtaClient] Re-attestation cycle failed: device_not_active
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+-M16   enrol 32.9 ms (TPM 15.5) | re-attestation 10.6 ms (TPM 1.9) | login 126.0 ms (TPM 3.5) | request 12.0 ms (TPM 1.5) | login + step-up 134.8 ms (TPM 3.4)  [14 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:34775
+full   enrol 33.6 ms (TPM 15.7) | re-attestation 10.8 ms (TPM 1.9) | login 125.3 ms (TPM 3.5) | request 12.1 ms (TPM 1.5) | login + step-up 134.8 ms (TPM 3.5)  [27 s]
+⚠️ [ZtaClient] Re-attestation cycle failed: fetch failed
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:43459
+full   enrol 33.5 ms (TPM 15.7) | re-attestation 10.8 ms (TPM 1.9) | login 125.1 ms (TPM 3.5) | request 12.1 ms (TPM 1.5) | login + step-up 134.8 ms (TPM 3.5)  [27 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:43857
+-M17   enrol 33.3 ms (TPM 15.6) | re-attestation 10.7 ms (TPM 1.9) | login 123.8 ms (TPM 3.5) | request 12.0 ms (TPM 1.5) | login + step-up 133.6 ms (TPM 3.5)  [14 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:36007
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:38163
+-M18   enrol 32.8 ms (TPM 15.4) | re-attestation 10.7 ms (TPM 1.9) | login 124.1 ms (TPM 3.4) | request 12.0 ms (TPM 1.5) | login + step-up 135.0 ms (TPM 3.5)  [14 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:32971
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:40673
+full   enrol 33.4 ms (TPM 15.7) | re-attestation 10.8 ms (TPM 1.9) | login 125.1 ms (TPM 3.5) | request 12.1 ms (TPM 1.5) | login + step-up 134.8 ms (TPM 3.5)  [28 s]
+⚠️ [ZtaClient] Re-attestation cycle failed: fetch failed
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:43307
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:42905
+full   enrol 33.4 ms (TPM 15.7) | re-attestation 10.8 ms (TPM 1.9) | login 125.0 ms (TPM 3.5) | request 12.1 ms (TPM 1.5) | login + step-up 134.8 ms (TPM 3.5)  [29 s]
+⚠️ [ZtaClient] Re-attestation cycle failed: fetch failed
+⚠️ [ZtaClient] Re-attestation cycle failed: fetch failed
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:45523
+-M19   enrol 33.0 ms (TPM 15.5) | re-attestation 10.7 ms (TPM 1.9) | login 123.8 ms (TPM 3.4) | request 12.0 ms (TPM 1.5) | login + step-up 133.3 ms (TPM 3.5)  [14 s]
+⚠️ [ZtaClient] Re-attestation cycle failed: device_not_active
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:38369
+-M20   enrol 33.1 ms (TPM 15.7) | re-attestation 10.6 ms (TPM 1.9) | login 124.1 ms (TPM 3.5) | request 12.0 ms (TPM 1.5) | login + step-up 134.5 ms (TPM 3.4)  [14 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:35703
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:39451
+full   enrol 33.4 ms (TPM 15.7) | re-attestation 10.8 ms (TPM 1.9) | login 125.0 ms (TPM 3.5) | request 12.1 ms (TPM 1.5) | login + step-up 134.7 ms (TPM 3.5)  [30 s]
+⚠️ [ZtaClient] Re-attestation cycle failed: fetch failed
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:37675
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:36371
+full   enrol 33.4 ms (TPM 15.7) | re-attestation 10.8 ms (TPM 1.9) | login 125.0 ms (TPM 3.5) | request 12.1 ms (TPM 1.5) | login + step-up 134.7 ms (TPM 3.5)  [31 s]
+⚠️ [ZtaClient] Re-attestation cycle failed: fetch failed
+⚠️ [ZtaClient] Re-attestation cycle failed: fetch failed
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:42965
+-M21   enrol 33.1 ms (TPM 15.7) | re-attestation 10.6 ms (TPM 1.9) | login 124.0 ms (TPM 3.4) | request 12.0 ms (TPM 1.5) | login + step-up 135.6 ms (TPM 3.4)  [14 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:36785
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:45671
+-M22   enrol 33.1 ms (TPM 15.4) | re-attestation 10.6 ms (TPM 1.9) | login 124.5 ms (TPM 3.4) | request 11.9 ms (TPM 1.5) | login + step-up 134.6 ms (TPM 3.4)  [14 s]
+⚠️ [ZtaClient] Re-attestation cycle failed: device_not_active
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:44497
+full   enrol 33.4 ms (TPM 15.7) | re-attestation 10.8 ms (TPM 1.9) | login 125.0 ms (TPM 3.5) | request 12.1 ms (TPM 1.5) | login + step-up 134.6 ms (TPM 3.5)  [32 s]
+⚠️ [ZtaClient] Re-attestation cycle failed: fetch failed
+⚠️ [ZtaClient] Re-attestation cycle failed: fetch failed
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:46165
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:34775
+full   enrol 33.3 ms (TPM 15.6) | re-attestation 10.8 ms (TPM 1.9) | login 125.0 ms (TPM 3.5) | request 12.1 ms (TPM 1.5) | login + step-up 134.6 ms (TPM 3.5)  [33 s]
+⚠️ [ZtaClient] Re-attestation cycle failed: fetch failed
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:45651
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:43459
+-M23   enrol 33.2 ms (TPM 15.4) | re-attestation 10.8 ms (TPM 1.9) | login 123.7 ms (TPM 3.5) | request 12.0 ms (TPM 1.5) | login + step-up 134.7 ms (TPM 3.5)  [14 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:33831
+-M24   enrol 33.1 ms (TPM 15.6) | re-attestation 10.7 ms (TPM 1.9) | login 124.7 ms (TPM 3.5) | request 12.0 ms (TPM 1.5) | login + step-up 133.1 ms (TPM 3.4)  [14 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:43857
+full   enrol 33.3 ms (TPM 15.6) | re-attestation 10.8 ms (TPM 1.9) | login 124.9 ms (TPM 3.5) | request 12.1 ms (TPM 1.5) | login + step-up 134.6 ms (TPM 3.5)  [34 s]
+⚠️ [ZtaClient] Re-attestation cycle failed: fetch failed
+⚠️ [ZtaClient] Re-attestation cycle failed: fetch failed
+⚠️ [ZtaClient] Re-attestation cycle failed: fetch failed
+⚠️ [ZtaClient] Re-attestation cycle failed: fetch failed
+⚠️ [ZtaClient] Re-attestation cycle failed: fetch failed
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:40673
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:42115
+full   enrol 33.3 ms (TPM 15.6) | re-attestation 10.8 ms (TPM 1.9) | login 124.8 ms (TPM 3.5) | request 12.1 ms (TPM 1.5) | login + step-up 134.6 ms (TPM 3.5)  [35 s]
+⚠️ [ZtaClient] Re-attestation cycle failed: fetch failed
+⚠️ [ZtaClient] Re-attestation cycle failed: fetch failed
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:42905
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:40125
+-M25   enrol 33.3 ms (TPM 15.5) | re-attestation 10.6 ms (TPM 1.9) | login 124.1 ms (TPM 3.5) | request 12.0 ms (TPM 1.5) | login + step-up 134.6 ms (TPM 3.5)  [14 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:45049
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:35331
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:45523
+-M26   enrol 32.8 ms (TPM 15.5) | re-attestation 10.6 ms (TPM 1.9) | login 124.4 ms (TPM 3.4) | request 11.8 ms (TPM 1.5) | login + step-up 131.9 ms (TPM 3.4)  [14 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:39753
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:40583
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:38369
+full   enrol 33.3 ms (TPM 15.6) | re-attestation 10.8 ms (TPM 1.9) | login 124.8 ms (TPM 3.5) | request 12.1 ms (TPM 1.5) | login + step-up 134.4 ms (TPM 3.5)  [35 s]
+⚠️ [ZtaClient] Re-attestation cycle failed: fetch failed
+⚠️ [ZtaClient] Re-attestation cycle failed: fetch failed
+⚠️ [ZtaClient] Re-attestation cycle failed: fetch failed
+⚠️ [ZtaClient] Re-attestation cycle failed: fetch failed
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:33747
+full   enrol 33.3 ms (TPM 15.6) | re-attestation 10.8 ms (TPM 1.9) | login 124.8 ms (TPM 3.5) | request 12.1 ms (TPM 1.5) | login + step-up 134.4 ms (TPM 3.5)  [41 s]
+⚠️ [ZtaClient] Re-attestation cycle failed: fetch failed
+⚠️ [ZtaClient] Re-attestation cycle failed: fetch failed
+⚠️ [ZtaClient] Re-attestation cycle failed: fetch failed
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:42859
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:35349
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:42965
+-M27   enrol 32.7 ms (TPM 15.5) | re-attestation 10.7 ms (TPM 1.9) | login 124.1 ms (TPM 3.4) | request 11.9 ms (TPM 1.5) | login + step-up 134.3 ms (TPM 3.5)  [14 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:37325
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:36785
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:45671
+-M28   enrol 33.1 ms (TPM 15.4) | re-attestation 10.7 ms (TPM 1.9) | login 124.7 ms (TPM 3.4) | request 12.1 ms (TPM 1.5) | login + step-up 133.6 ms (TPM 3.4)  [14 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:43177
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:32897
+full   enrol 33.3 ms (TPM 15.6) | re-attestation 10.8 ms (TPM 1.9) | login 124.8 ms (TPM 3.5) | request 12.0 ms (TPM 1.5) | login + step-up 134.4 ms (TPM 3.5)  [38 s]
+⚠️ [ZtaClient] Re-attestation cycle failed: fetch failed
+⚠️ [ZtaClient] Re-attestation cycle failed: fetch failed
+⚠️ [ZtaClient] Re-attestation cycle failed: fetch failed
+⚠️ [ZtaClient] Re-attestation cycle failed: fetch failed
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:46165
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:34775
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:43097
+full   enrol 33.3 ms (TPM 15.6) | re-attestation 10.8 ms (TPM 1.9) | login 124.7 ms (TPM 3.5) | request 12.0 ms (TPM 1.5) | login + step-up 134.3 ms (TPM 3.5)  [39 s]
+⚠️ [ZtaClient] Re-attestation cycle failed: fetch failed
+⚠️ [ZtaClient] Re-attestation cycle failed: fetch failed
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:43459
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:35049
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:33831
+B0     enrol 29.3 ms (TPM 15.5) | re-attestation 10.1 ms (TPM 1.9) | login 116.3 ms (TPM 3.4) | request 11.9 ms (TPM 1.5) | login + step-up 123.9 ms (TPM 3.5)  [14 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:35901
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:43857
+B1     enrol 29.4 ms (TPM 15.6) | re-attestation 10.1 ms (TPM 1.9) | login 116.1 ms (TPM 3.4) | request 12.1 ms (TPM 1.5) | login + step-up 125.5 ms (TPM 3.5)  [14 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:35361
+full   enrol 33.3 ms (TPM 15.6) | re-attestation 10.8 ms (TPM 1.9) | login 124.7 ms (TPM 3.5) | request 12.0 ms (TPM 1.5) | login + step-up 134.4 ms (TPM 3.5)  [40 s]
+⚠️ [ZtaClient] Re-attestation cycle failed: fetch failed
+⚠️ [ZtaClient] Re-attestation cycle failed: fetch failed
+⚠️ [ZtaClient] Re-attestation cycle failed: fetch failed
+⚠️ [ZtaClient] Re-attestation cycle failed: fetch failed
+⚠️ [ZtaClient] Re-attestation cycle failed: fetch failed
+⚠️ [ZtaClient] Re-attestation cycle failed: fetch failed
+⚠️ [ZtaClient] Re-attestation cycle failed: fetch failed
+⚠️ [ZtaClient] Re-attestation cycle failed: device_not_active
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+full   enrol 33.3 ms (TPM 15.6) | re-attestation 10.8 ms (TPM 1.9) | login 124.7 ms (TPM 3.5) | request 12.0 ms (TPM 1.5) | login + step-up 134.3 ms (TPM 3.5)  [41 s]
+⚠️ [ZtaClient] Re-attestation cycle failed: fetch failed
+⚠️ [ZtaClient] Re-attestation cycle failed: fetch failed
+⚠️ [ZtaClient] Re-attestation cycle failed: fetch failed
+⚠️ [ZtaClient] Re-attestation cycle failed: fetch failed
+⚠️ [ZtaClient] Re-attestation cycle failed: fetch failed
+⚠️ [ZtaClient] Re-attestation cycle failed: device_not_active
+⚠️ [ZtaClient] Re-attestation cycle failed: device_not_active
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:45523
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:41177
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:39753
+B2     enrol 32.5 ms (TPM 15.6) | re-attestation 10.6 ms (TPM 1.9) | login 125.0 ms (TPM 3.4) | request 11.8 ms (TPM 1.5) | login + step-up 133.3 ms (TPM 3.4)  [16 s]
+⚠️ [ZtaClient] Re-attestation cycle failed: fetch failed
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:38369
+⚠️ [ZtaClient] Re-attestation cycle failed: TPM unavailable: connect ECONNREFUSED 127.0.0.1:43865
+B3     enrol 32.9 ms (TPM 15.4) | re-attestation 10.6 ms (TPM 1.9) | login 123.9 ms (TPM 3.4) | request 12.1 ms (TPM 1.5) | login + step-up 132.0 ms (TPM 3.4)  [14 s]
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+full   enrol 33.2 ms (TPM 15.6) | re-attestation 10.8 ms (TPM 1.9) | login 124.7 ms (TPM 3.5) | request 12.0 ms (TPM 1.5) | login + step-up 134.4 ms (TPM 3.5)  [42 s]
+Wrote /home/mimohit/zta/results/e1-final/20261023-1623/bench-tls/paired/e9-costs.json
+⚠️ [ZtaClient] Re-attestation cycle failed: fetch failed
+⚠️ [ZtaClient] Re-attestation cycle failed: fetch failed
+⚠️ [ZtaClient] Re-attestation cycle failed: fetch failed
+⚠️ [ZtaClient] Re-attestation cycle failed: fetch failed
+⚠️ [ZtaClient] Re-attestation cycle failed: fetch failed
+⚠️ [ZtaClient] Re-attestation cycle failed: fetch failed
+== 2026-10-24T05:05:13+06:00 E4 knee (250, 300, 350 req/s)
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+[RealTpm] SRK handle: 0x81000001
+E4: 64 clients, rates 250,300,350 req/s, 60s (+10s warm-up) x 5 runs, stack on CPUs 0,2,4,6
+run 1 rate   250: achieved   250/s  p50 12.3 p95 20.4 p99 110.7 ms  errors 0.00% {"200":15000}
+run 1 rate   300: achieved   300/s  p50 301.2 p95 1196.2 p99 8124.8 ms  errors 0.00% {"200":18000}
+run 1 rate   350: achieved   330/s  p50 5937.6 p95 11580.0 p99 20203.4 ms  errors 5.67% {"0":963,"200":19809,"401":228}
+run 2 rate   250: achieved   250/s  p50 12.8 p95 19.1 p99 38.0 ms  errors 0.00% {"200":15000}
+run 2 rate   300: achieved   296/s  p50 341.8 p95 1060.9 p99 1278.0 ms  errors 1.27% {"0":16,"200":17771,"401":213}
+run 2 rate   350: achieved   330/s  p50 5728.1 p95 11452.7 p99 17638.4 ms  errors 5.67% {"0":866,"200":19810,"401":324}
+run 3 rate   250: achieved   250/s  p50 12.3 p95 17.2 p99 27.1 ms  errors 0.00% {"200":15000}
+run 3 rate   300: achieved   300/s  p50 303.7 p95 1305.0 p99 2808.1 ms  errors 0.00% {"200":18000}
+run 3 rate   350: achieved   282/s  p50 4077.7 p95 8342.4 p99 9163.1 ms  errors 19.54% {"0":759,"200":16897,"401":3344}
+run 4 rate   250: achieved   250/s  p50 17.2 p95 32.6 p99 52.0 ms  errors 0.00% {"200":15000}
+run 4 rate   300: achieved   296/s  p50 460.8 p95 1360.7 p99 10500.7 ms  errors 1.20% {"200":17784,"401":216}
+run 4 rate   350: achieved   331/s  p50 6185.8 p95 11971.6 p99 20192.9 ms  errors 5.39% {"0":832,"200":19868,"401":300}
+run 5 rate   250: achieved   250/s  p50 12.6 p95 18.1 p99 28.8 ms  errors 0.00% {"200":15000}
+run 5 rate   300: achieved   300/s  p50 461.6 p95 1171.0 p99 2101.9 ms  errors 0.00% {"200":18000}
+run 5 rate   350: achieved   329/s  p50 5578.4 p95 11746.9 p99 16624.6 ms  errors 5.97% {"0":909,"200":19747,"401":344}
+== 2026-10-24T05:28:44+06:00 rerun done

@@ -1,0 +1,320 @@
+{
+  "M1": {
+    "layer": "Enrolment",
+    "title": "EK certificate chain to a vendor root, and SPKI = EK",
+    "status": "necessary",
+    "flippingAttacks": [
+      "A02",
+      "A03:x509"
+    ],
+    "untaggedFlips": [],
+    "didPairs": []
+  },
+  "M2": {
+    "layer": "Enrolment",
+    "title": "Inventory membership and one-time code",
+    "status": "necessary",
+    "flippingAttacks": [
+      "A01"
+    ],
+    "untaggedFlips": [],
+    "didPairs": []
+  },
+  "M3": {
+    "layer": "Enrolment",
+    "title": "Credential activation (s′ = s)",
+    "status": "necessary",
+    "flippingAttacks": [
+      "A04"
+    ],
+    "untaggedFlips": [],
+    "didPairs": []
+  },
+  "M4": {
+    "layer": "Attestation",
+    "title": "Quote freshness (extraData = single-use n_V)",
+    "status": "necessary",
+    "flippingAttacks": [
+      "A08"
+    ],
+    "untaggedFlips": [],
+    "didPairs": []
+  },
+  "M5": {
+    "layer": "Attestation",
+    "title": "Quote signer is the AK (name or qualified name)",
+    "status": "necessary",
+    "flippingAttacks": [
+      "A09"
+    ],
+    "untaggedFlips": [],
+    "didPairs": []
+  },
+  "M6": {
+    "layer": "Attestation",
+    "title": "PCR selection pinned to the reference-value profile (PCR0–7, or the set it declares)",
+    "status": "not shown",
+    "flippingAttacks": [],
+    "untaggedFlips": [],
+    "didPairs": [
+      {
+        "attack": "A07",
+        "predictedDid": true,
+        "reason": "stays R under -M6"
+      }
+    ]
+  },
+  "M7": {
+    "layer": "Attestation",
+    "title": "Boot-state appraisal (event-log replay against RV, or golden digest)",
+    "status": "necessary",
+    "flippingAttacks": [
+      "A06"
+    ],
+    "untaggedFlips": [],
+    "didPairs": [
+      {
+        "attack": "A07",
+        "predictedDid": true,
+        "reason": "stays R under -M7"
+      }
+    ]
+  },
+  "M8": {
+    "layer": "Attestation",
+    "title": "Certification of K_B and its attributes",
+    "status": "necessary",
+    "flippingAttacks": [
+      "A05:dummy_certify",
+      "A05:genuine_certify_different_key"
+    ],
+    "untaggedFlips": [],
+    "didPairs": []
+  },
+  "M9": {
+    "layer": "Issuance",
+    "title": "AR signature, expiry and status at PAR",
+    "status": "necessary",
+    "flippingAttacks": [
+      "A10:invalid_signature",
+      "A10:expired",
+      "A10:status_fail"
+    ],
+    "untaggedFlips": [],
+    "didPairs": []
+  },
+  "M10": {
+    "layer": "Issuance",
+    "title": "C2: AR.jkt = dpop_jkt",
+    "status": "necessary",
+    "flippingAttacks": [
+      "A11"
+    ],
+    "untaggedFlips": [],
+    "didPairs": []
+  },
+  "M11": {
+    "layer": "Issuance",
+    "title": "Single use of AR jti, request_uri and code",
+    "status": "necessary",
+    "flippingAttacks": [
+      "A12:ar_jti",
+      "A12:request_uri",
+      "A12:code"
+    ],
+    "untaggedFlips": [],
+    "didPairs": []
+  },
+  "M12": {
+    "layer": "Issuance",
+    "title": "Device owner and status checked at login",
+    "status": "necessary",
+    "flippingAttacks": [
+      "A13"
+    ],
+    "untaggedFlips": [],
+    "didPairs": []
+  },
+  "M13": {
+    "layer": "Issuance",
+    "title": "Token-endpoint DPoP: nonce, and proof key = code.jkt",
+    "status": "necessary",
+    "flippingAttacks": [
+      "A14"
+    ],
+    "untaggedFlips": [],
+    "didPairs": []
+  },
+  "M14": {
+    "layer": "Issuance",
+    "title": "Role from the directory; request parameters ignored",
+    "status": "necessary",
+    "flippingAttacks": [
+      "A15"
+    ],
+    "untaggedFlips": [],
+    "didPairs": []
+  },
+  "M15": {
+    "layer": "Per-request",
+    "title": "DPoP scheme required (no Bearer)",
+    "status": "not shown",
+    "flippingAttacks": [],
+    "untaggedFlips": [],
+    "didPairs": [
+      {
+        "attack": "A16",
+        "predictedDid": true,
+        "reason": "stays R under -M15"
+      }
+    ]
+  },
+  "M16": {
+    "layer": "Per-request",
+    "title": "C3: Thumb(proof key) = AT.cnf.jkt",
+    "status": "necessary",
+    "flippingAttacks": [
+      "A17"
+    ],
+    "untaggedFlips": [],
+    "didPairs": [
+      {
+        "attack": "A16",
+        "predictedDid": true,
+        "reason": "stays R under -M16"
+      }
+    ]
+  },
+  "M17": {
+    "layer": "Per-request",
+    "title": "PEP server nonce",
+    "status": "necessary",
+    "flippingAttacks": [
+      "A18"
+    ],
+    "untaggedFlips": [],
+    "didPairs": [
+      {
+        "attack": "A19:delayed",
+        "predictedDid": true,
+        "reason": "stays R under -M17"
+      }
+    ]
+  },
+  "M18": {
+    "layer": "Per-request",
+    "title": "jti replay cache and iat window",
+    "status": "necessary",
+    "flippingAttacks": [
+      "A19:immediate"
+    ],
+    "untaggedFlips": [],
+    "didPairs": [
+      {
+        "attack": "A19:delayed",
+        "predictedDid": true,
+        "reason": "stays R under -M18"
+      }
+    ]
+  },
+  "M19": {
+    "layer": "Per-request",
+    "title": "htm, htu and ath binding",
+    "status": "necessary",
+    "flippingAttacks": [
+      "A20"
+    ],
+    "untaggedFlips": [],
+    "didPairs": []
+  },
+  "M20": {
+    "layer": "Per-request",
+    "title": "Attributes only from AT; owner rule at the PDP",
+    "status": "necessary",
+    "flippingAttacks": [
+      "A15"
+    ],
+    "untaggedFlips": [],
+    "didPairs": []
+  },
+  "M21": {
+    "layer": "Lifecycle",
+    "title": "Per-request device status and attestation age",
+    "status": "necessary",
+    "flippingAttacks": [
+      "A21:at_revoked"
+    ],
+    "untaggedFlips": [],
+    "didPairs": []
+  },
+  "M22": {
+    "layer": "Lifecycle",
+    "title": "Refresh refused for a device that is not active",
+    "status": "necessary",
+    "flippingAttacks": [
+      "A21:refresh_revoked"
+    ],
+    "untaggedFlips": [],
+    "didPairs": []
+  },
+  "M23": {
+    "layer": "Lifecycle",
+    "title": "Replayed or unsigned evidence cannot suspend a device",
+    "status": "necessary",
+    "flippingAttacks": [
+      "A22"
+    ],
+    "untaggedFlips": [],
+    "didPairs": []
+  },
+  "M24": {
+    "layer": "Step-up",
+    "title": "Step-up accepted only in a gated transaction",
+    "status": "necessary",
+    "flippingAttacks": [
+      "A23:ungated_stepup"
+    ],
+    "untaggedFlips": [],
+    "didPairs": []
+  },
+  "M25": {
+    "layer": "Step-up",
+    "title": "One WebAuthn credential per (user, device); controlled replacement",
+    "status": "necessary",
+    "flippingAttacks": [
+      "A23:race_registration"
+    ],
+    "untaggedFlips": [],
+    "didPairs": []
+  },
+  "M26": {
+    "layer": "Isolation",
+    "title": "Resource server reachable only from the PEP",
+    "status": "necessary",
+    "flippingAttacks": [
+      "A24"
+    ],
+    "untaggedFlips": [],
+    "didPairs": []
+  },
+  "M27": {
+    "layer": "Adaptive MFA",
+    "title": "Risk-adaptive step-up at login: WebAuthn when rho >= theta_login, deny when rho >= theta_deny",
+    "status": "necessary",
+    "flippingAttacks": [
+      "A25:new_login"
+    ],
+    "untaggedFlips": [],
+    "didPairs": []
+  },
+  "M28": {
+    "layer": "Adaptive MFA",
+    "title": "Per-request risk check at the PDP: rho >= theta(sensitivity) needs a recent step-up",
+    "status": "necessary",
+    "flippingAttacks": [
+      "A25:moved_session"
+    ],
+    "untaggedFlips": [],
+    "didPairs": []
+  }
+}

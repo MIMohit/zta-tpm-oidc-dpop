@@ -16,6 +16,20 @@ const SHORT = { rejected: "R", accepted: "A", "n/a": "n/a", error: "E" };
  * Validates and normalises a result record (schema zta-attack/1; the ablation, code and
  * evidence fields are additive).
  */
+// Network-level failures (undici "fetch failed", refused/reset connections, timeouts). An attack
+// module that catches one and reports "rejected" would credit an outage to the defences.
+const INFRA_FAILURE = /fetch failed|ECONNREFUSED|ECONNRESET|EHOSTUNREACH|ETIMEDOUT|EAI_AGAIN|socket hang up|other side closed/i;
+
+/**
+ * Reason text when a reported rejection was caused by unreachable infrastructure, else null.
+ * @param {{ outcome?: string, stoppedAt?: { reason?: string } | null, evidence?: any }} res
+ */
+export function infrastructureFailure(res) {
+  if (res?.outcome !== "rejected") return null;
+  const texts = [res.stoppedAt?.reason, ...Object.values(res.evidence || {}).filter((v) => typeof v === "string")];
+  return texts.find((t) => t && INFRA_FAILURE.test(t)) || null;
+}
+
 export function normaliseResult(raw) {
   const allowedOutcomes = ["rejected", "accepted", "n/a", "error"];
   const outcome = allowedOutcomes.includes(raw.outcome) ? raw.outcome : "error";
@@ -35,6 +49,11 @@ export function normaliseResult(raw) {
     runId: String(raw.runId || ""),
     ts: raw.ts || new Date().toISOString(),
     mode: raw.mode || "inproc",
+    tpm: raw.tpm || "sim",
+    // Only these fields: a row must never carry a whole stack object (keys, config)
+    stack: raw.stack
+      ? { idp: raw.stack.idp ?? null, hsm: Boolean(raw.stack.hsm), timeScale: raw.stack.timeScale ?? 1, processes: raw.stack.processes ?? null, tls: Boolean(raw.stack.tls) }
+      : null,
     config: String(raw.config || "full"),
     baseline: raw.baseline ?? null,
     mechanismsOff: Array.isArray(raw.mechanismsOff) ? [...raw.mechanismsOff] : [],
@@ -59,7 +78,9 @@ export function normaliseResult(raw) {
 
 export function appendJsonlRow(filePath, row) {
   fs.mkdirSync(path.dirname(filePath), { recursive: true });
-  fs.appendFileSync(filePath, JSON.stringify(row) + "\n", "utf8");
+  // Evidence can carry TPM fields such as clock values as BigInt
+  const line = JSON.stringify(row, (_k, v) => (typeof v === "bigint" ? v.toString() : v));
+  fs.appendFileSync(filePath, line + "\n", "utf8");
 }
 
 function repOutcome(repRows) {

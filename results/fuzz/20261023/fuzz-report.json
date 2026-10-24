@@ -1,0 +1,316 @@
+{
+  "at": "2026-10-23T10:13:51.883Z",
+  "node": "v26.7.0",
+  "iters": 200000,
+  "seed": 20261023,
+  "targets": [
+    {
+      "target": "eventlog",
+      "iters": 200000,
+      "seed": 20261023,
+      "counts": {
+        "rejected": 157156,
+        "parsed": 42844,
+        "accepted": 0,
+        "unchecked": 0,
+        "hang": 0
+      },
+      "findings": [],
+      "uniqueUnchecked": {},
+      "seconds": 15
+    },
+    {
+      "target": "attest",
+      "iters": 200000,
+      "seed": 20261023,
+      "counts": {
+        "rejected": 153137,
+        "parsed": 46863,
+        "accepted": 0,
+        "unchecked": 0,
+        "hang": 0
+      },
+      "findings": [],
+      "uniqueUnchecked": {},
+      "seconds": 4
+    },
+    {
+      "target": "tpmt",
+      "iters": 200000,
+      "seed": 20261023,
+      "counts": {
+        "rejected": 147953,
+        "parsed": 52047,
+        "accepted": 0,
+        "unchecked": 0,
+        "hang": 0
+      },
+      "findings": [],
+      "uniqueUnchecked": {},
+      "seconds": 5
+    },
+    {
+      "target": "x509",
+      "iters": 200000,
+      "seed": 20261023,
+      "counts": {
+        "rejected": 199871,
+        "parsed": 100,
+        "accepted": 29,
+        "unchecked": 0,
+        "hang": 0
+      },
+      "findings": [
+        {
+          "kind": "accepted",
+          "i": 1881,
+          "detail": null,
+          "file": "findings/x509/accepted-1881.bin"
+        },
+        {
+          "kind": "accepted",
+          "i": 4996,
+          "detail": null,
+          "file": "findings/x509/accepted-4996.bin"
+        },
+        {
+          "kind": "accepted",
+          "i": 21060,
+          "detail": null,
+          "file": "findings/x509/accepted-21060.bin"
+        },
+        {
+          "kind": "accepted",
+          "i": 25126,
+          "detail": null,
+          "file": "findings/x509/accepted-25126.bin"
+        },
+        {
+          "kind": "accepted",
+          "i": 39102,
+          "detail": null,
+          "file": "findings/x509/accepted-39102.bin"
+        },
+        {
+          "kind": "accepted",
+          "i": 41061,
+          "detail": null,
+          "file": "findings/x509/accepted-41061.bin"
+        },
+        {
+          "kind": "accepted",
+          "i": 52379,
+          "detail": null,
+          "file": "findings/x509/accepted-52379.bin"
+        },
+        {
+          "kind": "accepted",
+          "i": 59838,
+          "detail": null,
+          "file": "findings/x509/accepted-59838.bin"
+        },
+        {
+          "kind": "accepted",
+          "i": 60004,
+          "detail": null,
+          "file": "findings/x509/accepted-60004.bin"
+        },
+        {
+          "kind": "accepted",
+          "i": 75515,
+          "detail": null,
+          "file": "findings/x509/accepted-75515.bin"
+        },
+        {
+          "kind": "accepted",
+          "i": 76561,
+          "detail": null,
+          "file": "findings/x509/accepted-76561.bin"
+        },
+        {
+          "kind": "accepted",
+          "i": 81632,
+          "detail": null,
+          "file": "findings/x509/accepted-81632.bin"
+        },
+        {
+          "kind": "accepted",
+          "i": 93388,
+          "detail": null,
+          "file": "findings/x509/accepted-93388.bin"
+        },
+        {
+          "kind": "accepted",
+          "i": 101076,
+          "detail": null,
+          "file": "findings/x509/accepted-101076.bin"
+        },
+        {
+          "kind": "accepted",
+          "i": 103196,
+          "detail": null,
+          "file": "findings/x509/accepted-103196.bin"
+        },
+        {
+          "kind": "accepted",
+          "i": 104503,
+          "detail": null,
+          "file": "findings/x509/accepted-104503.bin"
+        },
+        {
+          "kind": "accepted",
+          "i": 110018,
+          "detail": null,
+          "file": "findings/x509/accepted-110018.bin"
+        },
+        {
+          "kind": "accepted",
+          "i": 124860,
+          "detail": null,
+          "file": "findings/x509/accepted-124860.bin"
+        },
+        {
+          "kind": "accepted",
+          "i": 144382,
+          "detail": null,
+          "file": "findings/x509/accepted-144382.bin"
+        },
+        {
+          "kind": "accepted",
+          "i": 144631,
+          "detail": null,
+          "file": "findings/x509/accepted-144631.bin"
+        },
+        {
+          "kind": "accepted",
+          "i": 146080,
+          "detail": null,
+          "file": "findings/x509/accepted-146080.bin"
+        },
+        {
+          "kind": "accepted",
+          "i": 152448,
+          "detail": null,
+          "file": "findings/x509/accepted-152448.bin"
+        },
+        {
+          "kind": "accepted",
+          "i": 161352,
+          "detail": null,
+          "file": "findings/x509/accepted-161352.bin"
+        },
+        {
+          "kind": "accepted",
+          "i": 165001,
+          "detail": null,
+          "file": "findings/x509/accepted-165001.bin"
+        },
+        {
+          "kind": "accepted",
+          "i": 165126,
+          "detail": null,
+          "file": "findings/x509/accepted-165126.bin"
+        },
+        {
+          "kind": "accepted",
+          "i": 166211,
+          "detail": null,
+          "file": "findings/x509/accepted-166211.bin"
+        },
+        {
+          "kind": "accepted",
+          "i": 168093,
+          "detail": null,
+          "file": "findings/x509/accepted-168093.bin"
+        },
+        {
+          "kind": "accepted",
+          "i": 174091,
+          "detail": null,
+          "file": "findings/x509/accepted-174091.bin"
+        },
+        {
+          "kind": "accepted",
+          "i": 190936,
+          "detail": null,
+          "file": "findings/x509/accepted-190936.bin"
+        }
+      ],
+      "uniqueUnchecked": {},
+      "seconds": 42
+    },
+    {
+      "target": "dpop",
+      "iters": 200000,
+      "seed": 20261023,
+      "counts": {
+        "rejected": 199903,
+        "parsed": 90,
+        "accepted": 7,
+        "unchecked": 0,
+        "hang": 0
+      },
+      "findings": [
+        {
+          "kind": "accepted",
+          "i": 9821,
+          "detail": null,
+          "file": "findings/dpop/accepted-9821.bin"
+        },
+        {
+          "kind": "accepted",
+          "i": 29895,
+          "detail": null,
+          "file": "findings/dpop/accepted-29895.bin"
+        },
+        {
+          "kind": "accepted",
+          "i": 62682,
+          "detail": null,
+          "file": "findings/dpop/accepted-62682.bin"
+        },
+        {
+          "kind": "accepted",
+          "i": 112897,
+          "detail": null,
+          "file": "findings/dpop/accepted-112897.bin"
+        },
+        {
+          "kind": "accepted",
+          "i": 117202,
+          "detail": null,
+          "file": "findings/dpop/accepted-117202.bin"
+        },
+        {
+          "kind": "accepted",
+          "i": 140757,
+          "detail": null,
+          "file": "findings/dpop/accepted-140757.bin"
+        },
+        {
+          "kind": "accepted",
+          "i": 169767,
+          "detail": null,
+          "file": "findings/dpop/accepted-169767.bin"
+        }
+      ],
+      "uniqueUnchecked": {},
+      "seconds": 21
+    },
+    {
+      "target": "quote",
+      "iters": 200000,
+      "seed": 20261023,
+      "counts": {
+        "rejected": 199511,
+        "parsed": 489,
+        "accepted": 0,
+        "unchecked": 0,
+        "hang": 0
+      },
+      "findings": [],
+      "uniqueUnchecked": {},
+      "seconds": 25
+    }
+  ]
+}

@@ -64,19 +64,12 @@ export default {
     }
 
     const { request_uri } = await parRes.json();
-    const authRes = await fetch(`${ctx.urls.idpUrl}/oauth/authorize?client_id=zta-agent&request_uri=${encodeURIComponent(request_uri)}`);
-    const cookie = (authRes.headers.get("set-cookie") || "").split(";")[0];
+    const authResAuth = await ctx.authorize(`${ctx.urls.idpUrl}/oauth/authorize?client_id=zta-agent&request_uri=${encodeURIComponent(request_uri)}`);
+    const authRes = authResAuth.res;
+    const cookie = authResAuth.cookie;
 
     // Attacker submits Alice's stolen password from Bob's device session
-    const loginRes = await fetch(`${ctx.urls.idpUrl}/oauth/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Cookie: cookie,
-      },
-      body: JSON.stringify({ username: "alice", password: "alice-pass" }),
-    });
+    const loginRes = await ctx.primaryLogin({ auth: authResAuth, username: "alice", password: "alice-pass" });
 
     if (!loginRes.ok) {
       const body = await loginRes.json().catch(() => ({}));

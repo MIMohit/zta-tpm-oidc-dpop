@@ -1,0 +1,45 @@
+| Attack | Mechanisms | full | -M1 | -M2 | -M3 | -M4 | -M5 | -M6 | -M7 | -M8 | -M9 | -M10 | -M11 | -M12 | -M13 | -M14 | -M15 | -M16 | -M17 | -M18 | -M19 | -M20 | -M21 | -M22 | -M23 | -M24 | -M25 | -M26 | -M27 | -M28 | B0 | B1 | B2 | B3 |
+| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| A01 | M2 | R | R | A | R | R | 0/3 (E1) | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | A | A | R | R |
+| A02 | M1 | R | A | R | R | R | 0/3 (E1) | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | A | A | R | R |
+| A03 | M1 | R | A | R | R | R | 0/3 (E1) | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | A | A | R | R |
+| ↳ A03:jws | M1 | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a |
+| ↳ A03:x509 | M1 | R | A | R | R | R | 0/3 (E1) | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | A | A | R | R |
+| A04 | M3 | R | R | R | A | R | 0/3 (E1) | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | A | A | R | R |
+| A05 | M8 | R | R | R | R | R | R | R | R | A | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | A | A | A | R |
+| ↳ A05:dummy_certify | M8 | R | R | R | R | R | R | R | R | A | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | A | A | A | R |
+| ↳ A05:genuine_certify_different_key | M8 | R | R | R | R | R | R | R | R | A | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | A | A | A | R |
+| A06 | M7 | R | R | R | R | R | R | R | A | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | A | A | R | R |
+| A07 | M6 M7 | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | A | A | R | R |
+| A08 | M4 | R | R | R | R | A | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | A | A | R | R |
+| A09 | M5 | R | R | R | R | R | A | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | A | A | R | R |
+| A10 | M9 | R | R | R | R | R | R | R | R | R | A | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | A | A | R | R |
+| ↳ A10:invalid_signature | M9 | R | R | R | R | R | R | R | R | R | A | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | A | A | R | R |
+| ↳ A10:expired | M9 | R | R | R | R | R | R | R | R | R | A | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | A | A | R | R |
+| ↳ A10:status_fail | M9 | R | R | R | R | R | R | R | R | R | A | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | A | A | R | R |
+| A11 | M10 | R | R | R | R | R | R | R | R | R | R | A | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | A | A | A | R |
+| A12 | M11 | R | R | R | R | R | R | R | R | R | R | R | A | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R |
+| ↳ A12:ar_jti | M11 | R | R | R | R | R | R | R | R | R | R | R | A | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R |
+| ↳ A12:request_uri | M11 | R | R | R | R | R | R | R | R | R | R | R | A | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R |
+| ↳ A12:code | M11 | R | R | R | R | R | R | R | R | R | R | R | A | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R |
+| A13 | M12 | R | R | R | R | R | R | R | R | R | R | R | R | A | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | A | A | R | R |
+| A14 | M13 | R | R | R | R | R | R | R | R | R | R | R | R | R | A | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | A | R | R | R |
+| A15 | M14 M20 | R | R | R | R | R | R | R | R | R | R | R | R | R | R | A | R | R | R | R | R | A | R | R | R | R | R | R | R | R | R | R | R | R |
+| A16 | M15 | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | A | R | R | R |
+| A17 | M16 | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | A | R | R | R | R | R | R | R | R | R | R | R | R | A | R | R | R |
+| A18 | M17 | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | A | R | R | R | R | R | R | R | R | R | R | R | A | A | A | R |
+| A19 | M18 M17 | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | A | R | R | R | R | R | R | R | R | R | R | A | A | A | R |
+| ↳ A19:immediate | M18 | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | A | R | R | R | R | R | R | R | R | R | R | A | A | A | R |
+| ↳ A19:delayed | M17 M18 | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | A | A | A | R |
+| A20 | M19 | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | A | R | R | R | R | R | R | R | R | R | A | R | R | R |
+| A21 | M21 M22 | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | A | A | R | R | R | R | R | R | A | A | A | A |
+| ↳ A21:at_revoked | M21 | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | A | R | R | R | R | R | R | R | A | A | A | A |
+| ↳ A21:refresh_revoked | M22 | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | A | R | R | R | R | R | R | A | A | A | R |
+| A22 | M23 | R | R | R | R | n/a | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | A | R | R | R | R | R | n/a | n/a | A | R |
+| A23 | M24 M25 | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | A | A | R | R | R | R | R | R | R |
+| ↳ A23:ungated_stepup | M24 | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | A | R | R | R | R | R | R | R | R |
+| ↳ A23:race_registration | M25 | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | A | R | R | R | R | R | R | R |
+| A24 | M26 | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | A | R | R | R | R | R | R |
+| A25 | M27 M28 | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | A | A | R | R | R | R |
+| ↳ A25:new_login | M27 | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | A | R | R | R | R | R |
+| ↳ A25:moved_session | M28 | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | R | A | R | R | R | R |

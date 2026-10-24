@@ -1,4 +1,6 @@
 b3533a669e7b19ddcc34e1dd0c2d68269a5c8a8fda5de42fdc7ee08759e330dd  qemu-edk2-swtpm/ubuntu-noble-arm64-edk2.bin
+0fbfba0e4e80662829f5465f01b9715600956b0802808d85b001e4ab68920d22  qemu-ubuntu-noble/golden-grub-6.8.bin
+0a27316608264962ff958ac2f09de90418ae33b52e4dfdf910d10a8559a5e09f  qemu-ubuntu-noble/tampered-grub-7.0.bin
 e96acdafe7b7e31473326028613351f166615f82427340837aacd299c2c16dd1  tpm2-tools/event-arch-linux.bin
 811cd60f064f0ab102eaf87cfc32daf39eca76067f548fae3659906378bc7864  tpm2-tools/event-bootorder.bin
 8334fef7db8976292abeaf39e16abcecd8fc01f501bac50f8f6bd837425029c5  tpm2-tools/event-gce-ubuntu-2104-log.bin

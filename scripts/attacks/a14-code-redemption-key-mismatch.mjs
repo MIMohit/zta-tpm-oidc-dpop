@@ -26,14 +26,11 @@ export default {
 
     // Alice performs login up to obtaining authorization code
     const loginStart = await client.startLogin();
-    const authRes = await fetch(loginStart.authorizeUrl);
-    const cookie = (authRes.headers.get("set-cookie") || "").split(";")[0];
+    const authResAuth = await ctx.authorize(loginStart.authorizeUrl);
+    const authRes = authResAuth.res;
+    const cookie = authResAuth.cookie;
 
-    const loginRes = await fetch(`${ctx.urls.idpUrl}/oauth/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", Accept: "application/json", Cookie: cookie },
-      body: JSON.stringify({ username: "alice", password: "alice-pass" }),
-    });
+    const loginRes = await ctx.primaryLogin({ auth: authResAuth, username: "alice", password: "alice-pass" });
 
     const { code } = await loginRes.json();
     const codeVerifier = client.pendingLogin.codeVerifier;

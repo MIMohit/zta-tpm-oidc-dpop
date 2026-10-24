@@ -15,10 +15,11 @@ import { isMain } from "../lib/main.js";
 import { startEnrol, finishEnrol } from "../lib/verifier/enrol.js";
 import { requestAppraiseNonce, appraiseDevice } from "../lib/verifier/appraise.js";
 import { addToInventory } from "../lib/verifier/inventory.js";
-import { loadReferenceValues } from "../lib/verifier/reference-values.js";
+import { loadReferenceValues, loadRvProfiles } from "../lib/verifier/reference-values.js";
 import { internalFetch } from "../lib/internal-auth.js";
 import { printBannerOnce } from "../lib/ablation.js";
 import { mountHealth } from "../lib/health.js";
+import { listen } from "../lib/tls.js";
 
 /**
  * Creates the Attestation Verifier Express application.
@@ -36,6 +37,8 @@ export function createApp(cfg = loadConfig()) {
   const trustAnchors = cfg.trustAnchors || path.join(dataDir, "vendor-ca");
   const ekRootsDir = cfg.ekRootsDir || path.join(dataDir, "ek-roots");
   const referenceValues = cfg.referenceValues || loadReferenceValues();
+  // Named per-platform profiles (VERIFIER_RV_PROFILES=name=path,...), chosen per device by inventory
+  const rvProfiles = loadRvProfiles(cfg.rvProfiles || process.env.VERIFIER_RV_PROFILES);
 
   let verifierKeyPromise = null;
   function getVerifierKey() {
@@ -80,6 +83,8 @@ export function createApp(cfg = loadConfig()) {
         ekRootsDir,
         cfg,
         clock: cfg.clock,
+        referenceValues,
+        rvProfiles,
       });
 
       if (!result.ok) {
@@ -93,6 +98,7 @@ export function createApp(cfg = loadConfig()) {
         sessionId: result.sessionId,
         blob: result.blob,
         nonce: result.nonce,
+        pcrs: result.pcrs,
       });
     } catch (err) {
       console.error("❌ [/v/enrol/start] Error:", err);
@@ -113,6 +119,7 @@ export function createApp(cfg = loadConfig()) {
         store,
         cfg,
         referenceValues,
+        rvProfiles,
         clock: cfg.clock,
       });
 
@@ -141,6 +148,8 @@ export function createApp(cfg = loadConfig()) {
         devId,
         store,
         clock: cfg.clock,
+        referenceValues,
+        rvProfiles,
       });
 
       if (!result.ok) {
@@ -153,6 +162,7 @@ export function createApp(cfg = loadConfig()) {
       res.json({
         nonceId: result.nonceId,
         nonce: result.nonce,
+        pcrs: result.pcrs,
       });
     } catch (err) {
       console.error("❌ [/v/appraise/nonce] Error:", err);
@@ -174,6 +184,7 @@ export function createApp(cfg = loadConfig()) {
         cfg,
         verifierKey,
         referenceValues,
+        rvProfiles,
         clock: cfg.clock,
       });
 
@@ -280,9 +291,12 @@ export function createApp(cfg = loadConfig()) {
   // Add device to inventory
   internalRouter.post("/inventory", async (req, res) => {
     try {
-      const { devId, user, code, ttlMs } = req.body;
+      const { devId, user, code, ttlMs, rvProfile } = req.body;
       if (!devId || !user) {
         return res.status(400).json({ error: "missing_dev_id_or_user", message: "devId and user are required" });
+      }
+      if (rvProfile && !Object.hasOwn(rvProfiles, rvProfile)) {
+        return res.status(400).json({ error: "unknown_rv_profile", message: `No reference-value profile named ${rvProfile}` });
       }
 
       const inv = await addToInventory(store, {
@@ -290,6 +304,7 @@ export function createApp(cfg = loadConfig()) {
         user,
         code,
         ttlMs,
+        rvProfile,
         clock: cfg.clock,
       });
 
@@ -310,9 +325,7 @@ if (isMain(import.meta.url)) {
   const port = 4005;
   const host = "0.0.0.0";
   const app = createApp(cfg);
-  app.listen(port, host, () => {
-    console.log(`🛡️ Attestation Service listening on http://${host}:${port}`);
-  });
+  listen(app, port, host, (url) => console.log(`🛡️ Attestation Service listening on ${url}`));
 }
 
 export default {

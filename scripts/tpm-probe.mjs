@@ -131,13 +131,21 @@ export async function runProbe(options = {}, cfg = loadConfig()) {
     console.log(`                 Name=${eccName}`);
     console.log(`                 Cert in NV (${eccNv}): ${ekEcc.cert ? `${Buffer.from(ekEcc.cert, "base64").length} B` : "absent"} (Chain length: ${ekEcc.chain?.length || 0})`);
 
+    // The P-384 EK template (H-3) needs SHA-384 as nameAlg; some TPMs (e.g. AMD fTPMs) lack SHA-384.
     tpm.ekType = "ecc384";
-    const ekEcc384 = await tpm.getEk();
-    const ecc384DevId = await devIdOf(ekEcc384.publicArea);
-    const ecc384Name = nameOfTpmt(Buffer.from(ekEcc384.publicArea.tpmtPublic, "base64url")).toString("hex");
-    console.log(`    ECC P-384 EK: devId=${ecc384DevId}`);
-    console.log(`                 Name=${ecc384Name}`);
-    console.log(`                 Cert in NV (${ecc384Nv}): ${ekEcc384.cert ? `${Buffer.from(ekEcc384.cert, "base64").length} B` : "absent"} (Chain length: ${ekEcc384.chain?.length || 0})`);
+    let ekEcc384 = null;
+    try {
+      ekEcc384 = await tpm.getEk();
+    } catch (err) {
+      console.log(`    ECC P-384 EK: not supported by this TPM (${err.message})`);
+    }
+    if (ekEcc384) {
+      const ecc384DevId = await devIdOf(ekEcc384.publicArea);
+      const ecc384Name = nameOfTpmt(Buffer.from(ekEcc384.publicArea.tpmtPublic, "base64url")).toString("hex");
+      console.log(`    ECC P-384 EK: devId=${ecc384DevId}`);
+      console.log(`                 Name=${ecc384Name}`);
+      console.log(`                 Cert in NV (${ecc384Nv}): ${ekEcc384.cert ? `${Buffer.from(ekEcc384.cert, "base64").length} B` : "absent"} (Chain length: ${ekEcc384.chain?.length || 0})`);
+    }
 
     // 3. SRK Probe
     console.log(`\n[3] Storage Root Key (SRK):`);

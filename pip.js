@@ -6,6 +6,7 @@ import { isMain } from "./lib/main.js";
 import { risk } from "./lib/risk.js";
 import { printBannerOnce } from "./lib/ablation.js";
 import { mountHealth } from "./lib/health.js";
+import { listen } from "./lib/tls.js";
 
 /**
  * Creates the PIP Express application.
@@ -179,9 +180,7 @@ if (isMain(import.meta.url)) {
   printBannerOnce("pip");
   const cfg = loadConfig();
   const PORT = process.env.PORT || 4003;
-  createApp(cfg).listen(PORT, () =>
-    console.log(`🔍 PIP running on http://localhost:${PORT}`)
-  );
+  listen(createApp(cfg), PORT, undefined, (url) => console.log(`🔍 PIP running on ${url}`));
 }
 
 export default { createApp };

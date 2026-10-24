@@ -31,7 +31,7 @@ export default {
 
     // Register WebAuthn authenticator for Bob to allow step-up MFA
     const softAuth = new SoftAuthenticator();
-    await softAuth.registerInStore(ctx.stores.idp, "bob", client.devId);
+    await ctx.seedWebauthn(softAuth, { user: "bob", client, password: ctx.passwords.bob });
 
     // 1. Bob attempts to inject role=auditor and acr=mfa in PAR request
     const codeVerifier = crypto.randomBytes(32).toString("base64url");
@@ -72,18 +72,11 @@ export default {
     }
 
     const { request_uri } = await parRes.json();
-    const authRes = await fetch(`${ctx.urls.idpUrl}/oauth/authorize?client_id=zta-agent&request_uri=${request_uri}`);
-    const cookie = (authRes.headers.get("set-cookie") || "").split(";")[0];
+    const authResAuth = await ctx.authorize(`${ctx.urls.idpUrl}/oauth/authorize?client_id=zta-agent&request_uri=${request_uri}`);
+    const authRes = authResAuth.res;
+    const cookie = authResAuth.cookie;
 
-    const loginRes = await fetch(`${ctx.urls.idpUrl}/oauth/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Cookie: cookie,
-      },
-      body: JSON.stringify({ username: "bob", password: "bob-pass" }),
-    });
+    const loginRes = await ctx.primaryLogin({ auth: authResAuth, username: "bob", password: "bob-pass" });
 
     const loginData = await loginRes.json();
     let code = loginData.code;

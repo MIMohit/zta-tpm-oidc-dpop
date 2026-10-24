@@ -13,6 +13,8 @@ import { createAuditLog } from "./lib/audit-log.js";
 import { defaultPolicyData, loadPolicyData } from "./lib/policy.js";
 import { on, printBannerOnce } from "./lib/ablation.js";
 import { mountHealth } from "./lib/health.js";
+import { listen } from "./lib/tls.js";
+import { getClientIp } from "./lib/idp/client-ip.js";
 
 /**
  * Creates the Policy Enforcement Point (PEP) Express application.
@@ -28,7 +30,7 @@ export function createApp(cfg = loadConfig()) {
   // CORS: allow browser UI on 5173 and expose protocol headers
   app.use(
     cors({
-      origin: "http://localhost:5173",
+      origin: [cfg.idpIssuer, "http://localhost:5173"].filter(Boolean),
       credentials: true,
       exposedHeaders: ["DPoP-Nonce", "WWW-Authenticate"],
     })
@@ -376,7 +378,7 @@ export function createApp(cfg = loadConfig()) {
 
     // 7. Alg.3 Step 6: Call PDP evaluate
     const pdpUrl = cfg.pdpUrl || cfg.PDP_URL || "http://localhost:4002";
-    const rawIp = req.socket?.remoteAddress || req.ip || "127.0.0.1";
+    const rawIp = getClientIp(req, cfg);
     const ip = rawIp === "::1" || rawIp === "::ffff:127.0.0.1" ? "127.0.0.1" : rawIp;
 
     let pdpData;
@@ -482,9 +484,7 @@ if (isMain(import.meta.url)) {
   printBannerOnce("pep");
   const cfg = loadConfig();
   const PORT = process.env.PORT || 4001;
-  createApp(cfg).listen(PORT, () =>
-    console.log(`🛂 PEP running on http://localhost:${PORT}`)
-  );
+  listen(createApp(cfg), PORT, undefined, (url) => console.log(`🛂 PEP running on ${url}`));
 }
 
 export default { createApp };

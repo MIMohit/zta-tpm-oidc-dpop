@@ -60,13 +60,9 @@ export default {
     // - immediate: 5s later, inside nonce validity window and iat skew (M18 necessary)
     // - delayed: 130s later, past nonce window and iat skew (M17 and M18 give defence-in-depth)
     if (activeVariant === "immediate") {
-      if (typeof ctx.clock?.advance === "function") {
-        ctx.clock.advance(5);
-      }
+      await ctx.advance(5);
     } else {
-      if (typeof ctx.clock?.advance === "function") {
-        ctx.clock.advance(130);
-      }
+      await ctx.advance(130);
     }
 
     const replayRes = await fetch(newsUrl, {

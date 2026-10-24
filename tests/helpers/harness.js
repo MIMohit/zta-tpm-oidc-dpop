@@ -471,6 +471,8 @@ export async function startStack(overrides = {}) {
    * @returns {Promise<{ tokens: any, code: string, res: Response }>}
    */
   async function loginUser(client, { username, password, acrValues, simIp, softAuth }) {
+    // The client keeps its simulated location for the requests that follow the login
+    if (simIp) client.simIp = simIp;
     const loginStart = await client.startLogin({ acrValues });
     const authRes = await fetch(loginStart.authorizeUrl);
     const rawCookie = authRes.headers.get("set-cookie") || "";

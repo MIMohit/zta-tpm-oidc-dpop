@@ -12,6 +12,7 @@ import { devIdOf } from "../lib/sim-tpm/public-area.js";
 import { isMain } from "../lib/main.js";
 import { printBannerOnce } from "../lib/ablation.js";
 import { mountHealth } from "../lib/health.js";
+import { listen } from "../lib/tls.js";
 
 /**
  * Creates the Device Registry Express application.
@@ -174,9 +175,7 @@ if (isMain(import.meta.url)) {
   const port = 4004;
   const host = "0.0.0.0";
   const app = createApp(cfg);
-  app.listen(port, host, () => {
-    console.log(`📘 Device Registry (Admin) listening on http://${host}:${port}`);
-  });
+  listen(app, port, host, (url) => console.log(`📘 Device Registry (Admin) listening on ${url}`));
 }
 
 export default {

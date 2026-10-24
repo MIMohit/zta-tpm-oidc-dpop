@@ -5,6 +5,7 @@ import { isMain } from "./lib/main.js";
 import { decide, defaultPolicyData, loadPolicyData } from "./lib/policy.js";
 import { on, printBannerOnce } from "./lib/ablation.js";
 import { mountHealth } from "./lib/health.js";
+import { listen } from "./lib/tls.js";
 
 /**
  * Creates the PDP Express application.
@@ -24,7 +25,9 @@ export function createApp(cfg = loadConfig()) {
   // Require internal service token on all PDP routes
   app.use(requireInternal(cfg));
 
-  const policyData = cfg.policyData || defaultPolicyData;
+  // T_su is a protocol time like T_AT and T_RA, so it follows the configuration (ZTA_T_SU)
+  const basePolicy = cfg.policyData || defaultPolicyData;
+  const policyData = typeof cfg.tSu === "number" ? { ...basePolicy, t_su_s: cfg.tSu } : basePolicy;
 
   app.post("/pdp/evaluate", async (req, res) => {
     const pdpStart = Date.now();
@@ -60,7 +63,7 @@ export function createApp(cfg = loadConfig()) {
             sub: token.sub,
             dev: token.dev,
             ip,
-            now: nowS,
+            now: nowMs, // milliseconds: a login in the same second as the request must count as past
           }),
         },
         cfg
@@ -158,9 +161,7 @@ if (isMain(import.meta.url)) {
   printBannerOnce("pdp");
   const cfg = loadConfig();
   const PORT = process.env.PORT || 4002;
-  createApp(cfg).listen(PORT, () =>
-    console.log(`🧠 PDP running on http://localhost:${PORT}`)
-  );
+  listen(createApp(cfg), PORT, undefined, (url) => console.log(`🧠 PDP running on ${url}`));
 }
 
 export default { createApp };

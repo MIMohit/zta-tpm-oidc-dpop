@@ -33,10 +33,10 @@ describe("WP-C1: Ablation Switchboard Core", () => {
     resetAblation();
   });
 
-  it("registry has exactly 26 mechanisms with expected schema", () => {
-    assert.equal(MECHANISMS.length, 26);
-    assert.equal(MECHANISM_MAP.size, 26);
-    for (let i = 1; i <= 26; i++) {
+  it("registry has exactly 28 mechanisms with expected schema", () => {
+    assert.equal(MECHANISMS.length, 28);
+    assert.equal(MECHANISM_MAP.size, 28);
+    for (let i = 1; i <= 28; i++) {
       const id = `M${i}`;
       assert.ok(MECHANISM_MAP.has(id), `Missing mechanism ${id}`);
       const m = MECHANISM_MAP.get(id);
@@ -48,14 +48,14 @@ describe("WP-C1: Ablation Switchboard Core", () => {
     }
   });
 
-  it("allConfigs() returns exactly 31 configurations", () => {
+  it("allConfigs() returns exactly 33 configurations", () => {
     const configs = allConfigs();
-    assert.equal(configs.length, 31);
+    assert.equal(configs.length, 33);
     assert.equal(configs[0], "full");
-    for (let i = 1; i <= 26; i++) {
+    for (let i = 1; i <= 28; i++) {
       assert.equal(configs[i], `-M${i}`);
     }
-    assert.deepEqual(configs.slice(27), ["B0", "B1", "B2", "B3"]);
+    assert.deepEqual(configs.slice(29), ["B0", "B1", "B2", "B3"]);
   });
 
   it("hygiene mechanisms are present in all baselines", () => {
@@ -138,14 +138,14 @@ describe("WP-C1: Ablation Switchboard Core", () => {
     const fullSt = state();
     assert.equal(fullSt.label, "full");
     assert.equal(fullSt.off.length, 0);
-    assert.equal(fullSt.on.length, 26);
+    assert.equal(fullSt.on.length, 28);
     assert.ok(typeof fullSt.hash === "string" && fullSt.hash.length === 64);
 
     configureAblation({ off: ["M7", "M16"] });
     const ablateSt = state();
     assert.equal(ablateSt.label, "-M7,-M16");
     assert.deepEqual(ablateSt.off, ["M7", "M16"]);
-    assert.equal(ablateSt.on.length, 24);
+    assert.equal(ablateSt.on.length, 26);
     assert.ok(!ablateSt.on.includes("M7"));
     assert.ok(!ablateSt.on.includes("M16"));
     assert.ok(typeof ablateSt.hash === "string" && ablateSt.hash.length === 64);
@@ -179,7 +179,7 @@ describe("WP-C1: Ablation Switchboard Core", () => {
   it("banner text matches full and ablated formats", () => {
     resetAblation();
     const fullBanner = banner();
-    assert.ok(fullBanner.includes("ablation: full design (26/26 mechanisms)"));
+    assert.ok(fullBanner.includes("ablation: full design (28/28 mechanisms)"));
 
     configureAblation({ off: ["M7"] });
     const ablateBanner = banner();

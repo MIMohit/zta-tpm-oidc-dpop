@@ -515,7 +515,9 @@ describe("VERIFY3 V5: /agent/debug/tamper is dev-only and not CSRF-able", () => 
   async function withAgent(cfgOverrides, fn) {
     const d = fs.mkdtempSync(path.join(os.tmpdir(), "v3-tamper-"));
     const tpm = new SimTpm({ dir: d });
-    const app = createApp(loadConfig({ dataDir: d, ...cfgOverrides }), { tpm });
+    // ztaEnv applied after loadConfig, which refuses production with debug (N5)
+    const { ztaEnv, ...rest } = cfgOverrides;
+    const app = createApp({ ...loadConfig({ dataDir: d, ...rest }), ...(ztaEnv ? { ztaEnv } : {}) }, { tpm });
     const server = await new Promise((resolve) => {
       const s = app.listen(0, "127.0.0.1", () => resolve(s));
     });
@@ -551,7 +553,11 @@ describe("VERIFY3 V5: /agent/debug/tamper is dev-only and not CSRF-able", () => 
     });
   });
 
-  it("never in production, even with ZTA_DEBUG", async () => {
+  it("production refuses to start with ZTA_DEBUG (N5)", () => {
+    assert.throws(() => loadConfig({ debug: true, ztaEnv: "production" }), /Refusing to start in production/);
+  });
+
+  it("never in production, even with ZTA_DEBUG (config built past loadConfig's refusal)", async () => {
     await withAgent({ debug: true, ztaEnv: "production" }, async (url) => {
       const r = await fetch(url, { method: "POST", headers: json, body: "{}" });
       assert.equal(r.status, 403);

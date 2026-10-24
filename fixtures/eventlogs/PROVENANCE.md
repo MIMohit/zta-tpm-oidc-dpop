@@ -77,3 +77,24 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ### Caveats (X4 & X5)
 - **X4 (Topology Sensitivity)**: Event log PCR measurements are sensitive to the QEMU device topology and NVRAM variables (`VARS.fd`). Booting with different devices (e.g., adding/removing virtio drives or NICs) changes PCR1 (`EV_EFI_VARIABLE_BOOT`).
 - **X5 (Direct Kernel Boot)**: Direct `-kernel` boot bypasses the EFI bootloader. As a result, PCR4 contains only firmware application launches and separators; the kernel and initrd are not measured into PCR0-7 by UEFI (the initrd is measured by the Linux EFI stub into PCR9). For full kernel measurement in PCR4, boot through OVMF/EDK2 -> shim -> GRUB -> kernel via `LoadImage`.
+
+## qemu-ubuntu-noble (x86_64, KVM, shim + GRUB): `golden-grub-6.8.bin`, `tampered-grub-7.0.bin`
+
+Recorded on the Ryzen testbed (Section "Testbed") from the KVM fleet built by `testbed/image-build.sh`;
+used by A06 and by the reference-value profiles in `fixtures/rv/`.
+
+- **Image**: Ubuntu 24.04 (noble) server cloud image, amd64, from `https://cloud-images.ubuntu.com/noble/current/`
+  (checksum verified by `testbed/image-fetch.sh`), 12 GB qcow2 overlay per device.
+- **Boot chain**: OVMF (Arch Linux `edk2-ovmf`, `OVMF_CODE.4m.fd`) -> shim -> GRUB -> kernel, with
+  swtpm 0.10.2 per VM (`tpm-crb`), QEMU 11.1, KVM. GRUB measures its configuration, commands and the kernel
+  into PCR8 and PCR9.
+- **Capture**: a systemd unit in the guest copies `/sys/kernel/security/tpm0/binary_bios_measurements` to
+  `/run/zta/` at boot; the agent sends that file. The golden log is from the second boot of `dev-good`
+  (the first boot changes PCR5, the GPT, as cloud-init grows the partition).
+  - `golden-grub-6.8.bin`: `dev-good`, kernel `6.8.0-147-generic`. Same file as `golden-b2.bin`, the source of
+    `fixtures/rv/ubuntu-noble-grub.json` (PCR0-9) and `ubuntu-noble-grub-pcr0-7.json` (PCR0-7).
+  - `tampered-grub-7.0.bin`: `dev-tampered`, built from the same image with `linux-image-generic-hwe-24.04`
+    installed after the reference values were captured and rebooted into kernel `7.0.0-38-generic`. PCR0-7 are
+    identical to the golden boot; PCR8 and PCR9 differ (pitfall P-2).
+- **Caveat**: PCR1 depends on the VM's device topology and NVRAM (X4); the reference values are only valid for
+  the fleet definition in `testbed/vm.sh`.

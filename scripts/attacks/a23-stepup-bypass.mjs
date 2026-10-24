@@ -32,23 +32,19 @@ export default {
     if (activeVariant === "ungated_stepup") {
       // Register legitimate credential for Alice under her actual deviceId (no literal dev-001 fallback)
       const softAuth = new SoftAuthenticator();
-      if (ctx.stores?.idp) {
-        await softAuth.registerInStore(ctx.stores.idp, "alice", client.devId);
-      }
+      await ctx.seedWebauthn(softAuth, { user: "alice", client, password: ctx.passwords.alice });
 
       // 1. Establish an authenticated idpUser session via legitimate primary password login
       const initLogin = await client.startLogin();
-      const initAuthRes = await fetch(initLogin.authorizeUrl);
-      let cookie = (initAuthRes.headers.get("set-cookie") || "").split(";")[0];
+      const initAuthResAuth = await ctx.authorize(initLogin.authorizeUrl);
+      const initAuthRes = initAuthResAuth.res;
+      let cookie = initAuthResAuth.cookie;
 
-      const initPwdRes = await fetch(`${ctx.urls.idpUrl}/oauth/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json", Cookie: cookie },
-        body: JSON.stringify({ username: "alice", password: "alice-pass" }),
-      });
+      const initPwdRes = await ctx.primaryLogin({ auth: initAuthResAuth, username: "alice", password: "alice-pass" });
       if (!initPwdRes.ok) {
         throw new Error(`Initial primary password authentication failed: ${initPwdRes.status}`);
       }
+      cookie = initAuthResAuth.cookie; // the gate session (updated by the Keycloak flow)
       const newCookie = initPwdRes.headers.get("set-cookie");
       if (newCookie) {
         cookie = newCookie.split(";")[0];
@@ -56,8 +52,10 @@ export default {
 
       // 2. Start a new OAuth transaction requiring MFA step-up in the same session
       const stepupStart = await client.startLogin({ acrValues: "mfa" });
+      // The attacker stops at the gate: no primary authentication (local or Keycloak) for this txn
       const stepupAuthRes = await fetch(stepupStart.authorizeUrl, {
         headers: { Cookie: cookie },
+        redirect: "manual",
       });
       const stepupCookie = stepupAuthRes.headers.get("set-cookie");
       if (stepupCookie) {
@@ -189,20 +187,16 @@ export default {
     if (activeVariant === "race_registration") {
       // 1. Register legitimate authenticator 1 for Alice
       const softAuth1 = new SoftAuthenticator();
-      if (ctx.stores?.idp) {
-        await softAuth1.registerInStore(ctx.stores.idp, "alice", client.devId);
-      }
+      await ctx.seedWebauthn(softAuth1, { user: "alice", client, password: ctx.passwords.alice });
 
       // 2. Establish authenticated idpUser session via normal login
       const initLogin = await client.startLogin();
-      const initAuthRes = await fetch(initLogin.authorizeUrl);
-      let cookie = (initAuthRes.headers.get("set-cookie") || "").split(";")[0];
+      const initAuthResAuth = await ctx.authorize(initLogin.authorizeUrl);
+      const initAuthRes = initAuthResAuth.res;
+      let cookie = initAuthResAuth.cookie;
 
-      const initPwdRes = await fetch(`${ctx.urls.idpUrl}/oauth/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json", Cookie: cookie },
-        body: JSON.stringify({ username: "alice", password: "alice-pass" }),
-      });
+      const initPwdRes = await ctx.primaryLogin({ auth: initAuthResAuth, username: "alice", password: "alice-pass" });
+      cookie = initAuthResAuth.cookie; // the gate session (updated by the Keycloak flow)
       const newCookie = initPwdRes.headers.get("set-cookie");
       if (newCookie) {
         cookie = newCookie.split(";")[0];
@@ -210,20 +204,13 @@ export default {
 
       // 3. Start step-up login transaction with acr=mfa and submit password to enter gated step-up state
       const stepupLogin = await client.startLogin({ acrValues: "mfa" });
-      const stepupAuthRes = await fetch(stepupLogin.authorizeUrl, {
-        headers: { Cookie: cookie },
-      });
-      const stepupCookie = stepupAuthRes.headers.get("set-cookie");
-      if (stepupCookie) {
-        cookie = stepupCookie.split(";")[0];
-      }
+      // A second transaction in the same session; the password (local or Keycloak) gates it into step-up
+      const stepupAuth = await ctx.authorize(stepupLogin.authorizeUrl, { cookie });
+      cookie = stepupAuth.cookie || cookie;
 
       // Submit password to enter gated step-up
-      const loginRes = await fetch(`${ctx.urls.idpUrl}/oauth/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Cookie: cookie },
-        body: JSON.stringify({ username: "alice", password: "alice-pass" }),
-      });
+      const loginRes = await ctx.primaryLogin({ auth: stepupAuth, username: "alice", password: "alice-pass" });
+      cookie = stepupAuth.cookie || cookie;
 
       if (!loginRes.ok) {
         throw new Error(`Password submission failed: ${loginRes.status}`);

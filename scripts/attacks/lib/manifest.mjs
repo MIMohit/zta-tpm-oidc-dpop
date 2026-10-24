@@ -22,8 +22,8 @@ import { runManifest } from "../../../lib/ablation.js";
  * @param {{label:string, baseline:string|null, off:string[], on?:string[], hash:string}} p.ablation
  * @param {Record<string, any>} [p.extra]
  */
-export function configManifest({ runId, mode, config, ablation, extra = {} }) {
-  const base = runManifest({ runId, mode });
+export function configManifest({ runId, mode, tpm, config, ablation, extra = {} }) {
+  const base = runManifest({ runId, mode, ...(tpm ? { tpm } : {}) });
   const manifest = {
     ...base,
     config,

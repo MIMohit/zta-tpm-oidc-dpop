@@ -40,26 +40,30 @@ export default {
     }
     const { nonceId, nonce } = await nonceRes.json();
 
-    // Construct quote over PCR 8..15 (selection: [0x00, 0xff, 0x00]) with all-zero digest
-    const zeroDigest = pcrDigest(Array.from({ length: 8 }, () => Buffer.alloc(32, 0)));
+    // Quote over PCR 8..15 (selection [0x00, 0xff, 0x00]), which the boot never extended
     const ak = client.tpm.keys.get(client.akHandle);
-    const nonceBuf = Buffer.from(nonce, "base64url");
-
-    const attest = marshalAttest({
-      type: TPM_ST_ATTEST_QUOTE,
-      signerName: ak.name,
-      extraData: nonceBuf,
-      clockInfo: { clock: Date.now(), resetCount: 1, restartCount: 0, safe: 1 },
-      firmwareVersion: 1n,
-      attested: {
-        pcrSelect: { count: 1, hash: 0x000b, sizeofSelect: 3, pcrSelect: Buffer.from([0x00, 0xff, 0x00]) },
-        pcrDigest: zeroDigest,
-      },
-    });
-
-    const key = crypto.createPrivateKey({ key: { kty: "EC", crv: "P-256", ...ak.privateJwk }, format: "jwk" });
-    const sig = crypto.sign("sha256", attest, { key, dsaEncoding: "ieee-p1363" }).toString("base64url");
-    const quote = { attest, sig };
+    let quote;
+    if (!ak?.privateJwk) {
+      // Real TPM: the compromised host simply asks its genuine TPM for this selection
+      quote = await client.tpm.quote(client.akHandle, nonce, [8, 9, 10, 11, 12, 13, 14, 15]);
+    } else {
+      // Simulator: it models PCR0..7 only, so build the same TPMS_ATTEST and sign it with the AK
+      const zeroDigest = pcrDigest(Array.from({ length: 8 }, () => Buffer.alloc(32, 0)));
+      const attest = marshalAttest({
+        type: TPM_ST_ATTEST_QUOTE,
+        signerName: ak.name,
+        extraData: Buffer.from(nonce, "base64url"),
+        clockInfo: { clock: Date.now(), resetCount: 1, restartCount: 0, safe: 1 },
+        firmwareVersion: 1n,
+        attested: {
+          pcrSelect: { count: 1, hash: 0x000b, sizeofSelect: 3, pcrSelect: Buffer.from([0x00, 0xff, 0x00]) },
+          pcrDigest: zeroDigest,
+        },
+      });
+      const key = crypto.createPrivateKey({ key: { kty: "EC", crv: "P-256", ...ak.privateJwk }, format: "jwk" });
+      const sig = crypto.sign("sha256", attest, { key, dsaEncoding: "ieee-p1363" }).toString("base64url");
+      quote = { attest, sig };
+    }
 
     // Submit with empty event log
     const appraiseRes = await fetch(`${ctx.urls.verifierUrl}/v/appraise`, {

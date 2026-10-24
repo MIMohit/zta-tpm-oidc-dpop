@@ -7,6 +7,7 @@
 import crypto from "node:crypto";
 import { jwkOf } from "../../lib/sim-tpm/public-area.js";
 import { signProof } from "../../lib/dpop.js";
+import { enrolExtras } from "./lib/enrol-extras.mjs";
 
 export default {
   id: "A01",
@@ -38,6 +39,7 @@ export default {
         akPublic: ak.publicArea,
         kbPublic: kb.publicArea,
         user: "alice",
+        ...(await enrolExtras(client.tpm)),
       }),
     });
 

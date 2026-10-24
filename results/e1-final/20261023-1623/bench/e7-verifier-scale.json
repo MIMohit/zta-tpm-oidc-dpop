@@ -1,0 +1,74 @@
+{
+  "experiment": "E7",
+  "durationS": 30,
+  "stackCpus": "0,2,4,6",
+  "idp": "keycloak",
+  "env": {
+    "at": "2026-10-23T14:37:14.145Z",
+    "host": "mimohit",
+    "platform": "Linux 7.2.8-9-omarchy x64",
+    "cpu": "AMD Ryzen 7 5700U with Radeon Graphics",
+    "onlineCpus": 8,
+    "memGiB": 13,
+    "node": "v26.12.0",
+    "loadavg": [
+      1.16,
+      1.35,
+      1.33
+    ],
+    "smt": "off",
+    "boost": "0",
+    "governor": "performance",
+    "scalingDriver": "acpi-cpufreq",
+    "powerProfile": "balanced",
+    "acOnline": null,
+    "swtpm": "TPM emulator version 0.10.2, Copyright (c) 2014-2022 IBM Corp. and others"
+  },
+  "rows": [
+    {
+      "devices": 10,
+      "appraisalsPerS": 81.0220655888601,
+      "errors": 0,
+      "verifierCpuPct": 137.38235537578532,
+      "median": 115.84207500517368,
+      "p95": 210.12628699839115,
+      "p99": 222.02162500321862
+    },
+    {
+      "devices": 25,
+      "appraisalsPerS": 77.23529859471354,
+      "errors": 0,
+      "verifierCpuPct": 137.22324212255145,
+      "median": 297.7231699973345,
+      "p95": 537.1414975002408,
+      "p99": 555.8832139968872
+    },
+    {
+      "devices": 50,
+      "appraisalsPerS": 72.89114307633375,
+      "errors": 0,
+      "verifierCpuPct": 134.67043634147527,
+      "median": 644.7856250032783,
+      "p95": 1066.2161120466887,
+      "p99": 1098.4590004850925
+    },
+    {
+      "devices": 100,
+      "appraisalsPerS": 64.22736833060115,
+      "errors": 0,
+      "verifierCpuPct": 133.78560823264218,
+      "median": 1456.8403460010886,
+      "p95": 2255.3112925477326,
+      "p99": 2270.567349445522
+    },
+    {
+      "devices": 200,
+      "appraisalsPerS": 50.089984293386316,
+      "errors": 0,
+      "verifierCpuPct": 109.8114781202223,
+      "median": 3979.274995997548,
+      "p95": 4854.274880197644,
+      "p99": 4880.258595315218
+    }
+  ]
+}

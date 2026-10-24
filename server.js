@@ -18,6 +18,7 @@ import { createIdpRouter } from "./lib/idp/index.js";
 import { getKeycloakLogoutUrl } from "./lib/idp/keycloak-upstream.js";
 import { printBannerOnce } from "./lib/ablation.js";
 import { mountHealth } from "./lib/health.js";
+import { listen, tlsServerOptions } from "./lib/tls.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -59,7 +60,7 @@ export function createApp(cfg = loadConfig()) {
       cookie: {
         httpOnly: true,
         sameSite: "lax",
-        secure: false, // localhost dev
+        secure: Boolean(tlsServerOptions()), // TLS: cookie never sent over plain HTTP
         path: "/",
       },
     })
@@ -241,10 +242,9 @@ if (isMain(import.meta.url)) {
   const HOST = process.env.HOST || "0.0.0.0";
   const app = createApp(cfg);
 
-  const server = app
-    .listen(PORT, HOST, () => {
+  const server = listen(app, PORT, HOST, (url) => {
       console.log(`\n============================================================`);
-      console.log(`🚀 Zero-Trust Identity Provider & Portal running on http://localhost:${PORT}`);
+      console.log(`🚀 Zero-Trust Identity Provider & Portal running on ${url}`);
       console.log(`🔐 Mode: ${cfg.idpMode} | Store: ${cfg.store}`);
       console.log(`============================================================\n`);
     })

@@ -106,7 +106,8 @@ export default {
 
       // If PAR accepted replayed AR, continue flow to verify if a token can actually be issued
       const { request_uri: reqUri2 } = await res2.json();
-      const authRes2 = await fetch(`${ctx.urls.idpUrl}/oauth/authorize?client_id=zta-agent&request_uri=${reqUri2}`);
+      const authRes2Auth = await ctx.authorize(`${ctx.urls.idpUrl}/oauth/authorize?client_id=zta-agent&request_uri=${reqUri2}`);
+      const authRes2 = authRes2Auth.res;
       if (!authRes2.ok && authRes2.status !== 302) {
         const body = await authRes2.json().catch(() => ({}));
         return {
@@ -120,12 +121,8 @@ export default {
         };
       }
 
-      const cookie2 = (authRes2.headers.get("set-cookie") || "").split(";")[0];
-      const loginRes2 = await fetch(`${ctx.urls.idpUrl}/oauth/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json", Cookie: cookie2 },
-        body: JSON.stringify({ username: "alice", password: "alice-pass" }),
-      });
+      const loginRes2 = await ctx.primaryLogin({ auth: authRes2Auth, username: "alice", password: "alice-pass" });
+      const cookie2 = authRes2Auth.cookie;
       if (!loginRes2.ok) {
         const body = await loginRes2.json().catch(() => ({}));
         return {
@@ -224,7 +221,8 @@ export default {
       }
 
       // Replay authorize call with same request_uri
-      const authRes2 = await fetch(`${ctx.urls.idpUrl}/oauth/authorize?client_id=zta-agent&request_uri=${request_uri}`);
+      const authRes2Auth = await ctx.authorize(`${ctx.urls.idpUrl}/oauth/authorize?client_id=zta-agent&request_uri=${request_uri}`);
+      const authRes2 = authRes2Auth.res;
       if (!authRes2.ok && authRes2.status !== 302) {
         const body = await authRes2.json().catch(() => ({}));
         return {
@@ -239,12 +237,8 @@ export default {
       }
 
       // If replayed request_uri was accepted at authorize, continue through login to token endpoint
-      const cookie2 = (authRes2.headers.get("set-cookie") || "").split(";")[0];
-      const loginRes2 = await fetch(`${ctx.urls.idpUrl}/oauth/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json", Cookie: cookie2 },
-        body: JSON.stringify({ username: "alice", password: "alice-pass" }),
-      });
+      const loginRes2 = await ctx.primaryLogin({ auth: authRes2Auth, username: "alice", password: "alice-pass" });
+      const cookie2 = authRes2Auth.cookie;
 
       if (!loginRes2.ok) {
         const body = await loginRes2.json().catch(() => ({}));
@@ -311,14 +305,11 @@ export default {
     if (activeVariant === "code") {
       // Complete legitimate login up to code redemption
       const loginStart = await client.startLogin();
-      const authRes = await fetch(loginStart.authorizeUrl);
-      const cookie = (authRes.headers.get("set-cookie") || "").split(";")[0];
+      const authResAuth = await ctx.authorize(loginStart.authorizeUrl);
+      const authRes = authResAuth.res;
+      const cookie = authResAuth.cookie;
 
-      const loginRes = await fetch(`${ctx.urls.idpUrl}/oauth/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json", Cookie: cookie },
-        body: JSON.stringify({ username: "alice", password: "alice-pass" }),
-      });
+      const loginRes = await ctx.primaryLogin({ auth: authResAuth, username: "alice", password: "alice-pass" });
       const { code } = await loginRes.json();
 
       // Nonce handshake at token endpoint

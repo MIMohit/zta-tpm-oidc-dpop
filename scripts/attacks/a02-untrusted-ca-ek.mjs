@@ -7,7 +7,7 @@
 import crypto from "node:crypto";
 import { devIdOf, jwkOf } from "../../lib/sim-tpm/public-area.js";
 import { signProof } from "../../lib/dpop.js";
-import { addToInventory } from "../../lib/verifier/inventory.js";
+import { enrolExtras } from "./lib/enrol-extras.mjs";
 
 export default {
   id: "A02",
@@ -29,13 +29,7 @@ export default {
     // Pre-seed evil device in inventory for alice so M2 (inventory check) passes,
     // isolating M1 (vendor CA certificate verification).
     const code = "a02-evil-code";
-    if (ctx.stores?.verifier) {
-      await addToInventory(ctx.stores.verifier, {
-        devId: evilDevId,
-        user: "alice",
-        code,
-      });
-    }
+    await ctx.seedInventory({ devId: evilDevId, user: "alice", code });
 
     const ak = await client.tpm.createAk();
     const kb = await client.tpm.createKb();
@@ -49,6 +43,7 @@ export default {
         akPublic: ak.publicArea,
         kbPublic: kb.publicArea,
         user: "alice",
+        ...(await enrolExtras(client.tpm)),
       }),
     });
 

@@ -37,6 +37,7 @@
     "uuid": "^13.0.0"
   },
   "optionalDependencies": {
+    "graphene-pk11": "2.3.6",
     "koffi": "^2"
   },
   "overrides": {
@@ -46,5 +47,8 @@
   "devDependencies": {
     "@peculiar/x509": "^2.1.0",
     "reflect-metadata": "^0.2.2"
+  },
+  "allowScripts": {
+    "pkcs11js@2.1.7": true
   }
 }

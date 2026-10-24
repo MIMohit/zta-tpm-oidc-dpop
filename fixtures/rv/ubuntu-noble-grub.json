@@ -1,0 +1,592 @@
+{
+  "format": "zta-rv/1",
+  "name": "ubuntu-noble-grub",
+  "bank": "sha256",
+  "pcrs": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "source": {
+    "logs": [
+      {
+        "file": "golden-b2.bin",
+        "sha256": "0fbfba0e4e80662829f5465f01b9715600956b0802808d85b001e4ab68920d22"
+      }
+    ],
+    "qemuFingerprint": "a7396a8681325f8266aa976efae8976f038323c6581dc6cce2d6041820b51bef",
+    "capturedAt": "2026-10-22T19:45:54.185Z"
+  },
+  "events": {
+    "0": [
+      {
+        "digest": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+        "type": "EV_S_CRTM_VERSION",
+        "desc": "EV_S_CRTM_VERSION"
+      },
+      {
+        "digest": "9f5e9db6151178e0a4d8d1ce0317eaf52dc5717740306b92a6c119870a3f1e5d",
+        "type": "EV_EFI_PLATFORM_FIRMWARE_BLOB",
+        "desc": "EV_EFI_PLATFORM_FIRMWARE_BLOB"
+      },
+      {
+        "digest": "ac6d15f670ca5d53682c2257bce667dfd6d3031d0b3415105605b410ec93ea0a",
+        "type": "EV_EFI_PLATFORM_FIRMWARE_BLOB",
+        "desc": "EV_EFI_PLATFORM_FIRMWARE_BLOB"
+      },
+      {
+        "digest": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+        "type": "EV_SEPARATOR",
+        "desc": "0x00000000"
+      }
+    ],
+    "1": [
+      {
+        "digest": "ff818ee5e57a0eab3ef42bc8a3e9a822603dbaf0a2aa3566f937fcf6adc7126e",
+        "type": "EV_PLATFORM_CONFIG_FLAGS",
+        "desc": "ACPI DATA"
+      },
+      {
+        "digest": "5a7b3fa00a32dff3a84d8df88fb65b6ae10a599864ab585c4bd29d30360458cd",
+        "type": "EV_PLATFORM_CONFIG_FLAGS",
+        "desc": "ACPI DATA"
+      },
+      {
+        "digest": "de2f256064a0af797747c2b97505dc0b9f3df0de4f489eac731c23ae9ca9cc31",
+        "type": "EV_PLATFORM_CONFIG_FLAGS",
+        "desc": "ACPI DATA"
+      },
+      {
+        "digest": "25ae749ea8a6cfab4f5d878cd0eb916555215951cfcb09a3889b2d4b26678a2a",
+        "type": "EV_PLATFORM_CONFIG_FLAGS",
+        "desc": "ACPI DATA"
+      },
+      {
+        "digest": "f1a97e2a04e0fb99d746f58adbcf9e37298389833486ef13226f0bc01fe80a78",
+        "type": "EV_EFI_HANDOFF_TABLES",
+        "desc": "EV_EFI_HANDOFF_TABLES"
+      },
+      {
+        "digest": "c6a344470f15d201b5dbe1d06f5f42d2214a1b4ba5ecc5d527c2a6651f7f88c7",
+        "type": "EV_EFI_VARIABLE_BOOT",
+        "desc": "BootOrder"
+      },
+      {
+        "digest": "9d52c5570c9f1295b0e7997d4b908e6f82ca17ee5ee7d37b1e730e4a699cea9c",
+        "type": "EV_EFI_VARIABLE_BOOT",
+        "desc": "Boot0009"
+      },
+      {
+        "digest": "7cecd39025081ffa990dbe7078111b2c15102f9da7ac85f25ce54935b9ae0a96",
+        "type": "EV_EFI_VARIABLE_BOOT",
+        "desc": "Boot0000"
+      },
+      {
+        "digest": "e52e99d0e07a49d2553de3de65e8da30fa0bddf34002a1fa17e8c79356c2e190",
+        "type": "EV_EFI_VARIABLE_BOOT",
+        "desc": "Boot0001"
+      },
+      {
+        "digest": "701b9aba08d919f7e20216c0a46936796a904867c4afb6f30e6e4ae028704019",
+        "type": "EV_EFI_VARIABLE_BOOT",
+        "desc": "Boot0002"
+      },
+      {
+        "digest": "05e993c4b7fb8ab6417a98958334b3e9729f2d85088996d82cd46025a22deca4",
+        "type": "EV_EFI_VARIABLE_BOOT",
+        "desc": "Boot0003"
+      },
+      {
+        "digest": "bb9436c4010cc65321e2e1cf56d71ba0ea76412d7adffabb9d447a855529d808",
+        "type": "EV_EFI_VARIABLE_BOOT",
+        "desc": "Boot0004"
+      },
+      {
+        "digest": "2c315a7fdeba179516855f7f427ff71a5dc96c7b08932d244cd28d489616ff32",
+        "type": "EV_EFI_VARIABLE_BOOT",
+        "desc": "Boot0005"
+      },
+      {
+        "digest": "14883a3f397e2f65a86d8dbe60a0e8f125a0de102ddf903896da0f9cac4be224",
+        "type": "EV_EFI_VARIABLE_BOOT",
+        "desc": "Boot0006"
+      },
+      {
+        "digest": "9e0943cf40b2368ae4a7d7861b18606bf87c3f237481b956067b1f551849ccfc",
+        "type": "EV_EFI_VARIABLE_BOOT",
+        "desc": "Boot0007"
+      },
+      {
+        "digest": "958f4f31d4d763a98ad522e44f8174a446d439d9475ecbf24049b3b40d33ad87",
+        "type": "EV_EFI_VARIABLE_BOOT",
+        "desc": "Boot0008"
+      },
+      {
+        "digest": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+        "type": "EV_SEPARATOR",
+        "desc": "0x00000000"
+      }
+    ],
+    "2": [
+      {
+        "digest": "4019aabdc583879c8a95b2c00c15142911ac6fba9925aacde7b51b925ac23f52",
+        "type": "EV_EFI_BOOT_SERVICES_DRIVER",
+        "desc": "EV_EFI_BOOT_SERVICES_DRIVER"
+      },
+      {
+        "digest": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+        "type": "EV_SEPARATOR",
+        "desc": "0x00000000"
+      }
+    ],
+    "3": [
+      {
+        "digest": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+        "type": "EV_SEPARATOR",
+        "desc": "0x00000000"
+      }
+    ],
+    "4": [
+      {
+        "digest": "3d6772b4f84ed47595d72a2c4c5ffd15f5bb72c7507fe26f2aaee2c69d5633ba",
+        "type": "EV_EFI_ACTION",
+        "desc": "Calling EFI Application from Boot Option"
+      },
+      {
+        "digest": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+        "type": "EV_SEPARATOR",
+        "desc": "0x00000000"
+      },
+      {
+        "digest": "724de6844dd0fe618ba5776c7bca0728be38a6544e24e44ef259b987b7abce80",
+        "type": "EV_EFI_BOOT_SERVICES_APPLICATION",
+        "desc": "\\EFI\\ubuntu\\shimx64.efi"
+      },
+      {
+        "digest": "4caffb530989433f184353c48d8150fcdce6037933ab129249f50f0068cf1815",
+        "type": "EV_EFI_BOOT_SERVICES_APPLICATION",
+        "desc": "\\EFI\\ubuntu\\grubx64.efi"
+      }
+    ],
+    "5": [
+      {
+        "digest": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+        "type": "EV_SEPARATOR",
+        "desc": "0x00000000"
+      },
+      {
+        "digest": "43aba79740e2a8a12cc14b080d3a62c4be52979afd8e9bdf173e51ac113934e1",
+        "type": "EV_EFI_GPT_EVENT",
+        "desc": "EV_EFI_GPT_EVENT"
+      },
+      {
+        "digest": "d8043d6b7b85ad358eb3b6ae6a873ab7ef23a26352c5dc4faa5aeedacf5eb41b",
+        "type": "EV_EFI_ACTION",
+        "desc": "Exit Boot Services Invocation"
+      },
+      {
+        "digest": "23ddecbc32ea9e91ffc984b55d9fb34b24f61fd6d95d5d33dd95e824415fdd4f",
+        "type": "EV_EFI_ACTION",
+        "desc": "Exit Boot Services Returned with Failure"
+      },
+      {
+        "digest": "b54f7542cbd872a81a9d9dea839b2b8d747c7ebd5ea6615c40f42f44a6dbeba0",
+        "type": "EV_EFI_ACTION",
+        "desc": "Exit Boot Services Returned with Success"
+      }
+    ],
+    "6": [
+      {
+        "digest": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+        "type": "EV_SEPARATOR",
+        "desc": "0x00000000"
+      }
+    ],
+    "7": [
+      {
+        "digest": "ce9ce386b52e099f3019e512a0d6062d6b560efe4ff3e5661c7525e2f9c263df",
+        "type": "EV_EFI_VARIABLE_DRIVER_CONFIG",
+        "desc": "SecureBoot"
+      },
+      {
+        "digest": "dea7b80ab53a3daaa24d5cc46c64e1fa9ffd03739f90aadbd8c0867c4a5b4890",
+        "type": "EV_EFI_VARIABLE_DRIVER_CONFIG",
+        "desc": "PK"
+      },
+      {
+        "digest": "e670e121fcebd473b8bc41bb801301fc1d9afa33904f06f7149b74f12c47a68f",
+        "type": "EV_EFI_VARIABLE_DRIVER_CONFIG",
+        "desc": "KEK"
+      },
+      {
+        "digest": "baf89a3ccace52750c5f0128351e0422a41597a1adfd50822aa363b9d124ea7c",
+        "type": "EV_EFI_VARIABLE_DRIVER_CONFIG",
+        "desc": "db"
+      },
+      {
+        "digest": "9f75b6823bff6af1024a4e2036719cdd548d3cbc2bf1de8e7ef4d0ed01f94bf9",
+        "type": "EV_EFI_VARIABLE_DRIVER_CONFIG",
+        "desc": "dbx"
+      },
+      {
+        "digest": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+        "type": "EV_SEPARATOR",
+        "desc": "0x00000000"
+      },
+      {
+        "digest": "922e939a5565798a5ef12fe09d8b49bf951a8e7f89a0cca7a51636693d41a34d",
+        "type": "EV_EFI_VARIABLE_AUTHORITY",
+        "desc": "SbatLevel"
+      }
+    ],
+    "8": [
+      {
+        "digest": "997246a7d3cdd51bb1c8617bc0b4ac2c81986c0b98a8bc8c26193458f5a8df5f",
+        "type": "EV_IPL",
+        "desc": "grub_cmd: search.fs_uuid b4f0deba-ce7d-45dc-9999-0427f2720320 root"
+      },
+      {
+        "digest": "97a14107305bbdb5eea84815ab8ddff21028cfaf65f09178ebf3cab85803b6a2",
+        "type": "EV_IPL",
+        "desc": "grub_cmd: set prefix=(hd0,gpt16)/grub"
+      },
+      {
+        "digest": "7bab9fbe716a627d300c67b6c28f2b6cd0aca9b3182b76c992f23d40d2466b67",
+        "type": "EV_IPL",
+        "desc": "grub_cmd: configfile (hd0,gpt16)/grub/grub.cfg"
+      },
+      {
+        "digest": "6ad77e4fde8bf2232893cf4ac273a050fd0e1f3f4e4098c3511a52bd8bda87f6",
+        "type": "EV_IPL",
+        "desc": "grub_cmd: [ -s (hd0,gpt16)/grub/grubenv ]"
+      },
+      {
+        "digest": "0e3a17e0c48e42d79f4d1576e7f787c911239510586505c326143b9b268bdd65",
+        "type": "EV_IPL",
+        "desc": "grub_cmd: set have_grubenv=true"
+      },
+      {
+        "digest": "f8b99f77983990e8804864cade91f361b5b6600cc2832febaef878ac8b44d27e",
+        "type": "EV_IPL",
+        "desc": "grub_cmd: load_env"
+      },
+      {
+        "digest": "d2b92983e66aff99982fe5af55e0f9277dc0f8879934e17b00147e1f4156179e",
+        "type": "EV_IPL",
+        "desc": "grub_cmd: [  = 2 ]"
+      },
+      {
+        "digest": "82a4a14e43a4f76118ae63285d0af05af139f260fae57b2c20737a1c1df3382b",
+        "type": "EV_IPL",
+        "desc": "grub_cmd: [  = 1 ]"
+      },
+      {
+        "digest": "ce8124bc1b0fbc0cb5cd47338ca0c7d5f5446d79936e443a201d96b192a7bd65",
+        "type": "EV_IPL",
+        "desc": "grub_cmd: [  ]"
+      },
+      {
+        "digest": "3a118940bf2675007df3368cb6d45cf2756f328d3e75daf69a971dd21bd1bc58",
+        "type": "EV_IPL",
+        "desc": "grub_cmd: set default=0"
+      },
+      {
+        "digest": "4568361fb7581b31a42d645ab534302fb9f742adaa37b7fde152215d69e259fb",
+        "type": "EV_IPL",
+        "desc": "grub_cmd: [ xy = xy ]"
+      },
+      {
+        "digest": "09f17d4dfb4b97f16246632c21b1ac2125c95c148899eee5069fbb1b34365513",
+        "type": "EV_IPL",
+        "desc": "grub_cmd: menuentry_id_option=--id"
+      },
+      {
+        "digest": "4af0bb370c9e3b7982027d02e04c935e32d52b528007476bfc50d36d1b86815e",
+        "type": "EV_IPL",
+        "desc": "grub_cmd: export menuentry_id_option"
+      },
+      {
+        "digest": "df24f1cae6b428fdd09bc14b06df255f93060ff05d56c3127724168596f73d5f",
+        "type": "EV_IPL",
+        "desc": "grub_cmd: terminal_input console"
+      },
+      {
+        "digest": "fed7c930939012174a23271f9fa177a39891cd1baf6ccd22bccce96acd0514d1",
+        "type": "EV_IPL",
+        "desc": "grub_cmd: terminal_output console"
+      },
+      {
+        "digest": "61caa54fc24ba8b3e79be63f375a08f374244e4ede8e0d6080060aa3fa5f7fbb",
+        "type": "EV_IPL",
+        "desc": "grub_cmd: set timeout_style=hidden"
+      },
+      {
+        "digest": "d3a793f471b6bfe8d783f5e629314cad4763d48986a8cd4df25475334b40f49b",
+        "type": "EV_IPL",
+        "desc": "grub_cmd: set timeout=0"
+      },
+      {
+        "digest": "cfa4676ffe751d1547e77a8d66a033b59b3eed3400d9b3a305d2601891ab0e59",
+        "type": "EV_IPL",
+        "desc": "grub_cmd: [ -n true ]"
+      },
+      {
+        "digest": "2436afe3cb181454ab807d6ca526ed3132dc1759787f9ed3f2f148e86948e978",
+        "type": "EV_IPL",
+        "desc": "grub_cmd: [ -n  ]"
+      },
+      {
+        "digest": "eb97ee12d3f873aada1c5cd0c844e3a80416b6aed3c42c9f573e4c4b809b89ed",
+        "type": "EV_IPL",
+        "desc": "grub_cmd: unset initrdless_boot_fallback_triggered"
+      },
+      {
+        "digest": "01ffa4a5eae6be98974c1b75e839f442eed9d9f5c1d65c03d355e04fc81d2873",
+        "type": "EV_IPL",
+        "desc": "grub_cmd: save_env initrdless_boot_fallback_triggered"
+      },
+      {
+        "digest": "207cda95fd859189d016c7c2cc03b9c05672984589e4809e1dcee665d629cf7d",
+        "type": "EV_IPL",
+        "desc": "grub_cmd: set menu_color_normal=white/black"
+      },
+      {
+        "digest": "6f18799fe0ecb5c4bb4c0695a3094dc9841c940c3b463e14c25e444246348a2a",
+        "type": "EV_IPL",
+        "desc": "grub_cmd: set menu_color_highlight=black/light-gray"
+      },
+      {
+        "digest": "f0b4b3c23103828ea2fa05044a2cfce5efc9d15e99ffb9c61d7349c1303741af",
+        "type": "EV_IPL",
+        "desc": "grub_cmd: [  != 1 ]"
+      },
+      {
+        "digest": "5049802d85c95cc52a8d1495e21db7c7dc2519a12202ea15a8cc1cc7b123bbf0",
+        "type": "EV_IPL",
+        "desc": "grub_cmd: [ -e (hd0,gpt16)/grub/gfxblacklist.txt ]"
+      },
+      {
+        "digest": "a1d598d76cd92cdf36ef379aae43ded1cc512bd74a17e5b03fc901015b899755",
+        "type": "EV_IPL",
+        "desc": "grub_cmd: [ efi != pc ]"
+      },
+      {
+        "digest": "f249e761a7e37510f8acf59142c117444c3aa1bc5a719ae7eab60d3b7109180a",
+        "type": "EV_IPL",
+        "desc": "grub_cmd: set linux_gfx_mode=keep"
+      },
+      {
+        "digest": "22e041251eb54eeb3270245759aa3e8bd3b77a647db988b681b1eafc6960aa45",
+        "type": "EV_IPL",
+        "desc": "grub_cmd: export linux_gfx_mode"
+      },
+      {
+        "digest": "cc6dac2ad9d20695eca9d341659abc3a2b9eaca7f9b8431ca3898265bc647196",
+        "type": "EV_IPL",
+        "desc": "EV_IPL"
+      },
+      {
+        "digest": "6c84d7c6af453ad2894c6e47dfa9478751ba5ba9cf3cdcb372a9552e119a35ac",
+        "type": "EV_IPL",
+        "desc": "EV_IPL"
+      },
+      {
+        "digest": "5d487e285706b36d48eff03e56383e4692de24b867b38fcb3c5896fd222a5957",
+        "type": "EV_IPL",
+        "desc": "grub_cmd: [ efi = efi ]"
+      },
+      {
+        "digest": "2b632b145c9a0b3c13ebf6661ae3128d9eb8bc00ae7594c744ec6b590b906833",
+        "type": "EV_IPL",
+        "desc": "grub_cmd: insmod bli"
+      },
+      {
+        "digest": "8a0672215643524931da9a98294d41f13a6e324adf780e239ef0b5ea033255bd",
+        "type": "EV_IPL",
+        "desc": "grub_cmd: fwsetup --is-supported"
+      },
+      {
+        "digest": "d0b128de61633eaded03eaf1923aaed67e1973fb10714ad91515906104cd640f",
+        "type": "EV_IPL",
+        "desc": "grub_cmd: [ 0 = 0 ]"
+      },
+      {
+        "digest": "ba0a0eba7367337a506a6c7bb223356ee9d83badd3c6ee91cca8c977bfe23c5e",
+        "type": "EV_IPL",
+        "desc": "EV_IPL"
+      },
+      {
+        "digest": "4379e3a5fea9ca2de50fd7ae4cdb17c78cc42fb3c3744b270623f1519e2c2e4f",
+        "type": "EV_IPL",
+        "desc": "grub_cmd: [ -f (hd0,gpt16)/grub/custom.cfg ]"
+      },
+      {
+        "digest": "6f5599ee61f62c451a68931852f20cf7ed872583ee8b0f83e3df702c65a77c99",
+        "type": "EV_IPL",
+        "desc": "grub_cmd: [ -z (hd0,gpt16)/grub -a -f (hd0,gpt16)/grub/custom.cfg ]"
+      },
+      {
+        "digest": "bf5d10a466c0f77818990a9d0fdcc8fa2c4561ba92912d5fbc9d4ac1e31a00fb",
+        "type": "EV_IPL",
+        "desc": "grub_cmd: setparams Ubuntu"
+      },
+      {
+        "digest": "a57e067e286efc4eea89659d40f13a38cc1792e4277bed820ded674c94bf2ead",
+        "type": "EV_IPL",
+        "desc": "grub_cmd: recordfail"
+      },
+      {
+        "digest": "64bda8f65b1585d7868248a292c449660cc8f75075c10d87ae59a4db401ce119",
+        "type": "EV_IPL",
+        "desc": "grub_cmd: set recordfail=1"
+      },
+      {
+        "digest": "4e7a22f96bae467df0f26975e0bf7614d6b92993301c65bae6a85c6530e460bf",
+        "type": "EV_IPL",
+        "desc": "grub_cmd: [ -z  ]"
+      },
+      {
+        "digest": "ce2cc20777ba8d3bc75b662163c3abe370344d4bae17d75fb5bd408d1fb6badf",
+        "type": "EV_IPL",
+        "desc": "grub_cmd: save_env recordfail"
+      },
+      {
+        "digest": "7626abd8be7442c2e575364a3e95cb3a3b533c58afbba402d2bdabdff85d29c7",
+        "type": "EV_IPL",
+        "desc": "grub_cmd: load_video"
+      },
+      {
+        "digest": "d71353f5368eb2c1280590928128979bd96ea8db1e8c81493f7878383b76ab3b",
+        "type": "EV_IPL",
+        "desc": "grub_cmd: insmod all_video"
+      },
+      {
+        "digest": "2fa8065d9ee309384d35f8d530186b776d26e1bb5632f89a46d56e93b140282b",
+        "type": "EV_IPL",
+        "desc": "grub_cmd: gfxmode keep"
+      },
+      {
+        "digest": "15a5018b0177cf9c49c0b97911df67e7f2c193d3613e3fc4c9eb98a2b5d06fcc",
+        "type": "EV_IPL",
+        "desc": "grub_cmd: set gfxpayload=keep"
+      },
+      {
+        "digest": "b55d84bbb0a00f175ebbc6ca167f18dd6a9cb49b141535bfcc6c4ef9c53b1866",
+        "type": "EV_IPL",
+        "desc": "grub_cmd: [ keep = keep ]"
+      },
+      {
+        "digest": "141dcfd03b1736e86f617122e7f31cffe89f7cf0faa773f1bced28f7f0c1fa13",
+        "type": "EV_IPL",
+        "desc": "grub_cmd: set vt_handoff=vt.handoff=7"
+      },
+      {
+        "digest": "6c4674d4c652ee67b98a6206d7541ccbf2d5dc0a18dae31ad66e82c794c49784",
+        "type": "EV_IPL",
+        "desc": "grub_cmd: insmod gzio"
+      },
+      {
+        "digest": "18865468f2e4bd9f0cc4ffdda1335f405d06df8d6ff183b373f50e08e81f924d",
+        "type": "EV_IPL",
+        "desc": "grub_cmd: [ xefi = xxen ]"
+      },
+      {
+        "digest": "62cd76d31ca3d10d742e46c6ff171046ce19dd90f361a827fec6571e59c24794",
+        "type": "EV_IPL",
+        "desc": "grub_cmd: insmod part_gpt"
+      },
+      {
+        "digest": "b838a4d2860c81058105fbb1907a1fb7f60b65591b099b3b000d9b31d8d2fb20",
+        "type": "EV_IPL",
+        "desc": "grub_cmd: insmod ext2"
+      },
+      {
+        "digest": "7125ca9b0d53e97ae0bb736dc9a670c1e072e0f8782b228ad5594b7068987a09",
+        "type": "EV_IPL",
+        "desc": "grub_cmd: search --no-floppy --fs-uuid --set=root b4f0deba-ce7d-45dc-9999-0427f2720320"
+      },
+      {
+        "digest": "a71f49c73310ca796c10d828d14ae459701e053dd71477b8f346a7a0f47eb167",
+        "type": "EV_IPL",
+        "desc": "grub_cmd: linux /vmlinuz-6.8.0-147-generic root=LABEL=cloudimg-rootfs ro console=tty1 console=ttyS0"
+      },
+      {
+        "digest": "abd37828ab4876eedc2f430d326890db5721932e2b3d2e4dcb3119561a178c14",
+        "type": "EV_IPL",
+        "desc": "kernel_cmdline: /vmlinuz-6.8.0-147-generic root=LABEL=cloudimg-rootfs ro console=tty1 console=ttyS0"
+      },
+      {
+        "digest": "7f9a729b2a8e57c6c3a085acd03c536f4d3917baf514725860a3b057d581efc9",
+        "type": "EV_IPL",
+        "desc": "grub_cmd: initrd /initrd.img-6.8.0-147-generic"
+      }
+    ],
+    "9": [
+      {
+        "digest": "4e639a3ab60caba594fc79733377e28e57e63ca897402f2d34e6097042cdcc25",
+        "type": "EV_IPL",
+        "desc": "(hd0,gpt15)/EFI/ubuntu/grub.cfg"
+      },
+      {
+        "digest": "aef695413d1a1b9eaff753a15512d0ba79e23e5524033eec20c7a1c7c20eb1c4",
+        "type": "EV_IPL",
+        "desc": "(hd0,gpt16)/grub/x86_64-efi/command.lst"
+      },
+      {
+        "digest": "32fc7f5de8c0a5dc0b1e7eb609ca31a77eb3475539e1d97a4543dca1b9b26c57",
+        "type": "EV_IPL",
+        "desc": "(hd0,gpt16)/grub/x86_64-efi/fs.lst"
+      },
+      {
+        "digest": "1b766f38a94927fe9b7bc1e809f0363e778e14c601e800faea271a2e75d3fc43",
+        "type": "EV_IPL",
+        "desc": "(hd0,gpt16)/grub/x86_64-efi/crypto.lst"
+      },
+      {
+        "digest": "46f888c52f36baf9b62d60bc8d06426a314aad5a0ff86a4362a91c2512a1df9c",
+        "type": "EV_IPL",
+        "desc": "(hd0,gpt16)/grub/x86_64-efi/terminal.lst"
+      },
+      {
+        "digest": "51662470da898994c2fda3f515c660a3eb89a8a4a84a97a5745b43c9beac1c90",
+        "type": "EV_IPL",
+        "desc": "(hd0,gpt16)/grub/grub.cfg"
+      },
+      {
+        "digest": "f64122858064885ef0733e42c6a3d2d3fd642671f714db0d974b880c0f087430",
+        "type": "EV_IPL",
+        "desc": "(hd0,gpt16)/grub/grubenv"
+      },
+      {
+        "digest": "b49a7fd5edc02f168f0de51309313278dc2347c0f83a5cbedcb8974790a5e7e8",
+        "type": "EV_IPL",
+        "desc": "(hd0,gpt16)/grub/x86_64-efi/bli.mod"
+      },
+      {
+        "digest": "41ba36d860aa0b0cd995f4ca8856d80249b244577e704929b55be13fbd1ebd2f",
+        "type": "EV_IPL",
+        "desc": "/vmlinuz-6.8.0-147-generic"
+      },
+      {
+        "digest": "bf276ffc12872256080890698b42db0dc9c5a469c896d8b59af6bc4e723cd186",
+        "type": "EV_IPL",
+        "desc": "/initrd.img-6.8.0-147-generic"
+      },
+      {
+        "digest": "21c138820e3da29777f9db69040577d2a8fc3279d1aabba9c2d5d66021981eab",
+        "type": "EV_EVENT_TAG",
+        "desc": "EV_EVENT_TAG"
+      }
+    ]
+  },
+  "compositeDigests": [
+    "61a4afa500b696252e60e72a525251731f2e602b321ed9dc5803e3bed6ae445e"
+  ]
+}

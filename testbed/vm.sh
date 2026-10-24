@@ -10,7 +10,7 @@ source "${SCRIPT_DIR}/lib/common.sh"
 source "${SCRIPT_DIR}/config.env"
 
 if [ $# -lt 2 ]; then
-  log_err "Usage: $0 <dev> start|stop|status|ssh|console"
+  log_err "Usage: $0 <dev> start|stop|status|refresh|ssh|console"
   exit 1
 fi
 
@@ -33,8 +33,18 @@ if [ -z "${PORT_SSH}" ]; then PORT_SSH=2221; fi
 if [ -z "${PORT_AGENT}" ]; then PORT_AGENT=7101; fi
 if [ -z "${IMAGE_NAME}" ]; then IMAGE_NAME="golden"; fi
 
-DISK_IMG="${SCRIPT_DIR}/images/${IMAGE_NAME}.qcow2"
+BASE_DISK="${SCRIPT_DIR}/images/${IMAGE_NAME}.qcow2"
+# Each device writes to its own overlay; devices sharing an image never share a writable disk
+DISK_IMG="${STATE_DIR}/disk.qcow2"
 SEED_ISO="${SCRIPT_DIR}/images/${IMAGE_NAME}-seed.iso"
+
+# Address of the server stack as every component sees it: the VMs (through QEMU
+# user networking), the host and the load/attack host all route to it, so token
+# issuers and DPoP htu values are identical everywhere.
+if [ -z "${ZTA_PUBLIC_HOST:-}" ] && command -v ip >/dev/null 2>&1; then
+  ZTA_PUBLIC_HOST="$(ip -4 route get 1.1.1.1 2>/dev/null | awk '{for (i = 1; i < NF; i++) if ($i == "src") print $(i + 1)}')"
+fi
+ZTA_PUBLIC_HOST="${ZTA_PUBLIC_HOST:-10.0.2.2}"
 
 # Resolve firmware code and vars templates
 if [ "${OS_TYPE}" = "Darwin" ]; then
@@ -43,8 +53,11 @@ if [ "${OS_TYPE}" = "Darwin" ]; then
   FIRMWARE_VARS_TMPL="${BREW_QEMU}/share/qemu/edk2-arm-vars.fd"
 else
   if [ "${ARCH_TYPE}" = "x86_64" ] || [ "${ARCH_TYPE}" = "amd64" ]; then
-    # Arch / Debian OVMF locations
-    if [ -f "/usr/share/edk2-ovmf/x64/OVMF_CODE.fd" ]; then
+    # Arch / Debian OVMF locations (Arch's edk2-ovmf ships the 4 MB builds under /usr/share/edk2)
+    if [ -f "/usr/share/edk2/x64/OVMF_CODE.4m.fd" ]; then
+      FIRMWARE_CODE="/usr/share/edk2/x64/OVMF_CODE.4m.fd"
+      FIRMWARE_VARS_TMPL="/usr/share/edk2/x64/OVMF_VARS.4m.fd"
+    elif [ -f "/usr/share/edk2-ovmf/x64/OVMF_CODE.fd" ]; then
       FIRMWARE_CODE="/usr/share/edk2-ovmf/x64/OVMF_CODE.fd"
       FIRMWARE_VARS_TMPL="/usr/share/edk2-ovmf/x64/OVMF_VARS.fd"
     elif [ -f "/usr/share/OVMF/OVMF_CODE.fd" ]; then
@@ -60,7 +73,39 @@ else
   fi
 fi
 
+# The VMs see a code-only copy of the repo (never TPM state, CA keys or data/), plus the
+# per-device agent settings read in the VM from /mnt/devstate/agent.env
+AGENT_ROOT="${SCRIPT_DIR}/state/agent-root"
+SHARE_DIR="${STATE_DIR}/share"
+EK_TYPE="ecc384"
+if [ "$(get_dev_var "${DEV}" "PROFILE")" = "rsa2048" ]; then EK_TYPE="rsa"; fi
+prepare_agent_share() {
+  mkdir -p "${AGENT_ROOT}" "${SHARE_DIR}"
+  rsync -a --delete --delete-excluded \
+    --exclude '/.git' --exclude '/data' --exclude '/results' \
+    --exclude '/testbed/state' --exclude '/testbed/ca' --exclude '/testbed/images' \
+    --include '/testbed/cache/node/***' --exclude '/testbed/cache/*' \
+    "${REPO_ROOT}/" "${AGENT_ROOT}/"
+  cat > "${SHARE_DIR}/agent.env" << EOF
+AGENT_ID=${DEV}
+AGENT_URL=http://${ZTA_PUBLIC_HOST}:${PORT_AGENT}
+IDP_ISSUER=http://${ZTA_PUBLIC_HOST}:${PORT_IDP:-5173}
+VERIFIER_URL=http://${ZTA_PUBLIC_HOST}:${PORT_VERIFIER:-4005}
+PIP_URL=http://${ZTA_PUBLIC_HOST}:${PORT_PIP:-4003}
+PEP_PUBLIC_URL=http://${ZTA_PUBLIC_HOST}:${PORT_PEP:-4001}
+TPM_EK_TYPE=${EK_TYPE}
+EOF
+}
+
 case "${ACTION}" in
+  refresh)
+    # New agent code and settings without a reboot (boot measurements stay as they are)
+    prepare_agent_share
+    ssh -p "${PORT_SSH}" -o BatchMode=yes -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR \
+      zta@127.0.0.1 "sudo systemctl restart zta-agent"
+    log_info "Agent refreshed in ${DEV}."
+    ;;
+
   start)
     log_info "Starting VM for ${DEV}..."
     if [ "${DRY_RUN:-0}" = "1" ]; then
@@ -88,6 +133,15 @@ case "${ACTION}" in
     if [ ! -f "${STATE_DIR}/vars.fd" ] && [ -f "${FIRMWARE_VARS_TMPL}" ]; then
       cp "${FIRMWARE_VARS_TMPL}" "${STATE_DIR}/vars.fd"
     fi
+
+    # Per-device writable overlay on the shared image
+    if [ ! -f "${DISK_IMG}" ] && [ -f "${BASE_DISK}" ]; then
+      # Same size for every device: the GPT is measured into PCR5. First boot grows the
+      # root partition, so reference values come from the second boot onwards.
+      qemu-img create -f qcow2 -b "${BASE_DISK}" -F qcow2 "${DISK_IMG}" "${DISK_SIZE:-12G}" >/dev/null
+    fi
+
+    prepare_agent_share
 
     # Remove stale socket
     rm -f "${SOCKET_PATH}"
@@ -138,7 +192,8 @@ case "${ACTION}" in
     QEMU_ARGS+=(
       "-netdev" "user,id=net0,hostfwd=tcp::${PORT_SSH}-:22,hostfwd=tcp::${PORT_AGENT}-:7101"
       "-device" "virtio-net-pci,netdev=net0"
-      "-virtfs" "local,path=${REPO_ROOT},mount_tag=repo,security_model=none,readonly=on"
+      "-virtfs" "local,path=${AGENT_ROOT},mount_tag=repo,security_model=none,readonly=on"
+      "-virtfs" "local,path=${SHARE_DIR},mount_tag=devstate,security_model=none,readonly=on"
       "-display" "none"
       "-pidfile" "${STATE_DIR}/qemu.pid"
       "-daemonize"
@@ -199,7 +254,7 @@ case "${ACTION}" in
     ;;
 
   *)
-    log_err "Unknown action: ${ACTION}. Valid actions: start, stop, status, ssh, console"
+    log_err "Unknown action: ${ACTION}. Valid actions: start, stop, status, refresh, ssh, console"
     exit 1
     ;;
 esac

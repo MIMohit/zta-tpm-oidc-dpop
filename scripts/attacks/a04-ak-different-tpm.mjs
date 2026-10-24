@@ -7,6 +7,7 @@
 import crypto from "node:crypto";
 import { jwkOf } from "../../lib/sim-tpm/public-area.js";
 import { signProof } from "../../lib/dpop.js";
+import { enrolExtras } from "./lib/enrol-extras.mjs";
 
 export default {
   id: "A04",
@@ -30,6 +31,10 @@ export default {
     const ak = await rogueTpm.createAk();
     const kb = await rogueTpm.createKb();
 
+    // Alice's EK identity (public area, chain); Rogue's TPM holds the AK, K_B and SRK
+    const aliceExtras = await enrolExtras(ctx.tpms.alice);
+    const rogueExtras = await enrolExtras(rogueTpm);
+
     // Start enrolment with Alice's EK cert and code, but Rogue's AK
     const startRes = await fetch(`${ctx.urls.verifierUrl}/v/enrol/start`, {
       method: "POST",
@@ -40,6 +45,9 @@ export default {
         akPublic: ak.publicArea,
         kbPublic: kb.publicArea,
         user: "alice",
+        ekPublic: aliceExtras.ekPublic,
+        ekCertChain: aliceExtras.ekCertChain,
+        srkPublic: rogueExtras.srkPublic,
       }),
     });
 
