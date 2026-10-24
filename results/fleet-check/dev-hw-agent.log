@@ -1,0 +1,8 @@
+
+============================================================
+🧩 Client TPM Agent running at http://0.0.0.0:7105
+🛡️ TPM_BACKEND: tpm | Target IdP: http://192.168.0.108:5173
+============================================================
+
+[RealTpm] SRK handle: 0x81000101
+🛡️ Active TPM backend: tpm via linux - ready

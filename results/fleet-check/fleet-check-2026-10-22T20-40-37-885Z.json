@@ -1,0 +1,98 @@
+{
+  "at": "2026-10-22T20:40:37.885Z",
+  "config": "full",
+  "profile": "grub",
+  "rvFile": "fixtures/rv/ubuntu-noble-grub.json",
+  "stack": {
+    "idp": "keycloak",
+    "hsm": true,
+    "host": "http://192.168.0.108:5173"
+  },
+  "devices": [
+    {
+      "dev": "dev-good",
+      "user": "alice",
+      "expect": "access",
+      "steps": {
+        "enrol": {
+          "status": 200,
+          "devId": "Kl0ADsDxLUMdffmPOPyFnosEe4ZtInwSV8M24NHT9vw",
+          "jkt": "UI-IPIjYuSdEau_mSJQ-AAy8Vhuj4Zh_MMApCBHNlJM"
+        },
+        "login": {
+          "status": 200
+        },
+        "callback": {
+          "status": 302
+        },
+        "resource": {
+          "status": 200
+        }
+      },
+      "outcome": "access",
+      "pass": true
+    },
+    {
+      "dev": "dev-tampered",
+      "user": "alice",
+      "expect": "enrol_refused",
+      "steps": {
+        "enrol": {
+          "status": 400,
+          "error": "Event log verification failed: Event 47 (PCR 9, \"(hd0,gpt16)/grub/grub.cfg\") digest not in reference values"
+        }
+      },
+      "outcome": "enrol_refused",
+      "pass": true
+    },
+    {
+      "dev": "dev-rogue",
+      "user": "alice",
+      "expect": "enrol_refused",
+      "steps": {
+        "enrol": {
+          "status": 400,
+          "error": "Device Ro10AutxVE-3nhDNf22FHpM5e5D4rdrXMc00ObjoLMU not in inventory"
+        }
+      },
+      "outcome": "enrol_refused",
+      "pass": true
+    },
+    {
+      "dev": "dev-foreign",
+      "user": "bob",
+      "expect": "enrol_refused",
+      "steps": {
+        "enrol": {
+          "status": 400,
+          "error": "ek_cert_invalid: Untrusted root CA or broken certificate chain"
+        }
+      },
+      "outcome": "enrol_refused",
+      "pass": true
+    },
+    {
+      "dev": "dev-hw",
+      "user": "alice",
+      "expect": "access",
+      "steps": {
+        "enrol": {
+          "status": 200,
+          "devId": "oMGBPJkCRH_jCggrCI3yhtCv-94GvmjVyAIkNZvYJLE",
+          "jkt": "vmARraQbYc609cSyxg6p3gB5Vs1uLuc_5ILSC7Iv9tk"
+        },
+        "login": {
+          "status": 200
+        },
+        "callback": {
+          "status": 302
+        },
+        "resource": {
+          "status": 200
+        }
+      },
+      "outcome": "access",
+      "pass": true
+    }
+  ]
+}

@@ -1,0 +1,169 @@
+/**
+ * @file scripts/attacks/a01-rogue-ek-not-in-inventory.mjs
+ * Attack A01: Rogue device with genuine vTPM whose EK is not in inventory (A4).
+ * Expected: M2 (inventory membership & one-time code).
+ */
+
+import crypto from "node:crypto";
+import { jwkOf } from "../../lib/sim-tpm/public-area.js";
+import { signProof } from "../../lib/dpop.js";
+import { enrolExtras } from "./lib/enrol-extras.mjs";
+
+export default {
+  id: "A01",
+  title: "Rogue device with genuine vTPM whose EK is not in inventory",
+  goal: "G1",
+  adversary: "A4",
+  expected: ["M2"],
+  variants: null,
+
+  applicable(cfgState, mode) {
+    return true;
+  },
+
+  async run(ctx, { variant = null } = {}) {
+    const client = ctx.clients.rogue;
+    const { publicArea: ekPub, cert: ekCert } = await client.tpm.getEk();
+    const ak = await client.tpm.createAk();
+    const kb = await client.tpm.createKb();
+
+    // Attacker attempts to enrol using Alice's code
+    const code = ctx.codes["alice-laptop"] || ctx.codes.alice;
+
+    const startRes = await fetch(`${ctx.urls.verifierUrl}/v/enrol/start`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        code,
+        ekCert,
+        akPublic: ak.publicArea,
+        kbPublic: kb.publicArea,
+        user: "alice",
+        ...(await enrolExtras(client.tpm)),
+      }),
+    });
+
+    if (!startRes.ok) {
+      const body = await startRes.json().catch(() => ({}));
+      return {
+        outcome: "rejected",
+        stoppedAt: {
+          service: "verifier",
+          status: startRes.status,
+          reason: body.message || body.error || "Rogue device EK not in inventory",
+        },
+        evidence: { startStatus: startRes.status },
+      };
+    }
+
+    // If M2 is OFF, enrolment start succeeds
+    const { sessionId, blob, nonce } = await startRes.json();
+    const secret = await client.tpm.activateCredential(ak.handle, blob);
+    const quote = await client.tpm.quote(ak.handle, nonce);
+    const certify = await client.tpm.certify(kb.handle, ak.handle, nonce);
+    const eventLog = typeof client.tpm.readEventLog === "function" ? await client.tpm.readEventLog() : null;
+
+    const finishRes = await fetch(`${ctx.urls.verifierUrl}/v/enrol/finish`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        sessionId,
+        secret: Buffer.isBuffer(secret) ? secret.toString("hex") : String(secret),
+        quote,
+        certify,
+        eventLog,
+      }),
+    });
+
+    if (!finishRes.ok) {
+      const body = await finishRes.json().catch(() => ({}));
+      return {
+        outcome: "rejected",
+        stoppedAt: {
+          service: "verifier",
+          status: finishRes.status,
+          reason: body.message || body.error || "Enrol finish failed",
+        },
+        evidence: { finishStatus: finishRes.status },
+      };
+    }
+
+    const finishBody = await finishRes.json();
+    client.enrolled = true;
+    client.devId = finishBody.devId;
+    client.akHandle = ak.handle;
+    client.kbHandle = kb.handle;
+    client.jkt = finishBody.jkt;
+    client.kbPublicArea = kb.publicArea;
+
+    // Login as alice with the enrolled rogue device
+    try {
+      await ctx.loginWithDevice(client, {
+        username: "alice",
+        password: "alice-pass",
+      });
+    } catch (err) {
+      return {
+        outcome: "rejected",
+        stoppedAt: {
+          service: "idp",
+          status: err.status || 403,
+          reason: err.message || "Login failed for rogue device",
+        },
+        evidence: { loginError: err.message },
+      };
+    }
+
+    // Access protected resource via PEP
+    const newsUrl = `${ctx.urls.pepUrl}/api/company/news`;
+    const preRes = await fetch(newsUrl);
+    const pepNonce = preRes.headers.get("DPoP-Nonce") || undefined;
+    const pubJwk = jwkOf(client.kbPublicArea);
+
+    const proof = await signProof({
+      signer: (data) => client.tpm.sign(client.kbHandle, data),
+      publicJwk: pubJwk,
+      htm: "GET",
+      htu: newsUrl,
+      nonce: pepNonce,
+      accessToken: client.accessToken,
+      clock: ctx.clock,
+    });
+
+    let pepRes = await fetch(newsUrl, {
+      headers: {
+        Authorization: `DPoP ${client.accessToken}`,
+        DPoP: proof,
+      },
+    });
+
+    if (pepRes.status !== 200) {
+      pepRes = await fetch(newsUrl, {
+        headers: {
+          Authorization: `Bearer ${client.accessToken}`,
+        },
+      });
+    }
+
+    if (pepRes.status === 200) {
+      return {
+        outcome: "accepted",
+        stoppedAt: null,
+        evidence: { pepStatus: 200 },
+      };
+    }
+
+    return {
+      outcome: "rejected",
+      stoppedAt: {
+        service: "pep",
+        status: pepRes.status,
+        reason: "PEP access rejected",
+      },
+      evidence: { pepStatus: pepRes.status },
+    };
+  },
+  async runLive(ctx, options) {
+    return this.run(ctx, options);
+  },
+};

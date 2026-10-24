@@ -1,0 +1,38 @@
+{
+  "at": "2026-10-23T10:18:09.941Z",
+  "node": "v26.7.0",
+  "iters": 200000,
+  "seed": 20261023,
+  "targets": [
+    {
+      "target": "x509",
+      "iters": 200000,
+      "seed": 20261023,
+      "counts": {
+        "rejected": 199900,
+        "parsed": 100,
+        "accepted": 0,
+        "unchecked": 0,
+        "hang": 0
+      },
+      "findings": [],
+      "uniqueUnchecked": {},
+      "seconds": 26
+    },
+    {
+      "target": "dpop",
+      "iters": 200000,
+      "seed": 20261023,
+      "counts": {
+        "rejected": 199910,
+        "parsed": 90,
+        "accepted": 0,
+        "unchecked": 0,
+        "hang": 0
+      },
+      "findings": [],
+      "uniqueUnchecked": {},
+      "seconds": 9
+    }
+  ]
+}

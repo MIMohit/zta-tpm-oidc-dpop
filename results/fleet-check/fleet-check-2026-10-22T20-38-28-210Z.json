@@ -1,0 +1,68 @@
+{
+  "at": "2026-10-22T20:38:28.210Z",
+  "config": "full",
+  "stack": {
+    "idp": "keycloak",
+    "hsm": true,
+    "host": "http://192.168.0.108:5173"
+  },
+  "devices": [
+    {
+      "dev": "dev-good",
+      "user": "alice",
+      "expect": "access",
+      "steps": {
+        "enrol": {
+          "status": 200,
+          "devId": "Kl0ADsDxLUMdffmPOPyFnosEe4ZtInwSV8M24NHT9vw",
+          "jkt": "-xXEw-iIHgbDH-v-KBgF4Vh5ujxyNcze-KB5dWLWOKU"
+        },
+        "login": {
+          "status": 400,
+          "error": "Invalid redirect_uri"
+        }
+      },
+      "outcome": "login_refused",
+      "pass": false
+    },
+    {
+      "dev": "dev-tampered",
+      "user": "alice",
+      "expect": "enrol_refused",
+      "steps": {
+        "enrol": {
+          "status": 400,
+          "error": "Event log verification failed: Event 47 (PCR 9, \"(hd0,gpt16)/grub/grub.cfg\") digest not in reference values"
+        }
+      },
+      "outcome": "enrol_refused",
+      "pass": true
+    },
+    {
+      "dev": "dev-rogue",
+      "user": "alice",
+      "expect": "enrol_refused",
+      "steps": {
+        "enrol": {
+          "status": 400,
+          "error": "Device Ro10AutxVE-3nhDNf22FHpM5e5D4rdrXMc00ObjoLMU not in inventory"
+        }
+      },
+      "outcome": "enrol_refused",
+      "pass": true
+    },
+    {
+      "dev": "dev-foreign",
+      "user": "bob",
+      "expect": "enrol_refused",
+      "steps": {
+        "enrol": {
+          "status": 400,
+          "error": "ek_cert_invalid: Untrusted root CA or broken certificate chain"
+        }
+      },
+      "outcome": "enrol_refused",
+      "pass": true
+    }
+  ]
+}

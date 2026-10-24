@@ -1,0 +1,393 @@
+{
+  "schema": "zta-run-manifest/1",
+  "runId": "run_e767fbe7",
+  "mode": "inproc",
+  "tpm": "swtpm",
+  "startedAt": "2026-10-24T07:07:55.552Z",
+  "completedAt": "2026-10-24T09:16:10.717Z",
+  "git": {
+    "commit": "unknown",
+    "dirty": false
+  },
+  "code": {
+    "algorithm": "sha256 over sorted lines path NUL hex(sha256(file)) LF; excludes node_modules, data, results, testbed/{state,ca,images}",
+    "sha256": "70f43abcadc86a6079f5dada5f3788b5733822e3ffc7cbdb2ed182e627e7e7c7",
+    "files": 286,
+    "source": "walk"
+  },
+  "node": "v26.12.0",
+  "platform": "linux",
+  "arch": "x64",
+  "cpus": 8,
+  "env": {},
+  "configs": [
+    {
+      "config": "full",
+      "label": "full",
+      "baseline": null,
+      "off": [],
+      "hash": "a18b869b2e81c0c529552a3c4fa5c92ed08b98a4e146aed778d71d27517f83ac",
+      "manifestHash": "a04f982682521602"
+    },
+    {
+      "config": "-M1",
+      "label": "-M1",
+      "baseline": null,
+      "off": [
+        "M1"
+      ],
+      "hash": "30fd80b5dcda93cf2988b482a828e2a537a2c085c85067d08edc3a4f5f87e67d",
+      "manifestHash": "c3f36acff97f38b3"
+    },
+    {
+      "config": "-M2",
+      "label": "-M2",
+      "baseline": null,
+      "off": [
+        "M2"
+      ],
+      "hash": "0aa64f70eb50dc9662626e14687b6f6435f6d75b5a2fd757f8e8c2fa46e3de5c",
+      "manifestHash": "f967366d57826441"
+    },
+    {
+      "config": "-M3",
+      "label": "-M3",
+      "baseline": null,
+      "off": [
+        "M3"
+      ],
+      "hash": "43c0bb10a84acbe067e21ebbcc76936a848e89bdd1df5c62d48e99c4953e4053",
+      "manifestHash": "35f5b91fb88044db"
+    },
+    {
+      "config": "-M4",
+      "label": "-M4",
+      "baseline": null,
+      "off": [
+        "M4"
+      ],
+      "hash": "af15f516ba9789d23e4b1f31d347f1a29a388e43c18c8b846b35013ae5b4dd19",
+      "manifestHash": "7b32838c090edee3"
+    },
+    {
+      "config": "-M5",
+      "label": "-M5",
+      "baseline": null,
+      "off": [
+        "M5"
+      ],
+      "hash": "ab286e3e0bcf72f3e7e510ef0d5ecdf8629d824fb163b9a8706e032266bb902a",
+      "manifestHash": "80e89b60f55d5869"
+    },
+    {
+      "config": "-M6",
+      "label": "-M6",
+      "baseline": null,
+      "off": [
+        "M6"
+      ],
+      "hash": "51a056cd05443c0f0fa30fb3b0b5fce8eece634b1c5aa397d5117806e907887f",
+      "manifestHash": "873da4f69b007644"
+    },
+    {
+      "config": "-M7",
+      "label": "-M7",
+      "baseline": null,
+      "off": [
+        "M7"
+      ],
+      "hash": "461ffa6ec6a582a0f0508035052c2bd744dd73f21f43300ed151f188c6c28cf7",
+      "manifestHash": "05fa2aa9435fc418"
+    },
+    {
+      "config": "-M8",
+      "label": "-M8",
+      "baseline": null,
+      "off": [
+        "M8"
+      ],
+      "hash": "6c7e4c33b084f90c84c96e57699d5816010456059b9db5cf22f488fb111c8e82",
+      "manifestHash": "6cf5b5637d1f34ae"
+    },
+    {
+      "config": "-M9",
+      "label": "-M9",
+      "baseline": null,
+      "off": [
+        "M9"
+      ],
+      "hash": "97b6bace9ae79bf3aa22b2042ff21748f6b3a668b4e097dc65d91f1bce102f57",
+      "manifestHash": "e972b559101af1b9"
+    },
+    {
+      "config": "-M10",
+      "label": "-M10",
+      "baseline": null,
+      "off": [
+        "M10"
+      ],
+      "hash": "e559630e6b05357dc2b8a3137fccc86d0bcee2c99afd450e74b71ec0c99d6a07",
+      "manifestHash": "26162f6a0292eb0d"
+    },
+    {
+      "config": "-M11",
+      "label": "-M11",
+      "baseline": null,
+      "off": [
+        "M11"
+      ],
+      "hash": "a4965096be3d29797ce8c498b8f64396637435cf7df5f53f453698c861321235",
+      "manifestHash": "5e54e7679c6f6c66"
+    },
+    {
+      "config": "-M12",
+      "label": "-M12",
+      "baseline": null,
+      "off": [
+        "M12"
+      ],
+      "hash": "1deb1cb93b7bbdf090e1485677f36dae54ea170b2da0d27256df3f023274cab5",
+      "manifestHash": "bbefaf34102d1f73"
+    },
+    {
+      "config": "-M13",
+      "label": "-M13",
+      "baseline": null,
+      "off": [
+        "M13"
+      ],
+      "hash": "5091d97e1182094206c1ff9c17b8ad6400533d4ab69f3e53e3a7a63b04acd378",
+      "manifestHash": "5ecca5f8c8230971"
+    },
+    {
+      "config": "-M14",
+      "label": "-M14",
+      "baseline": null,
+      "off": [
+        "M14"
+      ],
+      "hash": "288a2a6edbc62a0919ec9b6a66e682efeeb33b15f75434d11446bfa7f62de0c6",
+      "manifestHash": "0acb1a01846f97f2"
+    },
+    {
+      "config": "-M15",
+      "label": "-M15",
+      "baseline": null,
+      "off": [
+        "M15"
+      ],
+      "hash": "d51e0f1a10d5dcd7abaa97da8c74a3e744ed6ad74a07cbe9f382e0d8c7571591",
+      "manifestHash": "f0b838e41e39a69e"
+    },
+    {
+      "config": "-M16",
+      "label": "-M16",
+      "baseline": null,
+      "off": [
+        "M16"
+      ],
+      "hash": "0c8270952e62c4c7d7de051913728ce6d546497ba1edcd0582cc71f742a39d0b",
+      "manifestHash": "a65157730cb84c91"
+    },
+    {
+      "config": "-M17",
+      "label": "-M17",
+      "baseline": null,
+      "off": [
+        "M17"
+      ],
+      "hash": "c2a5888cac2ee49712b6970ef9edd85d1c76eabe0ffcefe4ebddeaa21f5ffaa9",
+      "manifestHash": "caf5624918e41723"
+    },
+    {
+      "config": "-M18",
+      "label": "-M18",
+      "baseline": null,
+      "off": [
+        "M18"
+      ],
+      "hash": "9e3bd4910ca8cbf8fc2c091d8d670eda8532378a07571225d08c19b3d9c9d52a",
+      "manifestHash": "f2c9b0863f8518dc"
+    },
+    {
+      "config": "-M19",
+      "label": "-M19",
+      "baseline": null,
+      "off": [
+        "M19"
+      ],
+      "hash": "d917bf922d4c82c66190413ce1be42a82e066973067d2e02744647722ab6f0f4",
+      "manifestHash": "67929df1c5917a57"
+    },
+    {
+      "config": "-M20",
+      "label": "-M20",
+      "baseline": null,
+      "off": [
+        "M20"
+      ],
+      "hash": "adf7c37bc41e50cca87829b5f00a80de5d5fda2c2deed8a62db24f28957baa86",
+      "manifestHash": "007e4cd9d81264be"
+    },
+    {
+      "config": "-M21",
+      "label": "-M21",
+      "baseline": null,
+      "off": [
+        "M21"
+      ],
+      "hash": "787fc54af42f56c708a5812a73c5e895e57f58d4408df3626007009ddda54baf",
+      "manifestHash": "5b808b30d68fc896"
+    },
+    {
+      "config": "-M22",
+      "label": "-M22",
+      "baseline": null,
+      "off": [
+        "M22"
+      ],
+      "hash": "da6786d761d36f727d065f99c02e5902d537e66e2cf8bbb55d24c6c0d2faaf07",
+      "manifestHash": "c802e0bae146a5ea"
+    },
+    {
+      "config": "-M23",
+      "label": "-M23",
+      "baseline": null,
+      "off": [
+        "M23"
+      ],
+      "hash": "cb04b5a01cfa18f2b8c0486ce8ae2776cb3f43c267f34eec993289f9c7ded6ee",
+      "manifestHash": "000d5d848739e309"
+    },
+    {
+      "config": "-M24",
+      "label": "-M24",
+      "baseline": null,
+      "off": [
+        "M24"
+      ],
+      "hash": "c4f15463306535e8d1dfe2fb15fad1ecebc2859557cfc484cb88eb51787b126a",
+      "manifestHash": "d7b7d983e440d02f"
+    },
+    {
+      "config": "-M25",
+      "label": "-M25",
+      "baseline": null,
+      "off": [
+        "M25"
+      ],
+      "hash": "f99edd3136d370527c019cffbfb4c0d887a8eaf8586a265af26d07be99a90fa4",
+      "manifestHash": "69f0b0a834e7651d"
+    },
+    {
+      "config": "-M26",
+      "label": "-M26",
+      "baseline": null,
+      "off": [
+        "M26"
+      ],
+      "hash": "e3af797b0be1a2e14566171c9eed6e214bc094c5ccd5f102abfeb55c57eccb48",
+      "manifestHash": "4df6488b95e98677"
+    },
+    {
+      "config": "-M27",
+      "label": "-M27",
+      "baseline": null,
+      "off": [
+        "M27"
+      ],
+      "hash": "a46d74f8dbb5e67005b24585efa445beaed50f0432a72378d7fbf5cf913c3a40",
+      "manifestHash": "3720294edb581b59"
+    },
+    {
+      "config": "-M28",
+      "label": "-M28",
+      "baseline": null,
+      "off": [
+        "M28"
+      ],
+      "hash": "8cc62d78986a309c9998e6a91d89c166a23c1bef195faae16480216d259d40f0",
+      "manifestHash": "28ffa44820b5eac7"
+    },
+    {
+      "config": "B0",
+      "label": "B0",
+      "baseline": "B0",
+      "off": [
+        "M1",
+        "M2",
+        "M3",
+        "M4",
+        "M5",
+        "M6",
+        "M7",
+        "M8",
+        "M9",
+        "M10",
+        "M12",
+        "M13",
+        "M15",
+        "M16",
+        "M17",
+        "M18",
+        "M19",
+        "M21",
+        "M22",
+        "M23"
+      ],
+      "hash": "7f985509026e8351b86daca53f6361a062353f2734eaed5ecfd2054f7830363b",
+      "manifestHash": "e2ac92e49a13ffeb"
+    },
+    {
+      "config": "B1",
+      "label": "B1",
+      "baseline": "B1",
+      "off": [
+        "M1",
+        "M2",
+        "M3",
+        "M4",
+        "M5",
+        "M6",
+        "M7",
+        "M8",
+        "M9",
+        "M10",
+        "M12",
+        "M17",
+        "M18",
+        "M21",
+        "M22",
+        "M23"
+      ],
+      "hash": "45e1731a9765817c52c19201c14586f76294082cf16ea3d98ca6b01a5b50a4e8",
+      "manifestHash": "540b5457bcf92897"
+    },
+    {
+      "config": "B2",
+      "label": "B2",
+      "baseline": "B2",
+      "off": [
+        "M8",
+        "M10",
+        "M17",
+        "M18",
+        "M21",
+        "M22",
+        "M23"
+      ],
+      "hash": "837bba3425113fd94e0ab6de3c977843f0a8d6f0296f2d24806c592bc11367ad",
+      "manifestHash": "fb9d325aee1f37d8"
+    },
+    {
+      "config": "B3",
+      "label": "B3",
+      "baseline": "B3",
+      "off": [
+        "M21"
+      ],
+      "hash": "ad17a989715ae4db03ffa921222faa647469f594ad44e3731a0b448af2ebd14a",
+      "manifestHash": "bd24eb3a22faa261"
+    }
+  ]
+}

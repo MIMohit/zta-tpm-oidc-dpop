@@ -1,0 +1,34 @@
+{
+  "resources": {
+    "company.audit": {
+      "sensitivity": "high",
+      "path": "/api/company/audit",
+      "upstream": "/company/audit",
+      "ops": ["GET"]
+    },
+    "company.news": {
+      "sensitivity": "low",
+      "path": "/api/company/news",
+      "upstream": "/company/news",
+      "ops": ["GET"]
+    }
+  },
+  "max_age_s": {
+    "low": 600,
+    "high": 330
+  },
+  "theta": {
+    "low": 0.5,
+    "high": 0.3
+  },
+  "t_su_s": 300,
+  "permissions": {
+    "auditor": [
+      { "resource": "company.audit", "ops": ["GET"] },
+      { "resource": "company.news", "ops": ["GET"] }
+    ],
+    "employee": [
+      { "resource": "company.news", "ops": ["GET"] }
+    ]
+  }
+}

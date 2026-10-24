@@ -1,0 +1,34 @@
+{
+  "advisories": {
+    "info": 0,
+    "low": 4,
+    "moderate": 12,
+    "high": 10,
+    "critical": 5,
+    "total": 31
+  },
+  "topLevelOwners": {
+    "firebase-admin": 17,
+    "express": 4,
+    "keycloak-connect": 9,
+    "axios": 3,
+    "uuid": 1
+  },
+  "reachableFromLoadedDeps": [
+    "body-parser",
+    "path-to-regexp",
+    "proxy-addr",
+    "qs"
+  ],
+  "loadedDeps": [
+    "@simplewebauthn/server",
+    "cors",
+    "dotenv",
+    "express",
+    "express-session",
+    "graphene-pk11",
+    "jose",
+    "koffi",
+    "tss.js"
+  ]
+}

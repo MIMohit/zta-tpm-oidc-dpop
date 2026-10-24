@@ -1,0 +1,52 @@
+[
+  {
+    "pcr": 0,
+    "desc": "CRTM: Core Root of Trust for Measurement",
+    "digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "pcr": 0,
+    "desc": "UEFI: Base Firmware Code",
+    "digest": "a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3"
+  },
+  {
+    "pcr": 1,
+    "desc": "UEFI: Host Platform Configuration",
+    "digest": "b5a2c96250612366ea8c2c10df6be08602df3649022e497220c8b7b05ff161ac"
+  },
+  {
+    "pcr": 2,
+    "desc": "UEFI: Option ROM and Device Drivers",
+    "digest": "d7a8fbb307d7809469ca9abcb0082e4f8d5651e46d3cdb762d02d0bf37c9e592"
+  },
+  {
+    "pcr": 3,
+    "desc": "UEFI: Option ROM Configuration and Data",
+    "digest": "044852b2a6703b057691660ab9ec41300f7457704772048d70f552e8290cb733"
+  },
+  {
+    "pcr": 4,
+    "desc": "UEFI: Bootloader Executable (shim/GRUB)",
+    "digest": "7d793037a0760186574b0282f2f435e708170e62ffc672111225f4859a7a49b6"
+  },
+  {
+    "pcr": 4,
+    "desc": "OS: Kernel Image and Initramfs",
+    "digest": "ef2d127de37b942baad06145e54b0c619a1f22327b2ebbcfbec78f5564afe39d"
+  },
+  {
+    "pcr": 5,
+    "desc": "GPT: Partition Table and Boot Config",
+    "digest": "4b227777d4dd1fc61c6f884f48641d02b4d121d3fd328cb08b5531fcacdabf8a"
+  },
+  {
+    "pcr": 6,
+    "desc": "State: Resume from S4/S5 and Power State",
+    "digest": "ef537f25c895bfa782526529a9b63d97aa631564d5d789c2b765448c8635fb6c"
+  },
+  {
+    "pcr": 7,
+    "desc": "SecureBoot: Policy (PK, KEK, db, dbx) - SecureBoot=on",
+    "digest": "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918"
+  }
+]

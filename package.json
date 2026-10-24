@@ -1,4 +1,27 @@
 {
+  "type": "module",
+  "scripts": {
+    "start": "./start-zta.sh",
+    "seed": "node scripts/seed-dev.js",
+    "test": "node --test --test-concurrency=1 tests/*.test.mjs",
+    "attack": "node scripts/attack-e1.mjs",
+    "attacks": "node scripts/attacks/run.mjs",
+    "attacks:matrix": "node scripts/attacks/matrix.mjs",
+    "attacks:check-guards": "node scripts/attacks/check-guards.mjs",
+    "rv:capture": "node scripts/rv-capture.mjs",
+    "testbed:lint": "bash testbed/tests/lint.sh",
+    "testbed:dry-run": "bash testbed/tests/dry-run.sh",
+    "test:eventlog": "node --test tests/tcg-eventlog.test.mjs tests/eventlog-e2e.test.mjs",
+    "test:ek": "node --test tests/ek-p384.test.mjs tests/swtpm-ek.test.mjs",
+    "verify-audit": "node scripts/verify-audit.js",
+    "test:tpm": "node --test --test-concurrency=1 tests/tpm2.test.mjs tests/tpm-real.test.mjs tests/e2e-tpm.test.mjs tests/verify3-regressions.test.mjs tests/tpm-factory.test.mjs tests/verifier-tpm2.test.mjs tests/ek-p384.test.mjs tests/swtpm-ek.test.mjs tests/tcg-eventlog.test.mjs tests/eventlog-e2e.test.mjs",
+    "inventory:add": "node scripts/inventory-add.js",
+    "tpm:sim-server": "scripts/tpm-sim-server.sh",
+    "tpm:sim-ctl": "node scripts/tpm-sim-ctl.mjs",
+    "tpm:sim-reset": "node scripts/tpm-sim-ctl.mjs power-cycle",
+    "tpm:provision-ek-cert": "node scripts/tpm-provision-ek-cert.mjs",
+    "tpm:probe": "node scripts/tpm-probe.mjs"
+  },
   "dependencies": {
     "@simplewebauthn/server": "^13.3.2",
     "axios": "^1.13.1",
@@ -10,6 +33,22 @@
     "jose": "^6.1.3",
     "keycloak-connect": "^26.1.1",
     "openid-client": "^6.8.1",
+    "tss.js": "2.0.0",
     "uuid": "^13.0.0"
+  },
+  "optionalDependencies": {
+    "graphene-pk11": "2.3.6",
+    "koffi": "^2"
+  },
+  "overrides": {
+    "ffi-napi": "file:./vendor/ffi-stub",
+    "ref-napi": "file:./vendor/ffi-stub"
+  },
+  "devDependencies": {
+    "@peculiar/x509": "^2.1.0",
+    "reflect-metadata": "^0.2.2"
+  },
+  "allowScripts": {
+    "pkcs11js@2.1.7": true
   }
 }

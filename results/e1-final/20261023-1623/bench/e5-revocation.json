@@ -1,0 +1,58 @@
+{
+  "experiment": "E5",
+  "interval": 20,
+  "idp": "keycloak",
+  "env": {
+    "at": "2026-10-23T13:26:16.148Z",
+    "host": "mimohit",
+    "platform": "Linux 7.2.8-9-omarchy x64",
+    "cpu": "AMD Ryzen 7 5700U with Radeon Graphics",
+    "onlineCpus": 8,
+    "memGiB": 13,
+    "node": "v26.12.0",
+    "loadavg": [
+      0.56,
+      0.6,
+      0.69
+    ],
+    "smt": "off",
+    "boost": "0",
+    "governor": "performance",
+    "scalingDriver": "acpi-cpufreq",
+    "powerProfile": "balanced",
+    "acOnline": null,
+    "swtpm": "TPM emulator version 0.10.2, Copyright (c) 2014-2022 IBM Corp. and others"
+  },
+  "results": {
+    "full": {
+      "n": 100,
+      "median": 19.597842499613762,
+      "q1": 13.669404998421669,
+      "q3": 24.25196674838662,
+      "p95": 28.066116504371166,
+      "p99": 31.923484938592008,
+      "min": 8.074950009584427,
+      "max": 88.15676601231098,
+      "ci95": [
+        17.01990891546011,
+        20.980079010128975
+      ],
+      "notObserved": 0
+    },
+    "B3": {
+      "n": 5,
+      "median": 299264.78355801105,
+      "q1": 298987.3369150013,
+      "q3": 299462.0212109983,
+      "p95": 299469.54101659654,
+      "p99": 299471.0449777162,
+      "min": 298158.5203399956,
+      "max": 299471.4209679961,
+      "ci95": [
+        298158.5203399956,
+        299471.4209679961
+      ],
+      "notObserved": 0
+    }
+  }
+}

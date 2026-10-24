@@ -1,0 +1,72 @@
+{
+  "realm": "zta-realm",
+  "enabled": true,
+  "sslRequired": "none",
+  "registrationAllowed": false,
+  "bruteForceProtected": false,
+  "accessTokenLifespan": 300,
+  "roles": {
+    "realm": [
+      { "name": "auditor", "description": "May read the auditor resource" },
+      { "name": "employee", "description": "Default role" }
+    ]
+  },
+  "users": [
+    {
+      "username": "alice",
+      "enabled": true,
+      "email": "alice@zta.lab",
+      "emailVerified": true,
+      "firstName": "Alice",
+      "lastName": "Lab",
+      "credentials": [{ "type": "password", "value": "__ALICE_PASSWORD__", "temporary": false }],
+      "realmRoles": ["auditor"]
+    },
+    {
+      "username": "bob",
+      "enabled": true,
+      "email": "bob@zta.lab",
+      "emailVerified": true,
+      "firstName": "Bob",
+      "lastName": "Lab",
+      "credentials": [{ "type": "password", "value": "__BOB_PASSWORD__", "temporary": false }],
+      "realmRoles": ["employee"]
+    }
+  ],
+  "clients": [
+    {
+      "clientId": "zta-gate",
+      "name": "ZTA attestation gate",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "__CLIENT_SECRET__",
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "redirectUris": ["__GATE_URL__/oauth/upstream/callback", "__GATE_TLS_URL__/oauth/upstream/callback"],
+      "webOrigins": ["__GATE_URL__", "__GATE_TLS_URL__"],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "__GATE_URL__##__GATE_TLS_URL__"
+      },
+      "protocolMappers": [
+        {
+          "name": "realm roles in ID token",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-realm-role-mapper",
+          "config": {
+            "claim.name": "realm_access.roles",
+            "jsonType.label": "String",
+            "multivalued": "true",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        }
+      ]
+    }
+  ]
+}

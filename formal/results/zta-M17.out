@@ -1,0 +1,1501 @@
+Linear part: No equation.
+Convergent part:
+dig(tampered,sel07) = dig(golden,sel07)
+Completing equations...
+Completed equations:
+dig(tampered,sel07) = dig(golden,sel07)
+Process 0 (that is, the initial process):
+{1}out(c, password(alice));
+(
+    {2}!
+    {3}in(c, (ekp: pkey,ce: bitstring,akp: pkey,kbp: pkey));
+    {4}if (checkcert(ce,pk(caSk)) = ekp) then
+    {19}get inventory(=ekp,u: bitstring) in
+    {5}new s: bitstring;
+    {6}new n: bitstring;
+    {7}out(c, (mkcred(ekp,name(akp),s),n,sel09));
+    {8}in(c, (s2: bitstring,q: bitstring,cb: bitstring));
+    {9}if (s2 = s) then
+    {10}let (=tq,=n,sel: bitstring,dd: bitstring) = checksign(q,akp) in
+    {11}if (sel = sel09) then
+    {12}if (dd = dig(golden,sel)) then
+    {13}let (=tc,=n,=kbp) = checksign(cb,akp) in
+    {14}let d: bitstring = thumb(ekp) in
+    {15}event Appraised(d,n);
+    {16}event Enrolled(d,thumb(kbp),u);
+    {17}insert registry(d,akp,kbp,u);
+    {18}out(c, sign((tar,d,thumb(kbp)),skV))
+) | (
+    {20}!
+    {21}in(c, d_1: bitstring);
+    {30}get registry(=d_1,akp_1: pkey,kbp_1: pkey,u_1: bitstring) in
+    {22}new n_1: bitstring;
+    {23}out(c, (n_1,sel09));
+    {24}in(c, q_1: bitstring);
+    {25}let (=tq,=n_1,sel_1: bitstring,dd_1: bitstring) = checksign(q_1,akp_1) in
+    {26}if (sel_1 = sel09) then
+    {27}if (dd_1 = dig(golden,sel_1)) then
+    {28}event Appraised(d_1,n_1);
+    {29}out(c, sign((tar,d_1,thumb(kbp_1)),skV))
+) | (
+    {31}!
+    {32}in(c, (ar: bitstring,jktReq: bitstring,u_2: bitstring,pw: bitstring));
+    {33}if (pw = password(u_2)) then
+    {34}let (=tar,d_2: bitstring,jktAR: bitstring) = checksign(ar,pk(skV)) in
+    {35}if (jktAR = jktReq) then
+    {43}get registry(=d_2,akp_2: pkey,kbp_2: pkey,=u_2) in
+    {36}new nD: bitstring;
+    {37}out(c, nD);
+    {38}in(c, (kbq: pkey,prf: bitstring));
+    {39}if (thumb(kbq) = jktReq) then
+    {40}let (=td,=tokenEp,=nD) = checksign(prf,kbq) in
+    {41}event Issued(u_2,d_2,jktReq);
+    {42}out(c, sign((tat,u_2,d_2,jktReq),skIdP))
+) | (
+    {44}!
+    {45}new nS: bitstring;
+    {46}out(c, nS);
+    {47}in(c, (at: bitstring,kbq_1: pkey,prf_1: bitstring,r: bitstring));
+    {48}let (=tat,u_3: bitstring,d_3: bitstring,j: bitstring) = checksign(at,pk(skIdP)) in
+    {49}if (thumb(kbq_1) = j) then
+    {50}let (=td,=r,np: bitstring) = checksign(prf_1,kbq_1) in
+    {51}event Accepted(u_3,d_3,j,r,np)
+) | (
+    {52}let u_4: bitstring = alice in
+    {53}let st: bitstring = golden in
+    {54}new ek: key;
+    {55}new ak: key;
+    {56}new kb: key;
+    {57}let d_4: bitstring = thumb(pk(ek)) in
+    {58}insert inventory(pk(ek),u_4);
+    {59}event TPMHoldsKB(d_4,thumb(pk(kb)));
+    {60}out(c, (pk(ek),cert(pk(ek),caSk),pk(ak),pk(kb)));
+    {61}if (st = golden) then
+    (
+        {62}event DeviceGood(d_4);
+        {63}let ek_1: key = ek in
+        {64}let ak_1: key = ak in
+        {65}let kb_1: key = kb in
+        (
+            {66}!
+            {67}in(c, (=tq,n_2: bitstring,sel_2: bitstring));
+            {68}event TPMQuoted(thumb(pk(ek_1)),n_2);
+            {69}out(c, sign((tq,n_2,sel_2,dig(st,sel_2)),ak_1))
+        ) | (
+            {70}!
+            {71}in(c, (=tc,n_3: bitstring));
+            {72}out(c, sign((tc,n_3,pk(kb_1)),ak_1))
+        ) | (
+            {73}!
+            {74}in(c, blob: bitstring);
+            {75}out(c, activate(blob,ek_1,name(pk(ak_1))))
+        ) | (
+            {76}!
+            {77}in(c, (=td,r_1: bitstring,n_4: bitstring));
+            {78}event TPMSignedProof(thumb(pk(kb_1)),r_1,n_4);
+            {79}out(c, sign((td,r_1,n_4),kb_1))
+        )
+    )
+    else
+        {80}let ek_2: key = ek in
+        {81}let ak_2: key = ak in
+        {82}let kb_2: key = kb in
+        (
+            {83}!
+            {84}in(c, (=tq,n_5: bitstring,sel_3: bitstring));
+            {85}event TPMQuoted(thumb(pk(ek_2)),n_5);
+            {86}out(c, sign((tq,n_5,sel_3,dig(st,sel_3)),ak_2))
+        ) | (
+            {87}!
+            {88}in(c, (=tc,n_6: bitstring));
+            {89}out(c, sign((tc,n_6,pk(kb_2)),ak_2))
+        ) | (
+            {90}!
+            {91}in(c, blob_1: bitstring);
+            {92}out(c, activate(blob_1,ek_2,name(pk(ak_2))))
+        ) | (
+            {93}!
+            {94}in(c, (=td,r_2: bitstring,n_7: bitstring));
+            {95}event TPMSignedProof(thumb(pk(kb_2)),r_2,n_7);
+            {96}out(c, sign((td,r_2,n_7),kb_2))
+        )
+) | (
+    {97}let u_5: bitstring = alice in
+    {98}let st_1: bitstring = tampered in
+    {99}new ek_3: key;
+    {100}new ak_3: key;
+    {101}new kb_3: key;
+    {102}let d_5: bitstring = thumb(pk(ek_3)) in
+    {103}insert inventory(pk(ek_3),u_5);
+    {104}event TPMHoldsKB(d_5,thumb(pk(kb_3)));
+    {105}out(c, (pk(ek_3),cert(pk(ek_3),caSk),pk(ak_3),pk(kb_3)));
+    {106}if (st_1 = golden) then
+    (
+        {107}event DeviceGood(d_5);
+        {108}let ek_4: key = ek_3 in
+        {109}let ak_4: key = ak_3 in
+        {110}let kb_4: key = kb_3 in
+        (
+            {111}!
+            {112}in(c, (=tq,n_8: bitstring,sel_4: bitstring));
+            {113}event TPMQuoted(thumb(pk(ek_4)),n_8);
+            {114}out(c, sign((tq,n_8,sel_4,dig(st_1,sel_4)),ak_4))
+        ) | (
+            {115}!
+            {116}in(c, (=tc,n_9: bitstring));
+            {117}out(c, sign((tc,n_9,pk(kb_4)),ak_4))
+        ) | (
+            {118}!
+            {119}in(c, blob_2: bitstring);
+            {120}out(c, activate(blob_2,ek_4,name(pk(ak_4))))
+        ) | (
+            {121}!
+            {122}in(c, (=td,r_3: bitstring,n_10: bitstring));
+            {123}event TPMSignedProof(thumb(pk(kb_4)),r_3,n_10);
+            {124}out(c, sign((td,r_3,n_10),kb_4))
+        )
+    )
+    else
+        {125}let ek_5: key = ek_3 in
+        {126}let ak_5: key = ak_3 in
+        {127}let kb_5: key = kb_3 in
+        (
+            {128}!
+            {129}in(c, (=tq,n_11: bitstring,sel_5: bitstring));
+            {130}event TPMQuoted(thumb(pk(ek_5)),n_11);
+            {131}out(c, sign((tq,n_11,sel_5,dig(st_1,sel_5)),ak_5))
+        ) | (
+            {132}!
+            {133}in(c, (=tc,n_12: bitstring));
+            {134}out(c, sign((tc,n_12,pk(kb_5)),ak_5))
+        ) | (
+            {135}!
+            {136}in(c, blob_3: bitstring);
+            {137}out(c, activate(blob_3,ek_5,name(pk(ak_5))))
+        ) | (
+            {138}!
+            {139}in(c, (=td,r_4: bitstring,n_13: bitstring));
+            {140}event TPMSignedProof(thumb(pk(kb_5)),r_4,n_13);
+            {141}out(c, sign((td,r_4,n_13),kb_5))
+        )
+) | (
+    {142}let u_6: bitstring = bob in
+    {143}let st_2: bitstring = golden in
+    {144}new ek_6: key;
+    {145}new ak_6: key;
+    {146}new kb_6: key;
+    {147}let d_6: bitstring = thumb(pk(ek_6)) in
+    {148}insert inventory(pk(ek_6),u_6);
+    {149}event TPMHoldsKB(d_6,thumb(pk(kb_6)));
+    {150}out(c, (pk(ek_6),cert(pk(ek_6),caSk),pk(ak_6),pk(kb_6)));
+    {151}if (st_2 = golden) then
+    (
+        {152}event DeviceGood(d_6);
+        {153}let ek_7: key = ek_6 in
+        {154}let ak_7: key = ak_6 in
+        {155}let kb_7: key = kb_6 in
+        (
+            {156}!
+            {157}in(c, (=tq,n_14: bitstring,sel_6: bitstring));
+            {158}event TPMQuoted(thumb(pk(ek_7)),n_14);
+            {159}out(c, sign((tq,n_14,sel_6,dig(st_2,sel_6)),ak_7))
+        ) | (
+            {160}!
+            {161}in(c, (=tc,n_15: bitstring));
+            {162}out(c, sign((tc,n_15,pk(kb_7)),ak_7))
+        ) | (
+            {163}!
+            {164}in(c, blob_4: bitstring);
+            {165}out(c, activate(blob_4,ek_7,name(pk(ak_7))))
+        ) | (
+            {166}!
+            {167}in(c, (=td,r_5: bitstring,n_16: bitstring));
+            {168}event TPMSignedProof(thumb(pk(kb_7)),r_5,n_16);
+            {169}out(c, sign((td,r_5,n_16),kb_7))
+        )
+    )
+    else
+        {170}let ek_8: key = ek_6 in
+        {171}let ak_8: key = ak_6 in
+        {172}let kb_8: key = kb_6 in
+        (
+            {173}!
+            {174}in(c, (=tq,n_17: bitstring,sel_7: bitstring));
+            {175}event TPMQuoted(thumb(pk(ek_8)),n_17);
+            {176}out(c, sign((tq,n_17,sel_7,dig(st_2,sel_7)),ak_8))
+        ) | (
+            {177}!
+            {178}in(c, (=tc,n_18: bitstring));
+            {179}out(c, sign((tc,n_18,pk(kb_8)),ak_8))
+        ) | (
+            {180}!
+            {181}in(c, blob_5: bitstring);
+            {182}out(c, activate(blob_5,ek_8,name(pk(ak_8))))
+        ) | (
+            {183}!
+            {184}in(c, (=td,r_6: bitstring,n_19: bitstring));
+            {185}event TPMSignedProof(thumb(pk(kb_8)),r_6,n_19);
+            {186}out(c, sign((td,r_6,n_19),kb_8))
+        )
+) | (
+    {187}new ekR: key;
+    {188}new akR: key;
+    {189}new kbR: key;
+    {190}out(c, (ekR,akR,kbR,cert(pk(ekR),caSk)))
+)
+
+--  Process 1 (that is, process 0, with let moved downwards):
+{1}out(c, password(alice));
+(
+    {2}!
+    {3}in(c, (ekp: pkey,ce: bitstring,akp: pkey,kbp: pkey));
+    {4}if (checkcert(ce,pk(caSk)) = ekp) then
+    {19}get inventory(=ekp,u: bitstring) in
+    {5}new s: bitstring;
+    {6}new n: bitstring;
+    {7}out(c, (mkcred(ekp,name(akp),s),n,sel09));
+    {8}in(c, (s2: bitstring,q: bitstring,cb: bitstring));
+    {9}if (s2 = s) then
+    {10}let (=tq,=n,sel: bitstring,dd: bitstring) = checksign(q,akp) in
+    {11}if (sel = sel09) then
+    {12}if (dd = dig(golden,sel)) then
+    {13}let (=tc,=n,=kbp) = checksign(cb,akp) in
+    {14}let d: bitstring = thumb(ekp) in
+    {15}event Appraised(d,n);
+    {16}event Enrolled(d,thumb(kbp),u);
+    {17}insert registry(d,akp,kbp,u);
+    {18}out(c, sign((tar,d,thumb(kbp)),skV))
+) | (
+    {20}!
+    {21}in(c, d_1: bitstring);
+    {30}get registry(=d_1,akp_1: pkey,kbp_1: pkey,u_1: bitstring) in
+    {22}new n_1: bitstring;
+    {23}out(c, (n_1,sel09));
+    {24}in(c, q_1: bitstring);
+    {25}let (=tq,=n_1,sel_1: bitstring,dd_1: bitstring) = checksign(q_1,akp_1) in
+    {26}if (sel_1 = sel09) then
+    {27}if (dd_1 = dig(golden,sel_1)) then
+    {28}event Appraised(d_1,n_1);
+    {29}out(c, sign((tar,d_1,thumb(kbp_1)),skV))
+) | (
+    {31}!
+    {32}in(c, (ar: bitstring,jktReq: bitstring,u_2: bitstring,pw: bitstring));
+    {33}if (pw = password(u_2)) then
+    {34}let (=tar,d_2: bitstring,jktAR: bitstring) = checksign(ar,pk(skV)) in
+    {35}if (jktAR = jktReq) then
+    {43}get registry(=d_2,akp_2: pkey,kbp_2: pkey,=u_2) in
+    {36}new nD: bitstring;
+    {37}out(c, nD);
+    {38}in(c, (kbq: pkey,prf: bitstring));
+    {39}if (thumb(kbq) = jktReq) then
+    {40}let (=td,=tokenEp,=nD) = checksign(prf,kbq) in
+    {41}event Issued(u_2,d_2,jktReq);
+    {42}out(c, sign((tat,u_2,d_2,jktReq),skIdP))
+) | (
+    {44}!
+    {45}new nS: bitstring;
+    {46}out(c, nS);
+    {47}in(c, (at: bitstring,kbq_1: pkey,prf_1: bitstring,r: bitstring));
+    {48}let (=tat,u_3: bitstring,d_3: bitstring,j: bitstring) = checksign(at,pk(skIdP)) in
+    {49}if (thumb(kbq_1) = j) then
+    {50}let (=td,=r,np: bitstring) = checksign(prf_1,kbq_1) in
+    {51}event Accepted(u_3,d_3,j,r,np)
+) | (
+    {54}new ek: key;
+    {55}new ak: key;
+    {56}new kb: key;
+    {52}let u_4: bitstring = alice in
+    {58}insert inventory(pk(ek),u_4);
+    {57}let d_4: bitstring = thumb(pk(ek)) in
+    {59}event TPMHoldsKB(d_4,thumb(pk(kb)));
+    {60}out(c, (pk(ek),cert(pk(ek),caSk),pk(ak),pk(kb)));
+    {53}let st: bitstring = golden in
+    {61}if (st = golden) then
+    (
+        {62}event DeviceGood(d_4);
+        {64}let ak_1: key = ak in
+        {63}let ek_1: key = ek in
+        (
+            {66}!
+            {67}in(c, (=tq,n_2: bitstring,sel_2: bitstring));
+            {68}event TPMQuoted(thumb(pk(ek_1)),n_2);
+            {69}out(c, sign((tq,n_2,sel_2,dig(st,sel_2)),ak_1))
+        ) | (
+            {65}let kb_1: key = kb in
+            (
+                {70}!
+                {71}in(c, (=tc,n_3: bitstring));
+                {72}out(c, sign((tc,n_3,pk(kb_1)),ak_1))
+            ) | (
+                {73}!
+                {74}in(c, blob: bitstring);
+                {75}out(c, activate(blob,ek_1,name(pk(ak_1))))
+            ) | (
+                {76}!
+                {77}in(c, (=td,r_1: bitstring,n_4: bitstring));
+                {78}event TPMSignedProof(thumb(pk(kb_1)),r_1,n_4);
+                {79}out(c, sign((td,r_1,n_4),kb_1))
+            )
+        )
+    )
+    else
+        {81}let ak_2: key = ak in
+        {80}let ek_2: key = ek in
+        (
+            {83}!
+            {84}in(c, (=tq,n_5: bitstring,sel_3: bitstring));
+            {85}event TPMQuoted(thumb(pk(ek_2)),n_5);
+            {86}out(c, sign((tq,n_5,sel_3,dig(st,sel_3)),ak_2))
+        ) | (
+            {82}let kb_2: key = kb in
+            (
+                {87}!
+                {88}in(c, (=tc,n_6: bitstring));
+                {89}out(c, sign((tc,n_6,pk(kb_2)),ak_2))
+            ) | (
+                {90}!
+                {91}in(c, blob_1: bitstring);
+                {92}out(c, activate(blob_1,ek_2,name(pk(ak_2))))
+            ) | (
+                {93}!
+                {94}in(c, (=td,r_2: bitstring,n_7: bitstring));
+                {95}event TPMSignedProof(thumb(pk(kb_2)),r_2,n_7);
+                {96}out(c, sign((td,r_2,n_7),kb_2))
+            )
+        )
+) | (
+    {99}new ek_3: key;
+    {100}new ak_3: key;
+    {101}new kb_3: key;
+    {97}let u_5: bitstring = alice in
+    {103}insert inventory(pk(ek_3),u_5);
+    {102}let d_5: bitstring = thumb(pk(ek_3)) in
+    {104}event TPMHoldsKB(d_5,thumb(pk(kb_3)));
+    {105}out(c, (pk(ek_3),cert(pk(ek_3),caSk),pk(ak_3),pk(kb_3)));
+    {98}let st_1: bitstring = tampered in
+    {106}if (st_1 = golden) then
+    (
+        {107}event DeviceGood(d_5);
+        {109}let ak_4: key = ak_3 in
+        {108}let ek_4: key = ek_3 in
+        (
+            {111}!
+            {112}in(c, (=tq,n_8: bitstring,sel_4: bitstring));
+            {113}event TPMQuoted(thumb(pk(ek_4)),n_8);
+            {114}out(c, sign((tq,n_8,sel_4,dig(st_1,sel_4)),ak_4))
+        ) | (
+            {110}let kb_4: key = kb_3 in
+            (
+                {115}!
+                {116}in(c, (=tc,n_9: bitstring));
+                {117}out(c, sign((tc,n_9,pk(kb_4)),ak_4))
+            ) | (
+                {118}!
+                {119}in(c, blob_2: bitstring);
+                {120}out(c, activate(blob_2,ek_4,name(pk(ak_4))))
+            ) | (
+                {121}!
+                {122}in(c, (=td,r_3: bitstring,n_10: bitstring));
+                {123}event TPMSignedProof(thumb(pk(kb_4)),r_3,n_10);
+                {124}out(c, sign((td,r_3,n_10),kb_4))
+            )
+        )
+    )
+    else
+        {126}let ak_5: key = ak_3 in
+        {125}let ek_5: key = ek_3 in
+        (
+            {128}!
+            {129}in(c, (=tq,n_11: bitstring,sel_5: bitstring));
+            {130}event TPMQuoted(thumb(pk(ek_5)),n_11);
+            {131}out(c, sign((tq,n_11,sel_5,dig(st_1,sel_5)),ak_5))
+        ) | (
+            {127}let kb_5: key = kb_3 in
+            (
+                {132}!
+                {133}in(c, (=tc,n_12: bitstring));
+                {134}out(c, sign((tc,n_12,pk(kb_5)),ak_5))
+            ) | (
+                {135}!
+                {136}in(c, blob_3: bitstring);
+                {137}out(c, activate(blob_3,ek_5,name(pk(ak_5))))
+            ) | (
+                {138}!
+                {139}in(c, (=td,r_4: bitstring,n_13: bitstring));
+                {140}event TPMSignedProof(thumb(pk(kb_5)),r_4,n_13);
+                {141}out(c, sign((td,r_4,n_13),kb_5))
+            )
+        )
+) | (
+    {144}new ek_6: key;
+    {145}new ak_6: key;
+    {146}new kb_6: key;
+    {142}let u_6: bitstring = bob in
+    {148}insert inventory(pk(ek_6),u_6);
+    {147}let d_6: bitstring = thumb(pk(ek_6)) in
+    {149}event TPMHoldsKB(d_6,thumb(pk(kb_6)));
+    {150}out(c, (pk(ek_6),cert(pk(ek_6),caSk),pk(ak_6),pk(kb_6)));
+    {143}let st_2: bitstring = golden in
+    {151}if (st_2 = golden) then
+    (
+        {152}event DeviceGood(d_6);
+        {154}let ak_7: key = ak_6 in
+        {153}let ek_7: key = ek_6 in
+        (
+            {156}!
+            {157}in(c, (=tq,n_14: bitstring,sel_6: bitstring));
+            {158}event TPMQuoted(thumb(pk(ek_7)),n_14);
+            {159}out(c, sign((tq,n_14,sel_6,dig(st_2,sel_6)),ak_7))
+        ) | (
+            {155}let kb_7: key = kb_6 in
+            (
+                {160}!
+                {161}in(c, (=tc,n_15: bitstring));
+                {162}out(c, sign((tc,n_15,pk(kb_7)),ak_7))
+            ) | (
+                {163}!
+                {164}in(c, blob_4: bitstring);
+                {165}out(c, activate(blob_4,ek_7,name(pk(ak_7))))
+            ) | (
+                {166}!
+                {167}in(c, (=td,r_5: bitstring,n_16: bitstring));
+                {168}event TPMSignedProof(thumb(pk(kb_7)),r_5,n_16);
+                {169}out(c, sign((td,r_5,n_16),kb_7))
+            )
+        )
+    )
+    else
+        {171}let ak_8: key = ak_6 in
+        {170}let ek_8: key = ek_6 in
+        (
+            {173}!
+            {174}in(c, (=tq,n_17: bitstring,sel_7: bitstring));
+            {175}event TPMQuoted(thumb(pk(ek_8)),n_17);
+            {176}out(c, sign((tq,n_17,sel_7,dig(st_2,sel_7)),ak_8))
+        ) | (
+            {172}let kb_8: key = kb_6 in
+            (
+                {177}!
+                {178}in(c, (=tc,n_18: bitstring));
+                {179}out(c, sign((tc,n_18,pk(kb_8)),ak_8))
+            ) | (
+                {180}!
+                {181}in(c, blob_5: bitstring);
+                {182}out(c, activate(blob_5,ek_8,name(pk(ak_8))))
+            ) | (
+                {183}!
+                {184}in(c, (=td,r_6: bitstring,n_19: bitstring));
+                {185}event TPMSignedProof(thumb(pk(kb_8)),r_6,n_19);
+                {186}out(c, sign((td,r_6,n_19),kb_8))
+            )
+        )
+) | (
+    {187}new ekR: key;
+    {188}new akR: key;
+    {189}new kbR: key;
+    {190}out(c, (ekR,akR,kbR,cert(pk(ekR),caSk)))
+)
+
+-- Query event(Appraised(d_7,n_20)) ==> event(DeviceGood(d_7)) in process 1.
+Translating the process into Horn clauses...
+Completing...
+200 rules inserted. Base: 140 rules (71 with conclusion selected). Queue: 15 rules.
+Starting query event(Appraised(d_7,n_20)) ==> event(DeviceGood(d_7))
+goal reachable: b-event(DeviceGood(thumb(pk(ek_6[])))) -> event(Appraised(thumb(pk(ek_6[])),n_20))
+Abbreviations:
+n_20 = n_1[u_1 = bob,kbp_1 = pk(kb_6[]),akp_1 = pk(ak_6[]),d_1 = thumb(pk(ek_6[])),!1 = @sid]
+goal reachable: b-event(DeviceGood(thumb(pk(ek_6[])))) -> event(Appraised(thumb(pk(ek_6[])),n_20))
+Abbreviations:
+n_20 = n[u = bob,kbp = pk(kb_6[]),akp = pk(ak_6[]),ce = cert(pk(ek_6[]),caSk[]),ekp = pk(ek_6[]),!1 = @sid]
+goal reachable: b-event(DeviceGood(thumb(pk(ek[])))) -> event(Appraised(thumb(pk(ek[])),n_20))
+Abbreviations:
+n_20 = n_1[u_1 = alice,kbp_1 = pk(kb[]),akp_1 = pk(ak[]),d_1 = thumb(pk(ek[])),!1 = @sid]
+goal reachable: b-event(DeviceGood(thumb(pk(ek[])))) -> event(Appraised(thumb(pk(ek[])),n_20))
+Abbreviations:
+n_20 = n[u = alice,kbp = pk(kb[]),akp = pk(ak[]),ce = cert(pk(ek[]),caSk[]),ekp = pk(ek[]),!1 = @sid]
+RESULT event(Appraised(d_7,n_20)) ==> event(DeviceGood(d_7)) is true.
+-- Query event(Appraised(d_7,n_20)) ==> event(TPMQuoted(d_7,n_20)) in process 1.
+Translating the process into Horn clauses...
+Completing...
+200 rules inserted. Base: 140 rules (71 with conclusion selected). Queue: 15 rules.
+Starting query event(Appraised(d_7,n_20)) ==> event(TPMQuoted(d_7,n_20))
+goal reachable: b-event(TPMQuoted(thumb(pk(ek_6[])),n_20)) && b-event(TPMQuoted(thumb(pk(ek_6[])),n_21)) -> event(Appraised(thumb(pk(ek_6[])),n_20))
+Abbreviations:
+n_20 = n_1[u_1 = bob,kbp_1 = pk(kb_6[]),akp_1 = pk(ak_6[]),d_1 = thumb(pk(ek_6[])),!1 = @sid]
+n_21 = n[u = bob,kbp = pk(kb_6[]),akp = pk(ak_6[]),ce = cert(pk(ek_6[]),caSk[]),ekp = pk(ek_6[]),!1 = @sid_1]
+goal reachable: b-event(TPMQuoted(thumb(pk(ek_6[])),n_20)) -> event(Appraised(thumb(pk(ek_6[])),n_20))
+Abbreviations:
+n_20 = n[u = bob,kbp = pk(kb_6[]),akp = pk(ak_6[]),ce = cert(pk(ek_6[]),caSk[]),ekp = pk(ek_6[]),!1 = @sid]
+goal reachable: b-event(TPMQuoted(thumb(pk(ek[])),n_20)) && b-event(TPMQuoted(thumb(pk(ek[])),n_21)) -> event(Appraised(thumb(pk(ek[])),n_20))
+Abbreviations:
+n_20 = n_1[u_1 = alice,kbp_1 = pk(kb[]),akp_1 = pk(ak[]),d_1 = thumb(pk(ek[])),!1 = @sid]
+n_21 = n[u = alice,kbp = pk(kb[]),akp = pk(ak[]),ce = cert(pk(ek[]),caSk[]),ekp = pk(ek[]),!1 = @sid_1]
+goal reachable: b-event(TPMQuoted(thumb(pk(ek[])),n_20)) -> event(Appraised(thumb(pk(ek[])),n_20))
+Abbreviations:
+n_20 = n[u = alice,kbp = pk(kb[]),akp = pk(ak[]),ce = cert(pk(ek[]),caSk[]),ekp = pk(ek[]),!1 = @sid]
+RESULT event(Appraised(d_7,n_20)) ==> event(TPMQuoted(d_7,n_20)) is true.
+-- Query event(Issued(u_7,d_7,j_1)) ==> event(TPMHoldsKB(d_7,j_1)) && event(Enrolled(d_7,j_1,u_7)) in process 1.
+Translating the process into Horn clauses...
+Completing...
+200 rules inserted. Base: 147 rules (71 with conclusion selected). Queue: 10 rules.
+Starting query event(Issued(u_7,d_7,j_1)) ==> event(TPMHoldsKB(d_7,j_1)) && event(Enrolled(d_7,j_1,u_7))
+goal reachable: b-event(Enrolled(thumb(pk(ek[])),thumb(pk(kb[])),alice)) && b-event(TPMHoldsKB(thumb(pk(ek[])),thumb(pk(kb[])))) -> event(Issued(alice,thumb(pk(ek[])),thumb(pk(kb[]))))
+RESULT event(Issued(u_7,d_7,j_1)) ==> event(TPMHoldsKB(d_7,j_1)) && event(Enrolled(d_7,j_1,u_7)) is true.
+-- Query inj-event(Accepted(u_7,d_7,j_1,r_7,n_20)) ==> inj-event(TPMSignedProof(j_1,r_7,n_20)) in process 1.
+Translating the process into Horn clauses...
+Completing...
+200 rules inserted. Base: 136 rules (71 with conclusion selected). Queue: 10 rules.
+Starting query inj-event(Accepted(u_7,d_7,j_1,r_7,n_20)) ==> inj-event(TPMSignedProof(j_1,r_7,n_20))
+goal reachable: @sid ≠ @sid_1 && b-inj-event(TPMSignedProof(thumb(pk(kb[])),tokenEp,nD_1),@occ78_1) && b-inj-event(TPMSignedProof(thumb(pk(kb[])),r_7,n_20),@occ78_2) && attacker(n_20) && attacker(r_7) -> inj-event(Accepted(alice,thumb(pk(ek[])),thumb(pk(kb[])),r_7,n_20),@occ51_1) && inj-event(Accepted(alice,thumb(pk(ek[])),thumb(pk(kb[])),r_7,n_20),@occ51_2)
+Abbreviations:
+@occ51_1 = @occ51[r = r_7,prf_1 = sign((td,r_7,n_20),kb[]),kbq_1 = pk(kb[]),at = sign((tat,alice,thumb(pk(ek[])),thumb(pk(kb[]))),skIdP[]),!1 = @sid]
+@occ51_2 = @occ51[r = r_7,prf_1 = sign((td,r_7,n_20),kb[]),kbq_1 = pk(kb[]),at = sign((tat,alice,thumb(pk(ek[])),thumb(pk(kb[]))),skIdP[]),!1 = @sid_1]
+nD_1 = nD[kbp_2 = pk(kb[]),akp_2 = pk(ak[]),pw = password(alice),u_2 = alice,jktReq = thumb(pk(kb[])),ar = sign((tar,thumb(pk(ek[])),thumb(pk(kb[]))),skV[]),!1 = @sid_2]
+@occ78_1 = @occ78[n_4 = nD_1,r_1 = tokenEp,!1 = @sid_3]
+@occ78_2 = @occ78[n_4 = n_20,r_1 = r_7,!1 = @sid_4]
+
+Derivation:
+Abbreviations:
+@occ51_1 = @occ51[r = r_7,prf_1 = sign((td,r_7,n_20),kb[]),kbq_1 = pk(kb[]),at = sign((tat,alice,thumb(pk(ek[])),thumb(pk(kb[]))),skIdP[]),!1 = @sid]
+@occ51_2 = @occ51[r = r_7,prf_1 = sign((td,r_7,n_20),kb[]),kbq_1 = pk(kb[]),at = sign((tat,alice,thumb(pk(ek[])),thumb(pk(kb[]))),skIdP[]),!1 = @sid_1]
+nD_1 = nD[kbp_2 = pk(kb[]),akp_2 = pk(ak[]),pw = password(alice),u_2 = alice,jktReq = thumb(pk(kb[])),ar = sign((tar,thumb(pk(ek[])),thumb(pk(kb[]))),skV[]),!1 = @sid_2]
+@occ78_1 = @occ78[n_4 = nD_1,r_1 = tokenEp,!1 = @sid_3]
+s_1 = s[u = alice,kbp = pk(kb[]),akp = pk(ak[]),ce = cert(pk(ek[]),caSk[]),ekp = pk(ek[]),!1 = @sid_4]
+n_21 = n[u = alice,kbp = pk(kb[]),akp = pk(ak[]),ce = cert(pk(ek[]),caSk[]),ekp = pk(ek[]),!1 = @sid_4]
+s_2 = s[u = alice,kbp = pk(kb[]),akp = pk(ak[]),ce = cert(pk(ek[]),caSk[]),ekp = pk(ek[]),!1 = @sid_5]
+n_22 = n[u = alice,kbp = pk(kb[]),akp = pk(ak[]),ce = cert(pk(ek[]),caSk[]),ekp = pk(ek[]),!1 = @sid_5]
+s_3 = s[u = alice,kbp = pk(kb[]),akp = pk(ak[]),ce = cert(pk(ek[]),caSk[]),ekp = pk(ek[]),!1 = @sid_6]
+n_23 = n[u = alice,kbp = pk(kb[]),akp = pk(ak[]),ce = cert(pk(ek[]),caSk[]),ekp = pk(ek[]),!1 = @sid_6]
+@occ78_2 = @occ78[n_4 = n_20,r_1 = r_7,!1 = @sid_7]
+
+1. We assume as hypothesis that
+attacker(r_7).
+
+2. We assume as hypothesis that
+attacker(n_20).
+
+3. Using the function td the attacker may obtain td.
+attacker(td).
+
+4. By 3, the attacker may know td.
+By 1, the attacker may know r_7.
+By 2, the attacker may know n_20.
+Using the function 3-tuple the attacker may obtain (td,r_7,n_20).
+attacker((td,r_7,n_20)).
+
+5. The message (td,r_7,n_20) that the attacker may have by 4 may be received at input {77}.
+The event TPMSignedProof(thumb(pk(kb[])),r_7,n_20) (with occurrence name @occ78_2) may be executed at {78}.
+So the message sign((td,r_7,n_20),kb[]) may be sent to the attacker at output {79}.
+attacker(sign((td,r_7,n_20),kb[])).
+
+6. The message (pk(ek[]),cert(pk(ek[]),caSk[]),pk(ak[]),pk(kb[])) may be sent to the attacker at output {60}.
+attacker((pk(ek[]),cert(pk(ek[]),caSk[]),pk(ak[]),pk(kb[]))).
+
+7. By 6, the attacker may know (pk(ek[]),cert(pk(ek[]),caSk[]),pk(ak[]),pk(kb[])).
+Using the function 4-proj-4-tuple the attacker may obtain pk(kb[]).
+attacker(pk(kb[])).
+
+8. The message password(alice) may be sent to the attacker at output {1}.
+attacker(password(alice)).
+
+9. Using the function alice the attacker may obtain alice.
+attacker(alice).
+
+10. By 7, the attacker may know pk(kb[]).
+Using the function thumb the attacker may obtain thumb(pk(kb[])).
+attacker(thumb(pk(kb[]))).
+
+11. The entry inventory(pk(ek[]),alice) may be inserted in a table at insert {58}.
+table(inventory(pk(ek[]),alice)).
+
+12. The message (pk(ek[]),cert(pk(ek[]),caSk[]),pk(ak[]),pk(kb[])) that the attacker may have by 6 may be received at input {3}.
+The entry inventory(pk(ek[]),alice) that may be in a table by 11 may be read at get {19}.
+So the message (mkcred(pk(ek[]),name(pk(ak[])),s_3),n_23,sel09) may be sent to the attacker at output {7}.
+attacker((mkcred(pk(ek[]),name(pk(ak[])),s_3),n_23,sel09)).
+
+13. By 12, the attacker may know (mkcred(pk(ek[]),name(pk(ak[])),s_3),n_23,sel09).
+Using the function 2-proj-3-tuple the attacker may obtain n_23.
+attacker(n_23).
+
+14. Using the function tc the attacker may obtain tc.
+attacker(tc).
+
+15. By 14, the attacker may know tc.
+By 13, the attacker may know n_23.
+Using the function 2-tuple the attacker may obtain (tc,n_23).
+attacker((tc,n_23)).
+
+16. The message (tc,n_23) that the attacker may have by 15 may be received at input {71}.
+So the message sign((tc,n_23,pk(kb[])),ak[]) may be sent to the attacker at output {72}.
+attacker(sign((tc,n_23,pk(kb[])),ak[])).
+
+17. Using the function sel09 the attacker may obtain sel09.
+attacker(sel09).
+
+18. Using the function tq the attacker may obtain tq.
+attacker(tq).
+
+19. By 18, the attacker may know tq.
+By 13, the attacker may know n_23.
+By 17, the attacker may know sel09.
+Using the function 3-tuple the attacker may obtain (tq,n_23,sel09).
+attacker((tq,n_23,sel09)).
+
+20. The message (tq,n_23,sel09) that the attacker may have by 19 may be received at input {67}.
+So the message sign((tq,n_23,sel09,dig(golden,sel09)),ak[]) may be sent to the attacker at output {69}.
+attacker(sign((tq,n_23,sel09,dig(golden,sel09)),ak[])).
+
+21. By 12, the attacker may know (mkcred(pk(ek[]),name(pk(ak[])),s_3),n_23,sel09).
+Using the function 1-proj-3-tuple the attacker may obtain mkcred(pk(ek[]),name(pk(ak[])),s_3).
+attacker(mkcred(pk(ek[]),name(pk(ak[])),s_3)).
+
+22. The message mkcred(pk(ek[]),name(pk(ak[])),s_3) that the attacker may have by 21 may be received at input {74}.
+So the message s_3 may be sent to the attacker at output {75}.
+attacker(s_3).
+
+23. By 22, the attacker may know s_3.
+By 20, the attacker may know sign((tq,n_23,sel09,dig(golden,sel09)),ak[]).
+By 16, the attacker may know sign((tc,n_23,pk(kb[])),ak[]).
+Using the function 3-tuple the attacker may obtain (s_3,sign((tq,n_23,sel09,dig(golden,sel09)),ak[]),sign((tc,n_23,pk(kb[])),ak[])).
+attacker((s_3,sign((tq,n_23,sel09,dig(golden,sel09)),ak[]),sign((tc,n_23,pk(kb[])),ak[]))).
+
+24. The message (pk(ek[]),cert(pk(ek[]),caSk[]),pk(ak[]),pk(kb[])) that the attacker may have by 6 may be received at input {3}.
+The entry inventory(pk(ek[]),alice) that may be in a table by 11 may be read at get {19}.
+The message (s_3,sign((tq,n_23,sel09,dig(golden,sel09)),ak[]),sign((tc,n_23,pk(kb[])),ak[])) that the attacker may have by 23 may be received at input {8}.
+So the message sign((tar,thumb(pk(ek[])),thumb(pk(kb[]))),skV[]) may be sent to the attacker at output {18}.
+attacker(sign((tar,thumb(pk(ek[])),thumb(pk(kb[]))),skV[])).
+
+25. By 24, the attacker may know sign((tar,thumb(pk(ek[])),thumb(pk(kb[]))),skV[]).
+By 10, the attacker may know thumb(pk(kb[])).
+By 9, the attacker may know alice.
+By 8, the attacker may know password(alice).
+Using the function 4-tuple the attacker may obtain (sign((tar,thumb(pk(ek[])),thumb(pk(kb[]))),skV[]),thumb(pk(kb[])),alice,password(alice)).
+attacker((sign((tar,thumb(pk(ek[])),thumb(pk(kb[]))),skV[]),thumb(pk(kb[])),alice,password(alice))).
+
+26. The message (pk(ek[]),cert(pk(ek[]),caSk[]),pk(ak[]),pk(kb[])) that the attacker may have by 6 may be received at input {3}.
+The entry inventory(pk(ek[]),alice) that may be in a table by 11 may be read at get {19}.
+So the message (mkcred(pk(ek[]),name(pk(ak[])),s_2),n_22,sel09) may be sent to the attacker at output {7}.
+attacker((mkcred(pk(ek[]),name(pk(ak[])),s_2),n_22,sel09)).
+
+27. By 26, the attacker may know (mkcred(pk(ek[]),name(pk(ak[])),s_2),n_22,sel09).
+Using the function 2-proj-3-tuple the attacker may obtain n_22.
+attacker(n_22).
+
+28. By 14, the attacker may know tc.
+By 27, the attacker may know n_22.
+Using the function 2-tuple the attacker may obtain (tc,n_22).
+attacker((tc,n_22)).
+
+29. The message (tc,n_22) that the attacker may have by 28 may be received at input {71}.
+So the message sign((tc,n_22,pk(kb[])),ak[]) may be sent to the attacker at output {72}.
+attacker(sign((tc,n_22,pk(kb[])),ak[])).
+
+30. By 18, the attacker may know tq.
+By 27, the attacker may know n_22.
+By 17, the attacker may know sel09.
+Using the function 3-tuple the attacker may obtain (tq,n_22,sel09).
+attacker((tq,n_22,sel09)).
+
+31. The message (tq,n_22,sel09) that the attacker may have by 30 may be received at input {67}.
+So the message sign((tq,n_22,sel09,dig(golden,sel09)),ak[]) may be sent to the attacker at output {69}.
+attacker(sign((tq,n_22,sel09,dig(golden,sel09)),ak[])).
+
+32. By 26, the attacker may know (mkcred(pk(ek[]),name(pk(ak[])),s_2),n_22,sel09).
+Using the function 1-proj-3-tuple the attacker may obtain mkcred(pk(ek[]),name(pk(ak[])),s_2).
+attacker(mkcred(pk(ek[]),name(pk(ak[])),s_2)).
+
+33. The message mkcred(pk(ek[]),name(pk(ak[])),s_2) that the attacker may have by 32 may be received at input {74}.
+So the message s_2 may be sent to the attacker at output {75}.
+attacker(s_2).
+
+34. By 33, the attacker may know s_2.
+By 31, the attacker may know sign((tq,n_22,sel09,dig(golden,sel09)),ak[]).
+By 29, the attacker may know sign((tc,n_22,pk(kb[])),ak[]).
+Using the function 3-tuple the attacker may obtain (s_2,sign((tq,n_22,sel09,dig(golden,sel09)),ak[]),sign((tc,n_22,pk(kb[])),ak[])).
+attacker((s_2,sign((tq,n_22,sel09,dig(golden,sel09)),ak[]),sign((tc,n_22,pk(kb[])),ak[]))).
+
+35. The message (pk(ek[]),cert(pk(ek[]),caSk[]),pk(ak[]),pk(kb[])) that the attacker may have by 6 may be received at input {3}.
+The entry inventory(pk(ek[]),alice) that may be in a table by 11 may be read at get {19}.
+The message (s_2,sign((tq,n_22,sel09,dig(golden,sel09)),ak[]),sign((tc,n_22,pk(kb[])),ak[])) that the attacker may have by 34 may be received at input {8}.
+So the entry registry(thumb(pk(ek[])),pk(ak[]),pk(kb[]),alice) may be inserted in a table at insert {17}.
+table(registry(thumb(pk(ek[])),pk(ak[]),pk(kb[]),alice)).
+
+36. The message (pk(ek[]),cert(pk(ek[]),caSk[]),pk(ak[]),pk(kb[])) that the attacker may have by 6 may be received at input {3}.
+The entry inventory(pk(ek[]),alice) that may be in a table by 11 may be read at get {19}.
+So the message (mkcred(pk(ek[]),name(pk(ak[])),s_1),n_21,sel09) may be sent to the attacker at output {7}.
+attacker((mkcred(pk(ek[]),name(pk(ak[])),s_1),n_21,sel09)).
+
+37. By 36, the attacker may know (mkcred(pk(ek[]),name(pk(ak[])),s_1),n_21,sel09).
+Using the function 2-proj-3-tuple the attacker may obtain n_21.
+attacker(n_21).
+
+38. By 14, the attacker may know tc.
+By 37, the attacker may know n_21.
+Using the function 2-tuple the attacker may obtain (tc,n_21).
+attacker((tc,n_21)).
+
+39. The message (tc,n_21) that the attacker may have by 38 may be received at input {71}.
+So the message sign((tc,n_21,pk(kb[])),ak[]) may be sent to the attacker at output {72}.
+attacker(sign((tc,n_21,pk(kb[])),ak[])).
+
+40. By 18, the attacker may know tq.
+By 37, the attacker may know n_21.
+By 17, the attacker may know sel09.
+Using the function 3-tuple the attacker may obtain (tq,n_21,sel09).
+attacker((tq,n_21,sel09)).
+
+41. The message (tq,n_21,sel09) that the attacker may have by 40 may be received at input {67}.
+So the message sign((tq,n_21,sel09,dig(golden,sel09)),ak[]) may be sent to the attacker at output {69}.
+attacker(sign((tq,n_21,sel09,dig(golden,sel09)),ak[])).
+
+42. By 36, the attacker may know (mkcred(pk(ek[]),name(pk(ak[])),s_1),n_21,sel09).
+Using the function 1-proj-3-tuple the attacker may obtain mkcred(pk(ek[]),name(pk(ak[])),s_1).
+attacker(mkcred(pk(ek[]),name(pk(ak[])),s_1)).
+
+43. The message mkcred(pk(ek[]),name(pk(ak[])),s_1) that the attacker may have by 42 may be received at input {74}.
+So the message s_1 may be sent to the attacker at output {75}.
+attacker(s_1).
+
+44. By 43, the attacker may know s_1.
+By 41, the attacker may know sign((tq,n_21,sel09,dig(golden,sel09)),ak[]).
+By 39, the attacker may know sign((tc,n_21,pk(kb[])),ak[]).
+Using the function 3-tuple the attacker may obtain (s_1,sign((tq,n_21,sel09,dig(golden,sel09)),ak[]),sign((tc,n_21,pk(kb[])),ak[])).
+attacker((s_1,sign((tq,n_21,sel09,dig(golden,sel09)),ak[]),sign((tc,n_21,pk(kb[])),ak[]))).
+
+45. The message (pk(ek[]),cert(pk(ek[]),caSk[]),pk(ak[]),pk(kb[])) that the attacker may have by 6 may be received at input {3}.
+The entry inventory(pk(ek[]),alice) that may be in a table by 11 may be read at get {19}.
+The message (s_1,sign((tq,n_21,sel09,dig(golden,sel09)),ak[]),sign((tc,n_21,pk(kb[])),ak[])) that the attacker may have by 44 may be received at input {8}.
+So the entry registry(thumb(pk(ek[])),pk(ak[]),pk(kb[]),alice) may be inserted in a table at insert {17}.
+table(registry(thumb(pk(ek[])),pk(ak[]),pk(kb[]),alice)).
+
+46. The message (sign((tar,thumb(pk(ek[])),thumb(pk(kb[]))),skV[]),thumb(pk(kb[])),alice,password(alice)) that the attacker may have by 25 may be received at input {32}.
+The entry registry(thumb(pk(ek[])),pk(ak[]),pk(kb[]),alice) that may be in a table by 45 may be read at get {43}.
+So the message nD_1 may be sent to the attacker at output {37}.
+attacker(nD_1).
+
+47. Using the function tokenEp the attacker may obtain tokenEp.
+attacker(tokenEp).
+
+48. By 3, the attacker may know td.
+By 47, the attacker may know tokenEp.
+By 46, the attacker may know nD_1.
+Using the function 3-tuple the attacker may obtain (td,tokenEp,nD_1).
+attacker((td,tokenEp,nD_1)).
+
+49. The message (td,tokenEp,nD_1) that the attacker may have by 48 may be received at input {77}.
+The event TPMSignedProof(thumb(pk(kb[])),tokenEp,nD_1) (with occurrence name @occ78_1) may be executed at {78}.
+So the message sign((td,tokenEp,nD_1),kb[]) may be sent to the attacker at output {79}.
+attacker(sign((td,tokenEp,nD_1),kb[])).
+
+50. By 7, the attacker may know pk(kb[]).
+By 49, the attacker may know sign((td,tokenEp,nD_1),kb[]).
+Using the function 2-tuple the attacker may obtain (pk(kb[]),sign((td,tokenEp,nD_1),kb[])).
+attacker((pk(kb[]),sign((td,tokenEp,nD_1),kb[]))).
+
+51. The message (sign((tar,thumb(pk(ek[])),thumb(pk(kb[]))),skV[]),thumb(pk(kb[])),alice,password(alice)) that the attacker may have by 25 may be received at input {32}.
+The entry registry(thumb(pk(ek[])),pk(ak[]),pk(kb[]),alice) that may be in a table by 35 may be read at get {43}.
+The message (pk(kb[]),sign((td,tokenEp,nD_1),kb[])) that the attacker may have by 50 may be received at input {38}.
+So the message sign((tat,alice,thumb(pk(ek[])),thumb(pk(kb[]))),skIdP[]) may be sent to the attacker at output {42}.
+attacker(sign((tat,alice,thumb(pk(ek[])),thumb(pk(kb[]))),skIdP[])).
+
+52. By 51, the attacker may know sign((tat,alice,thumb(pk(ek[])),thumb(pk(kb[]))),skIdP[]).
+By 7, the attacker may know pk(kb[]).
+By 5, the attacker may know sign((td,r_7,n_20),kb[]).
+By 1, the attacker may know r_7.
+Using the function 4-tuple the attacker may obtain (sign((tat,alice,thumb(pk(ek[])),thumb(pk(kb[]))),skIdP[]),pk(kb[]),sign((td,r_7,n_20),kb[]),r_7).
+attacker((sign((tat,alice,thumb(pk(ek[])),thumb(pk(kb[]))),skIdP[]),pk(kb[]),sign((td,r_7,n_20),kb[]),r_7)).
+
+53. The message (sign((tat,alice,thumb(pk(ek[])),thumb(pk(kb[]))),skIdP[]),pk(kb[]),sign((td,r_7,n_20),kb[]),r_7) that the attacker may have by 52 may be received at input {47}.
+So event Accepted(alice,thumb(pk(ek[])),thumb(pk(kb[])),r_7,n_20) may be executed at {51} in session @sid_1.
+inj-event(Accepted(alice,thumb(pk(ek[])),thumb(pk(kb[])),r_7,n_20),@occ51_2).
+
+54. By 53, inj-event(Accepted(alice,thumb(pk(ek[])),thumb(pk(kb[])),r_7,n_20),@occ51_2).
+The goal is reached, represented in the following fact:
+inj-event(Accepted(alice,thumb(pk(ek[])),thumb(pk(kb[])),r_7,n_20),@occ51_2).
+
+55. The message (sign((tat,alice,thumb(pk(ek[])),thumb(pk(kb[]))),skIdP[]),pk(kb[]),sign((td,r_7,n_20),kb[]),r_7) that the attacker may have by 52 may be received at input {47}.
+So event Accepted(alice,thumb(pk(ek[])),thumb(pk(kb[])),r_7,n_20) may be executed at {51} in session @sid.
+inj-event(Accepted(alice,thumb(pk(ek[])),thumb(pk(kb[])),r_7,n_20),@occ51_1).
+
+56. By 55, inj-event(Accepted(alice,thumb(pk(ek[])),thumb(pk(kb[])),r_7,n_20),@occ51_1).
+The goal is reached, represented in the following fact:
+inj-event(Accepted(alice,thumb(pk(ek[])),thumb(pk(kb[])),r_7,n_20),@occ51_1).
+
+57. By 56, inj-event(Accepted(alice,thumb(pk(ek[])),thumb(pk(kb[])),r_7,n_20),@occ51_1).
+By 54, inj-event(Accepted(alice,thumb(pk(ek[])),thumb(pk(kb[])),r_7,n_20),@occ51_2).
+We have @occ51_1 ≠ @occ51_2.
+The goals for injectivity are reached, combined in the following fact:
+inj-event(Accepted(alice,thumb(pk(ek[])),thumb(pk(kb[])),r_7,n_20),@occ51_1) && inj-event(Accepted(alice,thumb(pk(ek[])),thumb(pk(kb[])),r_7,n_20),@occ51_2).
+
+
+A more detailed output of the traces is available with
+  set traceDisplay = long.
+
+out(c, ~M) with ~M = password(alice) at {1}
+
+new ekR: key creating ekR_1 at {187}
+
+new akR: key creating akR_1 at {188}
+
+new kbR: key creating kbR_1 at {189}
+
+out(c, (~M_1,~M_2,~M_3,~M_4)) with ~M_1 = ekR_1, ~M_2 = akR_1, ~M_3 = kbR_1, ~M_4 = cert(pk(ekR_1),caSk) at {190}
+
+new ek_6: key creating ek_9 at {144}
+
+new ak_6: key creating ak_9 at {145}
+
+new kb_6: key creating kb_9 at {146}
+
+insert inventory(pk(ek_9),bob) at {148}
+
+event TPMHoldsKB(thumb(pk(ek_9)),thumb(pk(kb_9))) at {149}
+
+out(c, (~M_5,~M_6,~M_7,~M_8)) with ~M_5 = pk(ek_9), ~M_6 = cert(pk(ek_9),caSk), ~M_7 = pk(ak_9), ~M_8 = pk(kb_9) at {150}
+
+event DeviceGood(thumb(pk(ek_9))) at {152}
+
+new ek_3: key creating ek_10 at {99}
+
+new ak_3: key creating ak_10 at {100}
+
+new kb_3: key creating kb_10 at {101}
+
+insert inventory(pk(ek_10),alice) at {103}
+
+event TPMHoldsKB(thumb(pk(ek_10)),thumb(pk(kb_10))) at {104}
+
+out(c, (~M_9,~M_10,~M_11,~M_12)) with ~M_9 = pk(ek_10), ~M_10 = cert(pk(ek_10),caSk), ~M_11 = pk(ak_10), ~M_12 = pk(kb_10) at {105}
+
+new ek: key creating ek_11 at {54}
+
+new ak: key creating ak_11 at {55}
+
+new kb: key creating kb_11 at {56}
+
+insert inventory(pk(ek_11),alice) at {58}
+
+event TPMHoldsKB(thumb(pk(ek_11)),thumb(pk(kb_11))) at {59}
+
+out(c, (~M_13,~M_14,~M_15,~M_16)) with ~M_13 = pk(ek_11), ~M_14 = cert(pk(ek_11),caSk), ~M_15 = pk(ak_11), ~M_16 = pk(kb_11) at {60}
+
+event DeviceGood(thumb(pk(ek_11))) at {62}
+
+new nS: bitstring creating nS_1 at {45} in copy a
+
+out(c, ~M_17) with ~M_17 = nS_1 at {46} in copy a
+
+new nS: bitstring creating nS_2 at {45} in copy a_1
+
+out(c, ~M_18) with ~M_18 = nS_2 at {46} in copy a_1
+
+in(c, (~M_13,~M_14,~M_15,~M_16)) with ~M_13 = pk(ek_11), ~M_14 = cert(pk(ek_11),caSk), ~M_15 = pk(ak_11), ~M_16 = pk(kb_11) at {3} in copy a_2
+
+get inventory(pk(ek_11),alice) at {19} in copy a_2
+
+new s: bitstring creating s_4 at {5} in copy a_2
+
+new n: bitstring creating n_24 at {6} in copy a_2
+
+out(c, (~M_19,~M_20,~M_21)) with ~M_19 = mkcred(pk(ek_11),name(pk(ak_11)),s_4), ~M_20 = n_24, ~M_21 = sel09 at {7} in copy a_2
+
+in(c, (~M_13,~M_14,~M_15,~M_16)) with ~M_13 = pk(ek_11), ~M_14 = cert(pk(ek_11),caSk), ~M_15 = pk(ak_11), ~M_16 = pk(kb_11) at {3} in copy a_3
+
+get inventory(pk(ek_11),alice) at {19} in copy a_3
+
+new s: bitstring creating s_5 at {5} in copy a_3
+
+new n: bitstring creating n_25 at {6} in copy a_3
+
+out(c, (~M_22,~M_23,~M_24)) with ~M_22 = mkcred(pk(ek_11),name(pk(ak_11)),s_5), ~M_23 = n_25, ~M_24 = sel09 at {7} in copy a_3
+
+in(c, (~M_13,~M_14,~M_15,~M_16)) with ~M_13 = pk(ek_11), ~M_14 = cert(pk(ek_11),caSk), ~M_15 = pk(ak_11), ~M_16 = pk(kb_11) at {3} in copy a_4
+
+get inventory(pk(ek_11),alice) at {19} in copy a_4
+
+new s: bitstring creating s_6 at {5} in copy a_4
+
+new n: bitstring creating n_26 at {6} in copy a_4
+
+out(c, (~M_25,~M_26,~M_27)) with ~M_25 = mkcred(pk(ek_11),name(pk(ak_11)),s_6), ~M_26 = n_26, ~M_27 = sel09 at {7} in copy a_4
+
+in(c, (tq,~M_20,sel09)) with ~M_20 = n_24 at {67} in copy a_5
+
+event TPMQuoted(thumb(pk(ek_11)),n_24) at {68} in copy a_5
+
+out(c, ~M_28) with ~M_28 = sign((tq,n_24,sel09,dig(golden,sel09)),ak_11) at {69} in copy a_5
+
+in(c, (tq,~M_23,sel09)) with ~M_23 = n_25 at {67} in copy a_6
+
+event TPMQuoted(thumb(pk(ek_11)),n_25) at {68} in copy a_6
+
+out(c, ~M_29) with ~M_29 = sign((tq,n_25,sel09,dig(golden,sel09)),ak_11) at {69} in copy a_6
+
+in(c, (tq,~M_26,sel09)) with ~M_26 = n_26 at {67} in copy a_7
+
+event TPMQuoted(thumb(pk(ek_11)),n_26) at {68} in copy a_7
+
+out(c, ~M_30) with ~M_30 = sign((tq,n_26,sel09,dig(golden,sel09)),ak_11) at {69} in copy a_7
+
+in(c, (tc,~M_20)) with ~M_20 = n_24 at {71} in copy a_8
+
+out(c, ~M_31) with ~M_31 = sign((tc,n_24,pk(kb_11)),ak_11) at {72} in copy a_8
+
+in(c, (tc,~M_23)) with ~M_23 = n_25 at {71} in copy a_9
+
+out(c, ~M_32) with ~M_32 = sign((tc,n_25,pk(kb_11)),ak_11) at {72} in copy a_9
+
+in(c, (tc,~M_26)) with ~M_26 = n_26 at {71} in copy a_10
+
+out(c, ~M_33) with ~M_33 = sign((tc,n_26,pk(kb_11)),ak_11) at {72} in copy a_10
+
+in(c, ~M_19) with ~M_19 = mkcred(pk(ek_11),name(pk(ak_11)),s_4) at {74} in copy a_11
+
+out(c, ~M_34) with ~M_34 = s_4 at {75} in copy a_11
+
+in(c, (~M_34,~M_28,~M_31)) with ~M_34 = s_4, ~M_28 = sign((tq,n_24,sel09,dig(golden,sel09)),ak_11), ~M_31 = sign((tc,n_24,pk(kb_11)),ak_11) at {8} in copy a_2
+
+event Appraised(thumb(pk(ek_11)),n_24) at {15} in copy a_2
+
+event Enrolled(thumb(pk(ek_11)),thumb(pk(kb_11)),alice) at {16} in copy a_2
+
+insert registry(thumb(pk(ek_11)),pk(ak_11),pk(kb_11),alice) at {17} in copy a_2
+
+out(c, ~M_35) with ~M_35 = sign((tar,thumb(pk(ek_11)),thumb(pk(kb_11))),skV) at {18} in copy a_2
+
+in(c, (~M_35,thumb(~M_16),alice,~M)) with ~M_35 = sign((tar,thumb(pk(ek_11)),thumb(pk(kb_11))),skV), thumb(~M_16) = thumb(pk(kb_11)), ~M = password(alice) at {32} in copy a_12
+
+get registry(thumb(pk(ek_11)),pk(ak_11),pk(kb_11),alice) at {43} in copy a_12
+
+new nD: bitstring creating nD_2 at {36} in copy a_12
+
+out(c, ~M_36) with ~M_36 = nD_2 at {37} in copy a_12
+
+in(c, ~M_22) with ~M_22 = mkcred(pk(ek_11),name(pk(ak_11)),s_5) at {74} in copy a_13
+
+out(c, ~M_37) with ~M_37 = s_5 at {75} in copy a_13
+
+in(c, (~M_37,~M_29,~M_32)) with ~M_37 = s_5, ~M_29 = sign((tq,n_25,sel09,dig(golden,sel09)),ak_11), ~M_32 = sign((tc,n_25,pk(kb_11)),ak_11) at {8} in copy a_3
+
+event Appraised(thumb(pk(ek_11)),n_25) at {15} in copy a_3
+
+event Enrolled(thumb(pk(ek_11)),thumb(pk(kb_11)),alice) at {16} in copy a_3
+
+insert registry(thumb(pk(ek_11)),pk(ak_11),pk(kb_11),alice) at {17} in copy a_3
+
+out(c, ~M_38) with ~M_38 = sign((tar,thumb(pk(ek_11)),thumb(pk(kb_11))),skV) at {18} in copy a_3
+
+in(c, ~M_25) with ~M_25 = mkcred(pk(ek_11),name(pk(ak_11)),s_6) at {74} in copy a_14
+
+out(c, ~M_39) with ~M_39 = s_6 at {75} in copy a_14
+
+in(c, (~M_39,~M_30,~M_33)) with ~M_39 = s_6, ~M_30 = sign((tq,n_26,sel09,dig(golden,sel09)),ak_11), ~M_33 = sign((tc,n_26,pk(kb_11)),ak_11) at {8} in copy a_4
+
+event Appraised(thumb(pk(ek_11)),n_26) at {15} in copy a_4
+
+event Enrolled(thumb(pk(ek_11)),thumb(pk(kb_11)),alice) at {16} in copy a_4
+
+insert registry(thumb(pk(ek_11)),pk(ak_11),pk(kb_11),alice) at {17} in copy a_4
+
+out(c, ~M_40) with ~M_40 = sign((tar,thumb(pk(ek_11)),thumb(pk(kb_11))),skV) at {18} in copy a_4
+
+in(c, (td,tokenEp,~M_36)) with ~M_36 = nD_2 at {77} in copy a_15
+
+event TPMSignedProof(thumb(pk(kb_11)),tokenEp,nD_2) at {78} in copy a_15
+
+out(c, ~M_41) with ~M_41 = sign((td,tokenEp,nD_2),kb_11) at {79} in copy a_15
+
+in(c, (~M_16,~M_41)) with ~M_16 = pk(kb_11), ~M_41 = sign((td,tokenEp,nD_2),kb_11) at {38} in copy a_12
+
+event Issued(alice,thumb(pk(ek_11)),thumb(pk(kb_11))) at {41} in copy a_12
+
+out(c, ~M_42) with ~M_42 = sign((tat,alice,thumb(pk(ek_11)),thumb(pk(kb_11))),skIdP) at {42} in copy a_12
+
+in(c, (td,a_16,a_17)) at {77} in copy a_18
+
+event TPMSignedProof(thumb(pk(kb_11)),a_16,a_17) at {78} in copy a_18
+
+out(c, ~M_43) with ~M_43 = sign((td,a_16,a_17),kb_11) at {79} in copy a_18
+
+in(c, (~M_42,~M_16,~M_43,a_16)) with ~M_42 = sign((tat,alice,thumb(pk(ek_11)),thumb(pk(kb_11))),skIdP), ~M_16 = pk(kb_11), ~M_43 = sign((td,a_16,a_17),kb_11) at {47} in copy a_1
+
+event Accepted(alice,thumb(pk(ek_11)),thumb(pk(kb_11)),a_16,a_17) at {51} in copy a_1 (goal)
+
+in(c, (~M_42,~M_16,~M_43,a_16)) with ~M_42 = sign((tat,alice,thumb(pk(ek_11)),thumb(pk(kb_11))),skIdP), ~M_16 = pk(kb_11), ~M_43 = sign((td,a_16,a_17),kb_11) at {47} in copy a
+
+event Accepted(alice,thumb(pk(ek_11)),thumb(pk(kb_11)),a_16,a_17) at {51} in copy a (goal)
+
+The event Accepted(alice,thumb(pk(ek_11)),thumb(pk(kb_11)),a_16,a_17) is executed at {51} in copy a_1.
+The event Accepted(alice,thumb(pk(ek_11)),thumb(pk(kb_11)),a_16,a_17) is executed at {51} in copy a.
+A trace has been found.
+RESULT inj-event(Accepted(u_7,d_7,j_1,r_7,n_20)) ==> inj-event(TPMSignedProof(j_1,r_7,n_20)) is false.
+RESULT (but event(Accepted(u_7,d_7,j_1,r_7,n_20)) ==> event(TPMSignedProof(j_1,r_7,n_20)) is true.)
+-- Query not event(Accepted(u_7,d_7,j_1,r_7,n_20)) in process 1.
+Translating the process into Horn clauses...
+Completing...
+200 rules inserted. Base: 136 rules (71 with conclusion selected). Queue: 10 rules.
+Starting query not event(Accepted(u_7,d_7,j_1,r_7,n_20))
+goal reachable: attacker(n_20) && attacker(r_7) -> event(Accepted(alice,thumb(pk(ek[])),thumb(pk(kb[])),r_7,n_20))
+
+Derivation:
+Abbreviations:
+nD_1 = nD[kbp_2 = pk(kb[]),akp_2 = pk(ak[]),pw = password(alice),u_2 = alice,jktReq = thumb(pk(kb[])),ar = sign((tar,thumb(pk(ek[])),thumb(pk(kb[]))),skV[]),!1 = @sid]
+s_1 = s[u = alice,kbp = pk(kb[]),akp = pk(ak[]),ce = cert(pk(ek[]),caSk[]),ekp = pk(ek[]),!1 = @sid_1]
+n_20 = n[u = alice,kbp = pk(kb[]),akp = pk(ak[]),ce = cert(pk(ek[]),caSk[]),ekp = pk(ek[]),!1 = @sid_1]
+s_2 = s[u = alice,kbp = pk(kb[]),akp = pk(ak[]),ce = cert(pk(ek[]),caSk[]),ekp = pk(ek[]),!1 = @sid_2]
+n_21 = n[u = alice,kbp = pk(kb[]),akp = pk(ak[]),ce = cert(pk(ek[]),caSk[]),ekp = pk(ek[]),!1 = @sid_2]
+s_3 = s[u = alice,kbp = pk(kb[]),akp = pk(ak[]),ce = cert(pk(ek[]),caSk[]),ekp = pk(ek[]),!1 = @sid_3]
+n_22 = n[u = alice,kbp = pk(kb[]),akp = pk(ak[]),ce = cert(pk(ek[]),caSk[]),ekp = pk(ek[]),!1 = @sid_3]
+
+1. We assume as hypothesis that
+attacker(r_7).
+
+2. We assume as hypothesis that
+attacker(n_23).
+
+3. Using the function td the attacker may obtain td.
+attacker(td).
+
+4. By 3, the attacker may know td.
+By 1, the attacker may know r_7.
+By 2, the attacker may know n_23.
+Using the function 3-tuple the attacker may obtain (td,r_7,n_23).
+attacker((td,r_7,n_23)).
+
+5. The message (td,r_7,n_23) that the attacker may have by 4 may be received at input {77}.
+So the message sign((td,r_7,n_23),kb[]) may be sent to the attacker at output {79}.
+attacker(sign((td,r_7,n_23),kb[])).
+
+6. The message (pk(ek[]),cert(pk(ek[]),caSk[]),pk(ak[]),pk(kb[])) may be sent to the attacker at output {60}.
+attacker((pk(ek[]),cert(pk(ek[]),caSk[]),pk(ak[]),pk(kb[]))).
+
+7. By 6, the attacker may know (pk(ek[]),cert(pk(ek[]),caSk[]),pk(ak[]),pk(kb[])).
+Using the function 4-proj-4-tuple the attacker may obtain pk(kb[]).
+attacker(pk(kb[])).
+
+8. The message password(alice) may be sent to the attacker at output {1}.
+attacker(password(alice)).
+
+9. Using the function alice the attacker may obtain alice.
+attacker(alice).
+
+10. By 7, the attacker may know pk(kb[]).
+Using the function thumb the attacker may obtain thumb(pk(kb[])).
+attacker(thumb(pk(kb[]))).
+
+11. The entry inventory(pk(ek[]),alice) may be inserted in a table at insert {58}.
+table(inventory(pk(ek[]),alice)).
+
+12. The message (pk(ek[]),cert(pk(ek[]),caSk[]),pk(ak[]),pk(kb[])) that the attacker may have by 6 may be received at input {3}.
+The entry inventory(pk(ek[]),alice) that may be in a table by 11 may be read at get {19}.
+So the message (mkcred(pk(ek[]),name(pk(ak[])),s_3),n_22,sel09) may be sent to the attacker at output {7}.
+attacker((mkcred(pk(ek[]),name(pk(ak[])),s_3),n_22,sel09)).
+
+13. By 12, the attacker may know (mkcred(pk(ek[]),name(pk(ak[])),s_3),n_22,sel09).
+Using the function 2-proj-3-tuple the attacker may obtain n_22.
+attacker(n_22).
+
+14. Using the function tc the attacker may obtain tc.
+attacker(tc).
+
+15. By 14, the attacker may know tc.
+By 13, the attacker may know n_22.
+Using the function 2-tuple the attacker may obtain (tc,n_22).
+attacker((tc,n_22)).
+
+16. The message (tc,n_22) that the attacker may have by 15 may be received at input {71}.
+So the message sign((tc,n_22,pk(kb[])),ak[]) may be sent to the attacker at output {72}.
+attacker(sign((tc,n_22,pk(kb[])),ak[])).
+
+17. Using the function sel09 the attacker may obtain sel09.
+attacker(sel09).
+
+18. Using the function tq the attacker may obtain tq.
+attacker(tq).
+
+19. By 18, the attacker may know tq.
+By 13, the attacker may know n_22.
+By 17, the attacker may know sel09.
+Using the function 3-tuple the attacker may obtain (tq,n_22,sel09).
+attacker((tq,n_22,sel09)).
+
+20. The message (tq,n_22,sel09) that the attacker may have by 19 may be received at input {67}.
+So the message sign((tq,n_22,sel09,dig(golden,sel09)),ak[]) may be sent to the attacker at output {69}.
+attacker(sign((tq,n_22,sel09,dig(golden,sel09)),ak[])).
+
+21. By 12, the attacker may know (mkcred(pk(ek[]),name(pk(ak[])),s_3),n_22,sel09).
+Using the function 1-proj-3-tuple the attacker may obtain mkcred(pk(ek[]),name(pk(ak[])),s_3).
+attacker(mkcred(pk(ek[]),name(pk(ak[])),s_3)).
+
+22. The message mkcred(pk(ek[]),name(pk(ak[])),s_3) that the attacker may have by 21 may be received at input {74}.
+So the message s_3 may be sent to the attacker at output {75}.
+attacker(s_3).
+
+23. By 22, the attacker may know s_3.
+By 20, the attacker may know sign((tq,n_22,sel09,dig(golden,sel09)),ak[]).
+By 16, the attacker may know sign((tc,n_22,pk(kb[])),ak[]).
+Using the function 3-tuple the attacker may obtain (s_3,sign((tq,n_22,sel09,dig(golden,sel09)),ak[]),sign((tc,n_22,pk(kb[])),ak[])).
+attacker((s_3,sign((tq,n_22,sel09,dig(golden,sel09)),ak[]),sign((tc,n_22,pk(kb[])),ak[]))).
+
+24. The message (pk(ek[]),cert(pk(ek[]),caSk[]),pk(ak[]),pk(kb[])) that the attacker may have by 6 may be received at input {3}.
+The entry inventory(pk(ek[]),alice) that may be in a table by 11 may be read at get {19}.
+The message (s_3,sign((tq,n_22,sel09,dig(golden,sel09)),ak[]),sign((tc,n_22,pk(kb[])),ak[])) that the attacker may have by 23 may be received at input {8}.
+So the message sign((tar,thumb(pk(ek[])),thumb(pk(kb[]))),skV[]) may be sent to the attacker at output {18}.
+attacker(sign((tar,thumb(pk(ek[])),thumb(pk(kb[]))),skV[])).
+
+25. By 24, the attacker may know sign((tar,thumb(pk(ek[])),thumb(pk(kb[]))),skV[]).
+By 10, the attacker may know thumb(pk(kb[])).
+By 9, the attacker may know alice.
+By 8, the attacker may know password(alice).
+Using the function 4-tuple the attacker may obtain (sign((tar,thumb(pk(ek[])),thumb(pk(kb[]))),skV[]),thumb(pk(kb[])),alice,password(alice)).
+attacker((sign((tar,thumb(pk(ek[])),thumb(pk(kb[]))),skV[]),thumb(pk(kb[])),alice,password(alice))).
+
+26. The message (pk(ek[]),cert(pk(ek[]),caSk[]),pk(ak[]),pk(kb[])) that the attacker may have by 6 may be received at input {3}.
+The entry inventory(pk(ek[]),alice) that may be in a table by 11 may be read at get {19}.
+So the message (mkcred(pk(ek[]),name(pk(ak[])),s_2),n_21,sel09) may be sent to the attacker at output {7}.
+attacker((mkcred(pk(ek[]),name(pk(ak[])),s_2),n_21,sel09)).
+
+27. By 26, the attacker may know (mkcred(pk(ek[]),name(pk(ak[])),s_2),n_21,sel09).
+Using the function 2-proj-3-tuple the attacker may obtain n_21.
+attacker(n_21).
+
+28. By 14, the attacker may know tc.
+By 27, the attacker may know n_21.
+Using the function 2-tuple the attacker may obtain (tc,n_21).
+attacker((tc,n_21)).
+
+29. The message (tc,n_21) that the attacker may have by 28 may be received at input {71}.
+So the message sign((tc,n_21,pk(kb[])),ak[]) may be sent to the attacker at output {72}.
+attacker(sign((tc,n_21,pk(kb[])),ak[])).
+
+30. By 18, the attacker may know tq.
+By 27, the attacker may know n_21.
+By 17, the attacker may know sel09.
+Using the function 3-tuple the attacker may obtain (tq,n_21,sel09).
+attacker((tq,n_21,sel09)).
+
+31. The message (tq,n_21,sel09) that the attacker may have by 30 may be received at input {67}.
+So the message sign((tq,n_21,sel09,dig(golden,sel09)),ak[]) may be sent to the attacker at output {69}.
+attacker(sign((tq,n_21,sel09,dig(golden,sel09)),ak[])).
+
+32. By 26, the attacker may know (mkcred(pk(ek[]),name(pk(ak[])),s_2),n_21,sel09).
+Using the function 1-proj-3-tuple the attacker may obtain mkcred(pk(ek[]),name(pk(ak[])),s_2).
+attacker(mkcred(pk(ek[]),name(pk(ak[])),s_2)).
+
+33. The message mkcred(pk(ek[]),name(pk(ak[])),s_2) that the attacker may have by 32 may be received at input {74}.
+So the message s_2 may be sent to the attacker at output {75}.
+attacker(s_2).
+
+34. By 33, the attacker may know s_2.
+By 31, the attacker may know sign((tq,n_21,sel09,dig(golden,sel09)),ak[]).
+By 29, the attacker may know sign((tc,n_21,pk(kb[])),ak[]).
+Using the function 3-tuple the attacker may obtain (s_2,sign((tq,n_21,sel09,dig(golden,sel09)),ak[]),sign((tc,n_21,pk(kb[])),ak[])).
+attacker((s_2,sign((tq,n_21,sel09,dig(golden,sel09)),ak[]),sign((tc,n_21,pk(kb[])),ak[]))).
+
+35. The message (pk(ek[]),cert(pk(ek[]),caSk[]),pk(ak[]),pk(kb[])) that the attacker may have by 6 may be received at input {3}.
+The entry inventory(pk(ek[]),alice) that may be in a table by 11 may be read at get {19}.
+The message (s_2,sign((tq,n_21,sel09,dig(golden,sel09)),ak[]),sign((tc,n_21,pk(kb[])),ak[])) that the attacker may have by 34 may be received at input {8}.
+So the entry registry(thumb(pk(ek[])),pk(ak[]),pk(kb[]),alice) may be inserted in a table at insert {17}.
+table(registry(thumb(pk(ek[])),pk(ak[]),pk(kb[]),alice)).
+
+36. The message (pk(ek[]),cert(pk(ek[]),caSk[]),pk(ak[]),pk(kb[])) that the attacker may have by 6 may be received at input {3}.
+The entry inventory(pk(ek[]),alice) that may be in a table by 11 may be read at get {19}.
+So the message (mkcred(pk(ek[]),name(pk(ak[])),s_1),n_20,sel09) may be sent to the attacker at output {7}.
+attacker((mkcred(pk(ek[]),name(pk(ak[])),s_1),n_20,sel09)).
+
+37. By 36, the attacker may know (mkcred(pk(ek[]),name(pk(ak[])),s_1),n_20,sel09).
+Using the function 2-proj-3-tuple the attacker may obtain n_20.
+attacker(n_20).
+
+38. By 14, the attacker may know tc.
+By 37, the attacker may know n_20.
+Using the function 2-tuple the attacker may obtain (tc,n_20).
+attacker((tc,n_20)).
+
+39. The message (tc,n_20) that the attacker may have by 38 may be received at input {71}.
+So the message sign((tc,n_20,pk(kb[])),ak[]) may be sent to the attacker at output {72}.
+attacker(sign((tc,n_20,pk(kb[])),ak[])).
+
+40. By 18, the attacker may know tq.
+By 37, the attacker may know n_20.
+By 17, the attacker may know sel09.
+Using the function 3-tuple the attacker may obtain (tq,n_20,sel09).
+attacker((tq,n_20,sel09)).
+
+41. The message (tq,n_20,sel09) that the attacker may have by 40 may be received at input {67}.
+So the message sign((tq,n_20,sel09,dig(golden,sel09)),ak[]) may be sent to the attacker at output {69}.
+attacker(sign((tq,n_20,sel09,dig(golden,sel09)),ak[])).
+
+42. By 36, the attacker may know (mkcred(pk(ek[]),name(pk(ak[])),s_1),n_20,sel09).
+Using the function 1-proj-3-tuple the attacker may obtain mkcred(pk(ek[]),name(pk(ak[])),s_1).
+attacker(mkcred(pk(ek[]),name(pk(ak[])),s_1)).
+
+43. The message mkcred(pk(ek[]),name(pk(ak[])),s_1) that the attacker may have by 42 may be received at input {74}.
+So the message s_1 may be sent to the attacker at output {75}.
+attacker(s_1).
+
+44. By 43, the attacker may know s_1.
+By 41, the attacker may know sign((tq,n_20,sel09,dig(golden,sel09)),ak[]).
+By 39, the attacker may know sign((tc,n_20,pk(kb[])),ak[]).
+Using the function 3-tuple the attacker may obtain (s_1,sign((tq,n_20,sel09,dig(golden,sel09)),ak[]),sign((tc,n_20,pk(kb[])),ak[])).
+attacker((s_1,sign((tq,n_20,sel09,dig(golden,sel09)),ak[]),sign((tc,n_20,pk(kb[])),ak[]))).
+
+45. The message (pk(ek[]),cert(pk(ek[]),caSk[]),pk(ak[]),pk(kb[])) that the attacker may have by 6 may be received at input {3}.
+The entry inventory(pk(ek[]),alice) that may be in a table by 11 may be read at get {19}.
+The message (s_1,sign((tq,n_20,sel09,dig(golden,sel09)),ak[]),sign((tc,n_20,pk(kb[])),ak[])) that the attacker may have by 44 may be received at input {8}.
+So the entry registry(thumb(pk(ek[])),pk(ak[]),pk(kb[]),alice) may be inserted in a table at insert {17}.
+table(registry(thumb(pk(ek[])),pk(ak[]),pk(kb[]),alice)).
+
+46. The message (sign((tar,thumb(pk(ek[])),thumb(pk(kb[]))),skV[]),thumb(pk(kb[])),alice,password(alice)) that the attacker may have by 25 may be received at input {32}.
+The entry registry(thumb(pk(ek[])),pk(ak[]),pk(kb[]),alice) that may be in a table by 45 may be read at get {43}.
+So the message nD_1 may be sent to the attacker at output {37}.
+attacker(nD_1).
+
+47. Using the function tokenEp the attacker may obtain tokenEp.
+attacker(tokenEp).
+
+48. By 3, the attacker may know td.
+By 47, the attacker may know tokenEp.
+By 46, the attacker may know nD_1.
+Using the function 3-tuple the attacker may obtain (td,tokenEp,nD_1).
+attacker((td,tokenEp,nD_1)).
+
+49. The message (td,tokenEp,nD_1) that the attacker may have by 48 may be received at input {77}.
+So the message sign((td,tokenEp,nD_1),kb[]) may be sent to the attacker at output {79}.
+attacker(sign((td,tokenEp,nD_1),kb[])).
+
+50. By 7, the attacker may know pk(kb[]).
+By 49, the attacker may know sign((td,tokenEp,nD_1),kb[]).
+Using the function 2-tuple the attacker may obtain (pk(kb[]),sign((td,tokenEp,nD_1),kb[])).
+attacker((pk(kb[]),sign((td,tokenEp,nD_1),kb[]))).
+
+51. The message (sign((tar,thumb(pk(ek[])),thumb(pk(kb[]))),skV[]),thumb(pk(kb[])),alice,password(alice)) that the attacker may have by 25 may be received at input {32}.
+The entry registry(thumb(pk(ek[])),pk(ak[]),pk(kb[]),alice) that may be in a table by 35 may be read at get {43}.
+The message (pk(kb[]),sign((td,tokenEp,nD_1),kb[])) that the attacker may have by 50 may be received at input {38}.
+So the message sign((tat,alice,thumb(pk(ek[])),thumb(pk(kb[]))),skIdP[]) may be sent to the attacker at output {42}.
+attacker(sign((tat,alice,thumb(pk(ek[])),thumb(pk(kb[]))),skIdP[])).
+
+52. By 51, the attacker may know sign((tat,alice,thumb(pk(ek[])),thumb(pk(kb[]))),skIdP[]).
+By 7, the attacker may know pk(kb[]).
+By 5, the attacker may know sign((td,r_7,n_23),kb[]).
+By 1, the attacker may know r_7.
+Using the function 4-tuple the attacker may obtain (sign((tat,alice,thumb(pk(ek[])),thumb(pk(kb[]))),skIdP[]),pk(kb[]),sign((td,r_7,n_23),kb[]),r_7).
+attacker((sign((tat,alice,thumb(pk(ek[])),thumb(pk(kb[]))),skIdP[]),pk(kb[]),sign((td,r_7,n_23),kb[]),r_7)).
+
+53. The message (sign((tat,alice,thumb(pk(ek[])),thumb(pk(kb[]))),skIdP[]),pk(kb[]),sign((td,r_7,n_23),kb[]),r_7) that the attacker may have by 52 may be received at input {47}.
+So event Accepted(alice,thumb(pk(ek[])),thumb(pk(kb[])),r_7,n_23) may be executed at {51}.
+event(Accepted(alice,thumb(pk(ek[])),thumb(pk(kb[])),r_7,n_23)).
+
+54. By 53, event(Accepted(alice,thumb(pk(ek[])),thumb(pk(kb[])),r_7,n_23)).
+The goal is reached, represented in the following fact:
+event(Accepted(alice,thumb(pk(ek[])),thumb(pk(kb[])),r_7,n_23)).
+
+
+A more detailed output of the traces is available with
+  set traceDisplay = long.
+
+out(c, ~M) with ~M = password(alice) at {1}
+
+new ekR: key creating ekR_1 at {187}
+
+new akR: key creating akR_1 at {188}
+
+new kbR: key creating kbR_1 at {189}
+
+out(c, (~M_1,~M_2,~M_3,~M_4)) with ~M_1 = ekR_1, ~M_2 = akR_1, ~M_3 = kbR_1, ~M_4 = cert(pk(ekR_1),caSk) at {190}
+
+new ek_6: key creating ek_9 at {144}
+
+new ak_6: key creating ak_9 at {145}
+
+new kb_6: key creating kb_9 at {146}
+
+insert inventory(pk(ek_9),bob) at {148}
+
+event TPMHoldsKB(thumb(pk(ek_9)),thumb(pk(kb_9))) at {149}
+
+out(c, (~M_5,~M_6,~M_7,~M_8)) with ~M_5 = pk(ek_9), ~M_6 = cert(pk(ek_9),caSk), ~M_7 = pk(ak_9), ~M_8 = pk(kb_9) at {150}
+
+event DeviceGood(thumb(pk(ek_9))) at {152}
+
+new ek_3: key creating ek_10 at {99}
+
+new ak_3: key creating ak_10 at {100}
+
+new kb_3: key creating kb_10 at {101}
+
+insert inventory(pk(ek_10),alice) at {103}
+
+event TPMHoldsKB(thumb(pk(ek_10)),thumb(pk(kb_10))) at {104}
+
+out(c, (~M_9,~M_10,~M_11,~M_12)) with ~M_9 = pk(ek_10), ~M_10 = cert(pk(ek_10),caSk), ~M_11 = pk(ak_10), ~M_12 = pk(kb_10) at {105}
+
+new ek: key creating ek_11 at {54}
+
+new ak: key creating ak_11 at {55}
+
+new kb: key creating kb_11 at {56}
+
+insert inventory(pk(ek_11),alice) at {58}
+
+event TPMHoldsKB(thumb(pk(ek_11)),thumb(pk(kb_11))) at {59}
+
+out(c, (~M_13,~M_14,~M_15,~M_16)) with ~M_13 = pk(ek_11), ~M_14 = cert(pk(ek_11),caSk), ~M_15 = pk(ak_11), ~M_16 = pk(kb_11) at {60}
+
+event DeviceGood(thumb(pk(ek_11))) at {62}
+
+new nS: bitstring creating nS_1 at {45} in copy a
+
+out(c, ~M_17) with ~M_17 = nS_1 at {46} in copy a
+
+in(c, (~M_13,~M_14,~M_15,~M_16)) with ~M_13 = pk(ek_11), ~M_14 = cert(pk(ek_11),caSk), ~M_15 = pk(ak_11), ~M_16 = pk(kb_11) at {3} in copy a_1
+
+get inventory(pk(ek_11),alice) at {19} in copy a_1
+
+new s: bitstring creating s_4 at {5} in copy a_1
+
+new n: bitstring creating n_24 at {6} in copy a_1
+
+out(c, (~M_18,~M_19,~M_20)) with ~M_18 = mkcred(pk(ek_11),name(pk(ak_11)),s_4), ~M_19 = n_24, ~M_20 = sel09 at {7} in copy a_1
+
+in(c, (~M_13,~M_14,~M_15,~M_16)) with ~M_13 = pk(ek_11), ~M_14 = cert(pk(ek_11),caSk), ~M_15 = pk(ak_11), ~M_16 = pk(kb_11) at {3} in copy a_2
+
+get inventory(pk(ek_11),alice) at {19} in copy a_2
+
+new s: bitstring creating s_5 at {5} in copy a_2
+
+new n: bitstring creating n_25 at {6} in copy a_2
+
+out(c, (~M_21,~M_22,~M_23)) with ~M_21 = mkcred(pk(ek_11),name(pk(ak_11)),s_5), ~M_22 = n_25, ~M_23 = sel09 at {7} in copy a_2
+
+in(c, (~M_13,~M_14,~M_15,~M_16)) with ~M_13 = pk(ek_11), ~M_14 = cert(pk(ek_11),caSk), ~M_15 = pk(ak_11), ~M_16 = pk(kb_11) at {3} in copy a_3
+
+get inventory(pk(ek_11),alice) at {19} in copy a_3
+
+new s: bitstring creating s_6 at {5} in copy a_3
+
+new n: bitstring creating n_26 at {6} in copy a_3
+
+out(c, (~M_24,~M_25,~M_26)) with ~M_24 = mkcred(pk(ek_11),name(pk(ak_11)),s_6), ~M_25 = n_26, ~M_26 = sel09 at {7} in copy a_3
+
+in(c, (tq,~M_19,sel09)) with ~M_19 = n_24 at {67} in copy a_4
+
+event TPMQuoted(thumb(pk(ek_11)),n_24) at {68} in copy a_4
+
+out(c, ~M_27) with ~M_27 = sign((tq,n_24,sel09,dig(golden,sel09)),ak_11) at {69} in copy a_4
+
+in(c, (tq,~M_22,sel09)) with ~M_22 = n_25 at {67} in copy a_5
+
+event TPMQuoted(thumb(pk(ek_11)),n_25) at {68} in copy a_5
+
+out(c, ~M_28) with ~M_28 = sign((tq,n_25,sel09,dig(golden,sel09)),ak_11) at {69} in copy a_5
+
+in(c, (tq,~M_25,sel09)) with ~M_25 = n_26 at {67} in copy a_6
+
+event TPMQuoted(thumb(pk(ek_11)),n_26) at {68} in copy a_6
+
+out(c, ~M_29) with ~M_29 = sign((tq,n_26,sel09,dig(golden,sel09)),ak_11) at {69} in copy a_6
+
+in(c, (tc,~M_19)) with ~M_19 = n_24 at {71} in copy a_7
+
+out(c, ~M_30) with ~M_30 = sign((tc,n_24,pk(kb_11)),ak_11) at {72} in copy a_7
+
+in(c, (tc,~M_22)) with ~M_22 = n_25 at {71} in copy a_8
+
+out(c, ~M_31) with ~M_31 = sign((tc,n_25,pk(kb_11)),ak_11) at {72} in copy a_8
+
+in(c, (tc,~M_25)) with ~M_25 = n_26 at {71} in copy a_9
+
+out(c, ~M_32) with ~M_32 = sign((tc,n_26,pk(kb_11)),ak_11) at {72} in copy a_9
+
+in(c, ~M_18) with ~M_18 = mkcred(pk(ek_11),name(pk(ak_11)),s_4) at {74} in copy a_10
+
+out(c, ~M_33) with ~M_33 = s_4 at {75} in copy a_10
+
+in(c, (~M_33,~M_27,~M_30)) with ~M_33 = s_4, ~M_27 = sign((tq,n_24,sel09,dig(golden,sel09)),ak_11), ~M_30 = sign((tc,n_24,pk(kb_11)),ak_11) at {8} in copy a_1
+
+event Appraised(thumb(pk(ek_11)),n_24) at {15} in copy a_1
+
+event Enrolled(thumb(pk(ek_11)),thumb(pk(kb_11)),alice) at {16} in copy a_1
+
+insert registry(thumb(pk(ek_11)),pk(ak_11),pk(kb_11),alice) at {17} in copy a_1
+
+out(c, ~M_34) with ~M_34 = sign((tar,thumb(pk(ek_11)),thumb(pk(kb_11))),skV) at {18} in copy a_1
+
+in(c, (~M_34,thumb(~M_16),alice,~M)) with ~M_34 = sign((tar,thumb(pk(ek_11)),thumb(pk(kb_11))),skV), thumb(~M_16) = thumb(pk(kb_11)), ~M = password(alice) at {32} in copy a_11
+
+get registry(thumb(pk(ek_11)),pk(ak_11),pk(kb_11),alice) at {43} in copy a_11
+
+new nD: bitstring creating nD_2 at {36} in copy a_11
+
+out(c, ~M_35) with ~M_35 = nD_2 at {37} in copy a_11
+
+in(c, ~M_21) with ~M_21 = mkcred(pk(ek_11),name(pk(ak_11)),s_5) at {74} in copy a_12
+
+out(c, ~M_36) with ~M_36 = s_5 at {75} in copy a_12
+
+in(c, (~M_36,~M_28,~M_31)) with ~M_36 = s_5, ~M_28 = sign((tq,n_25,sel09,dig(golden,sel09)),ak_11), ~M_31 = sign((tc,n_25,pk(kb_11)),ak_11) at {8} in copy a_2
+
+event Appraised(thumb(pk(ek_11)),n_25) at {15} in copy a_2
+
+event Enrolled(thumb(pk(ek_11)),thumb(pk(kb_11)),alice) at {16} in copy a_2
+
+insert registry(thumb(pk(ek_11)),pk(ak_11),pk(kb_11),alice) at {17} in copy a_2
+
+out(c, ~M_37) with ~M_37 = sign((tar,thumb(pk(ek_11)),thumb(pk(kb_11))),skV) at {18} in copy a_2
+
+in(c, ~M_24) with ~M_24 = mkcred(pk(ek_11),name(pk(ak_11)),s_6) at {74} in copy a_13
+
+out(c, ~M_38) with ~M_38 = s_6 at {75} in copy a_13
+
+in(c, (~M_38,~M_29,~M_32)) with ~M_38 = s_6, ~M_29 = sign((tq,n_26,sel09,dig(golden,sel09)),ak_11), ~M_32 = sign((tc,n_26,pk(kb_11)),ak_11) at {8} in copy a_3
+
+event Appraised(thumb(pk(ek_11)),n_26) at {15} in copy a_3
+
+event Enrolled(thumb(pk(ek_11)),thumb(pk(kb_11)),alice) at {16} in copy a_3
+
+insert registry(thumb(pk(ek_11)),pk(ak_11),pk(kb_11),alice) at {17} in copy a_3
+
+out(c, ~M_39) with ~M_39 = sign((tar,thumb(pk(ek_11)),thumb(pk(kb_11))),skV) at {18} in copy a_3
+
+in(c, (td,tokenEp,~M_35)) with ~M_35 = nD_2 at {77} in copy a_14
+
+event TPMSignedProof(thumb(pk(kb_11)),tokenEp,nD_2) at {78} in copy a_14
+
+out(c, ~M_40) with ~M_40 = sign((td,tokenEp,nD_2),kb_11) at {79} in copy a_14
+
+in(c, (~M_16,~M_40)) with ~M_16 = pk(kb_11), ~M_40 = sign((td,tokenEp,nD_2),kb_11) at {38} in copy a_11
+
+event Issued(alice,thumb(pk(ek_11)),thumb(pk(kb_11))) at {41} in copy a_11
+
+out(c, ~M_41) with ~M_41 = sign((tat,alice,thumb(pk(ek_11)),thumb(pk(kb_11))),skIdP) at {42} in copy a_11
+
+in(c, (td,a_15,a_16)) at {77} in copy a_17
+
+event TPMSignedProof(thumb(pk(kb_11)),a_15,a_16) at {78} in copy a_17
+
+out(c, ~M_42) with ~M_42 = sign((td,a_15,a_16),kb_11) at {79} in copy a_17
+
+in(c, (~M_41,~M_16,~M_42,a_15)) with ~M_41 = sign((tat,alice,thumb(pk(ek_11)),thumb(pk(kb_11))),skIdP), ~M_16 = pk(kb_11), ~M_42 = sign((td,a_15,a_16),kb_11) at {47} in copy a
+
+event Accepted(alice,thumb(pk(ek_11)),thumb(pk(kb_11)),a_15,a_16) at {51} in copy a (goal)
+
+The event Accepted(alice,thumb(pk(ek_11)),thumb(pk(kb_11)),a_15,a_16) is executed at {51} in copy a.
+A trace has been found.
+RESULT not event(Accepted(u_7,d_7,j_1,r_7,n_20)) is false.
+
+--------------------------------------------------------------
+Verification summary:
+
+Query event(Appraised(d_7,n_20)) ==> event(DeviceGood(d_7)) is true.
+
+Query event(Appraised(d_7,n_20)) ==> event(TPMQuoted(d_7,n_20)) is true.
+
+Query event(Issued(u_7,d_7,j_1)) ==> event(TPMHoldsKB(d_7,j_1)) && event(Enrolled(d_7,j_1,u_7)) is true.
+
+Query inj-event(Accepted(u_7,d_7,j_1,r_7,n_20)) ==> inj-event(TPMSignedProof(j_1,r_7,n_20)) is false.
+
+Query not event(Accepted(u_7,d_7,j_1,r_7,n_20)) is false.
+
+--------------------------------------------------------------
+

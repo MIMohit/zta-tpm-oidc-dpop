@@ -1,0 +1,414 @@
+{
+  "at": "2026-10-23T10:26:07.623Z",
+  "seed": 1,
+  "users": 1000,
+  "days": 37,
+  "params": {
+    "loginsPerWorkday": 2.5,
+    "workStartUtc": [
+      6,
+      9
+    ],
+    "workLengthH": 9,
+    "typoRate": 0.05,
+    "travelUserRate": 0.03,
+    "secondDeviceRate": 0.05,
+    "flightKmh": 800,
+    "airportHours": 3,
+    "attestationPeriodS": 300,
+    "attacksPerScenario": 300,
+    "burnInDays": 7
+  },
+  "scenarios": {
+    "S1_same_network": "stolen device and password, used from the victim's own network at usual hours",
+    "S2_impossible_travel": "used from another continent within 1 h of the owner's last login",
+    "S3_abroad_next_day": "used from another continent 24-48 h after the owner's last login",
+    "S4_after_guessing": "used from another continent after 5 failed attempts in 15 min",
+    "S5_abroad_off_hours": "used from another continent outside the owner's usual hours, 6-12 h later"
+  },
+  "weights": [
+    0.25,
+    0.25,
+    0.1,
+    0.15,
+    0.15,
+    0.1
+  ],
+  "legitLogins": 58201,
+  "attacks": 1500,
+  "atDefault": {
+    "theta": 0.5,
+    "legitStepUp": 0,
+    "attacksCaught": 0.7246666666666667,
+    "perScenario": {
+      "S1_same_network": 0,
+      "S2_impossible_travel": 0.9766666666666667,
+      "S3_abroad_next_day": 0.7033333333333334,
+      "S4_after_guessing": 0.95,
+      "S5_abroad_off_hours": 0.9933333333333333
+    }
+  },
+  "atDeny": {
+    "theta": 0.85,
+    "legitStepUp": 0,
+    "attacksCaught": 0,
+    "perScenario": {
+      "S1_same_network": 0,
+      "S2_impossible_travel": 0,
+      "S3_abroad_next_day": 0,
+      "S4_after_guessing": 0,
+      "S5_abroad_off_hours": 0
+    }
+  },
+  "sweep": [
+    {
+      "theta": 0,
+      "legitStepUp": 1,
+      "attacksCaught": 1,
+      "perScenario": {
+        "S1_same_network": 1,
+        "S2_impossible_travel": 1,
+        "S3_abroad_next_day": 1,
+        "S4_after_guessing": 1,
+        "S5_abroad_off_hours": 1
+      }
+    },
+    {
+      "theta": 0.05,
+      "legitStepUp": 0.3967113967113967,
+      "attacksCaught": 0.9093333333333333,
+      "perScenario": {
+        "S1_same_network": 0.5533333333333333,
+        "S2_impossible_travel": 0.9933333333333333,
+        "S3_abroad_next_day": 1,
+        "S4_after_guessing": 1,
+        "S5_abroad_off_hours": 1
+      }
+    },
+    {
+      "theta": 0.1,
+      "legitStepUp": 0.06829779557052285,
+      "attacksCaught": 0.8673333333333333,
+      "perScenario": {
+        "S1_same_network": 0.3466666666666667,
+        "S2_impossible_travel": 0.9933333333333333,
+        "S3_abroad_next_day": 0.9966666666666667,
+        "S4_after_guessing": 1,
+        "S5_abroad_off_hours": 1
+      }
+    },
+    {
+      "theta": 0.15,
+      "legitStepUp": 0.023178295905568632,
+      "attacksCaught": 0.8166666666666667,
+      "perScenario": {
+        "S1_same_network": 0.09666666666666666,
+        "S2_impossible_travel": 0.9933333333333333,
+        "S3_abroad_next_day": 0.9966666666666667,
+        "S4_after_guessing": 1,
+        "S5_abroad_off_hours": 0.9966666666666667
+      }
+    },
+    {
+      "theta": 0.2,
+      "legitStepUp": 0.0010824556279101735,
+      "attacksCaught": 0.7973333333333333,
+      "perScenario": {
+        "S1_same_network": 0,
+        "S2_impossible_travel": 0.9933333333333333,
+        "S3_abroad_next_day": 0.9966666666666667,
+        "S4_after_guessing": 1,
+        "S5_abroad_off_hours": 0.9966666666666667
+      }
+    },
+    {
+      "theta": 0.25,
+      "legitStepUp": 0.0006013642377278741,
+      "attacksCaught": 0.7973333333333333,
+      "perScenario": {
+        "S1_same_network": 0,
+        "S2_impossible_travel": 0.9933333333333333,
+        "S3_abroad_next_day": 0.9966666666666667,
+        "S4_after_guessing": 1,
+        "S5_abroad_off_hours": 0.9966666666666667
+      }
+    },
+    {
+      "theta": 0.3,
+      "legitStepUp": 0.0005154550609096064,
+      "attacksCaught": 0.792,
+      "perScenario": {
+        "S1_same_network": 0,
+        "S2_impossible_travel": 0.9766666666666667,
+        "S3_abroad_next_day": 0.9933333333333333,
+        "S4_after_guessing": 0.9933333333333333,
+        "S5_abroad_off_hours": 0.9966666666666667
+      }
+    },
+    {
+      "theta": 0.35,
+      "legitStepUp": 0.0003264548719094174,
+      "attacksCaught": 0.7853333333333333,
+      "perScenario": {
+        "S1_same_network": 0,
+        "S2_impossible_travel": 0.9766666666666667,
+        "S3_abroad_next_day": 0.9633333333333334,
+        "S4_after_guessing": 0.9933333333333333,
+        "S5_abroad_off_hours": 0.9933333333333333
+      }
+    },
+    {
+      "theta": 0.4,
+      "legitStepUp": 0.00003436367072730709,
+      "attacksCaught": 0.772,
+      "perScenario": {
+        "S1_same_network": 0,
+        "S2_impossible_travel": 0.9766666666666667,
+        "S3_abroad_next_day": 0.9,
+        "S4_after_guessing": 0.99,
+        "S5_abroad_off_hours": 0.9933333333333333
+      }
+    },
+    {
+      "theta": 0.45,
+      "legitStepUp": 0.00003436367072730709,
+      "attacksCaught": 0.7553333333333333,
+      "perScenario": {
+        "S1_same_network": 0,
+        "S2_impossible_travel": 0.9766666666666667,
+        "S3_abroad_next_day": 0.82,
+        "S4_after_guessing": 0.9866666666666667,
+        "S5_abroad_off_hours": 0.9933333333333333
+      }
+    },
+    {
+      "theta": 0.5,
+      "legitStepUp": 0,
+      "attacksCaught": 0.7246666666666667,
+      "perScenario": {
+        "S1_same_network": 0,
+        "S2_impossible_travel": 0.9766666666666667,
+        "S3_abroad_next_day": 0.7033333333333334,
+        "S4_after_guessing": 0.95,
+        "S5_abroad_off_hours": 0.9933333333333333
+      }
+    },
+    {
+      "theta": 0.55,
+      "legitStepUp": 0,
+      "attacksCaught": 0.5193333333333333,
+      "perScenario": {
+        "S1_same_network": 0,
+        "S2_impossible_travel": 0.38,
+        "S3_abroad_next_day": 0.43666666666666665,
+        "S4_after_guessing": 0.8966666666666666,
+        "S5_abroad_off_hours": 0.8833333333333333
+      }
+    },
+    {
+      "theta": 0.6,
+      "legitStepUp": 0,
+      "attacksCaught": 0.398,
+      "perScenario": {
+        "S1_same_network": 0,
+        "S2_impossible_travel": 0.08,
+        "S3_abroad_next_day": 0.33,
+        "S4_after_guessing": 0.83,
+        "S5_abroad_off_hours": 0.75
+      }
+    },
+    {
+      "theta": 0.65,
+      "legitStepUp": 0,
+      "attacksCaught": 0.20466666666666666,
+      "perScenario": {
+        "S1_same_network": 0,
+        "S2_impossible_travel": 0.01,
+        "S3_abroad_next_day": 0.10666666666666667,
+        "S4_after_guessing": 0.7,
+        "S5_abroad_off_hours": 0.20666666666666667
+      }
+    },
+    {
+      "theta": 0.7,
+      "legitStepUp": 0,
+      "attacksCaught": 0.082,
+      "perScenario": {
+        "S1_same_network": 0,
+        "S2_impossible_travel": 0,
+        "S3_abroad_next_day": 0,
+        "S4_after_guessing": 0.41,
+        "S5_abroad_off_hours": 0
+      }
+    },
+    {
+      "theta": 0.75,
+      "legitStepUp": 0,
+      "attacksCaught": 0.058,
+      "perScenario": {
+        "S1_same_network": 0,
+        "S2_impossible_travel": 0,
+        "S3_abroad_next_day": 0,
+        "S4_after_guessing": 0.29,
+        "S5_abroad_off_hours": 0
+      }
+    },
+    {
+      "theta": 0.8,
+      "legitStepUp": 0,
+      "attacksCaught": 0.017333333333333333,
+      "perScenario": {
+        "S1_same_network": 0,
+        "S2_impossible_travel": 0,
+        "S3_abroad_next_day": 0,
+        "S4_after_guessing": 0.08666666666666667,
+        "S5_abroad_off_hours": 0
+      }
+    },
+    {
+      "theta": 0.85,
+      "legitStepUp": 0,
+      "attacksCaught": 0,
+      "perScenario": {
+        "S1_same_network": 0,
+        "S2_impossible_travel": 0,
+        "S3_abroad_next_day": 0,
+        "S4_after_guessing": 0,
+        "S5_abroad_off_hours": 0
+      }
+    },
+    {
+      "theta": 0.9,
+      "legitStepUp": 0,
+      "attacksCaught": 0,
+      "perScenario": {
+        "S1_same_network": 0,
+        "S2_impossible_travel": 0,
+        "S3_abroad_next_day": 0,
+        "S4_after_guessing": 0,
+        "S5_abroad_off_hours": 0
+      }
+    },
+    {
+      "theta": 0.95,
+      "legitStepUp": 0,
+      "attacksCaught": 0,
+      "perScenario": {
+        "S1_same_network": 0,
+        "S2_impossible_travel": 0,
+        "S3_abroad_next_day": 0,
+        "S4_after_guessing": 0,
+        "S5_abroad_off_hours": 0
+      }
+    },
+    {
+      "theta": 1,
+      "legitStepUp": 0,
+      "attacksCaught": 0,
+      "perScenario": {
+        "S1_same_network": 0,
+        "S2_impossible_travel": 0,
+        "S3_abroad_next_day": 0,
+        "S4_after_guessing": 0,
+        "S5_abroad_off_hours": 0
+      }
+    }
+  ],
+  "ablation": [
+    {
+      "removed": "f1 new ASN",
+      "theta": 0.5,
+      "legitStepUp": 0,
+      "attacksCaught": 0.058,
+      "perScenario": {
+        "S1_same_network": 0,
+        "S2_impossible_travel": 0,
+        "S3_abroad_next_day": 0,
+        "S4_after_guessing": 0.29,
+        "S5_abroad_off_hours": 0
+      }
+    },
+    {
+      "removed": "f2 travel speed",
+      "theta": 0.5,
+      "legitStepUp": 0,
+      "attacksCaught": 0.126,
+      "perScenario": {
+        "S1_same_network": 0,
+        "S2_impossible_travel": 0,
+        "S3_abroad_next_day": 0,
+        "S4_after_guessing": 0.63,
+        "S5_abroad_off_hours": 0
+      }
+    },
+    {
+      "removed": "f3 unusual hour",
+      "theta": 0.5,
+      "legitStepUp": 0,
+      "attacksCaught": 0.6513333333333333,
+      "perScenario": {
+        "S1_same_network": 0,
+        "S2_impossible_travel": 0.9766666666666667,
+        "S3_abroad_next_day": 0.5366666666666666,
+        "S4_after_guessing": 0.91,
+        "S5_abroad_off_hours": 0.8333333333333334
+      }
+    },
+    {
+      "removed": "f4 attestation age",
+      "theta": 0.5,
+      "legitStepUp": 0,
+      "attacksCaught": 0.6886666666666666,
+      "perScenario": {
+        "S1_same_network": 0,
+        "S2_impossible_travel": 0.9766666666666667,
+        "S3_abroad_next_day": 0.59,
+        "S4_after_guessing": 0.8833333333333333,
+        "S5_abroad_off_hours": 0.9933333333333333
+      }
+    },
+    {
+      "removed": "f5 recent failures",
+      "theta": 0.5,
+      "legitStepUp": 0,
+      "attacksCaught": 0.6746666666666666,
+      "perScenario": {
+        "S1_same_network": 0,
+        "S2_impossible_travel": 0.9766666666666667,
+        "S3_abroad_next_day": 0.7033333333333334,
+        "S4_after_guessing": 0.7,
+        "S5_abroad_off_hours": 0.9933333333333333
+      }
+    },
+    {
+      "removed": "f6 new device",
+      "theta": 0.5,
+      "legitStepUp": 0,
+      "attacksCaught": 0.7246666666666667,
+      "perScenario": {
+        "S1_same_network": 0,
+        "S2_impossible_travel": 0.9766666666666667,
+        "S3_abroad_next_day": 0.7033333333333334,
+        "S4_after_guessing": 0.95,
+        "S5_abroad_off_hours": 0.9933333333333333
+      }
+    }
+  ],
+  "policies": [
+    {
+      "policy": "No MFA (B5 = M27 and M28 off)",
+      "legitStepUp": 0,
+      "attacksCaught": 0
+    },
+    {
+      "policy": "Adaptive (theta_login = 0.5)",
+      "legitStepUp": 0,
+      "attacksCaught": 0.7246666666666667
+    },
+    {
+      "policy": "Static MFA (B4)",
+      "legitStepUp": 1,
+      "attacksCaught": 1
+    }
+  ]
+}

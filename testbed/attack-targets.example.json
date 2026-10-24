@@ -1,0 +1,43 @@
+{
+  "pepUrl": "http://127.0.0.1:4000",
+  "idpUrl": "http://127.0.0.1:4001",
+  "verifierUrl": "http://127.0.0.1:4002",
+  "registryUrl": "http://127.0.0.1:4004",
+  "resourceUrl": "http://127.0.0.1:4003",
+  "adminToken": "dev-admin-secret",
+  "devices": {
+    "dev-good": {
+      "agentUrl": "http://127.0.0.1:7101",
+      "user": "alice",
+      "sshPort": 2221
+    },
+    "dev-tampered": {
+      "agentUrl": "http://127.0.0.1:7102",
+      "user": "alice",
+      "sshPort": 2222
+    },
+    "dev-rogue": {
+      "agentUrl": "http://127.0.0.1:7103",
+      "user": "alice",
+      "sshPort": 2223
+    },
+    "dev-foreign": {
+      "agentUrl": "http://127.0.0.1:7104",
+      "user": "bob",
+      "sshPort": 2224
+    },
+    "dev-hw": {
+      "agentUrl": "http://127.0.0.1:7105",
+      "user": "alice",
+      "sshPort": 2225
+    }
+  },
+  "users": {
+    "alice": {
+      "password": "password123"
+    },
+    "bob": {
+      "password": "password123"
+    }
+  }
+}

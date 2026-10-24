@@ -1,0 +1,166 @@
+{
+  "format": "zta-rv/1",
+  "name": "qemu-edk2-swtpm-arm64",
+  "bank": "sha256",
+  "pcrs": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "source": {
+    "logs": [
+      {
+        "file": "ubuntu-noble-arm64-edk2.bin",
+        "sha256": "b3533a669e7b19ddcc34e1dd0c2d68269a5c8a8fda5de42fdc7ee08759e330dd"
+      }
+    ],
+    "qemuFingerprint": "",
+    "capturedAt": "2026-10-14T17:23:40.978Z"
+  },
+  "events": {
+    "0": [
+      {
+        "digest": "6bac431513477a2adf6b10af98ee5854a7c79dff9ec876a16ff0c8da7d0b3226",
+        "type": "EV_S_CRTM_VERSION",
+        "desc": "edk2-stable202408-prebuilt.qemu.org"
+      },
+      {
+        "digest": "1eb499f7ecc7d8e3e4ca1010f3159593c31b6154d3d005faccb9700f0184e3df",
+        "type": "EV_EFI_PLATFORM_FIRMWARE_BLOB",
+        "desc": "EV_EFI_PLATFORM_FIRMWARE_BLOB"
+      },
+      {
+        "digest": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+        "type": "EV_SEPARATOR",
+        "desc": "0x00000000"
+      }
+    ],
+    "1": [
+      {
+        "digest": "62e86ff292a1c440fdd09f3f02b443205affd2351a6981edef08312b563ba0a1",
+        "type": "EV_PLATFORM_CONFIG_FLAGS",
+        "desc": "ACPI DATA"
+      },
+      {
+        "digest": "7d0ffc27850ecdb3f3b61706c465c59ab1d02a4680159f229909e6a14aa7f1ee",
+        "type": "EV_PLATFORM_CONFIG_FLAGS",
+        "desc": "ACPI DATA"
+      },
+      {
+        "digest": "de2f256064a0af797747c2b97505dc0b9f3df0de4f489eac731c23ae9ca9cc31",
+        "type": "EV_PLATFORM_CONFIG_FLAGS",
+        "desc": "ACPI DATA"
+      },
+      {
+        "digest": "0ff248a70c01f66bc10697847074f1da04a4980415d2a769877ce1e2f3737180",
+        "type": "EV_PLATFORM_CONFIG_FLAGS",
+        "desc": "ACPI DATA"
+      },
+      {
+        "digest": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+        "type": "EV_EFI_VARIABLE_BOOT",
+        "desc": "BootOrder"
+      },
+      {
+        "digest": "fefaab4a01a6787fe8e57f595751e1d172ca72fe1226f4889e115b99da8f6464",
+        "type": "EV_EFI_VARIABLE_BOOT",
+        "desc": "Boot0000"
+      },
+      {
+        "digest": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+        "type": "EV_SEPARATOR",
+        "desc": "0x00000000"
+      }
+    ],
+    "2": [
+      {
+        "digest": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+        "type": "EV_SEPARATOR",
+        "desc": "0x00000000"
+      }
+    ],
+    "3": [
+      {
+        "digest": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+        "type": "EV_SEPARATOR",
+        "desc": "0x00000000"
+      }
+    ],
+    "4": [
+      {
+        "digest": "3d6772b4f84ed47595d72a2c4c5ffd15f5bb72c7507fe26f2aaee2c69d5633ba",
+        "type": "EV_EFI_ACTION",
+        "desc": "Calling EFI Application from Boot Option"
+      },
+      {
+        "digest": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+        "type": "EV_SEPARATOR",
+        "desc": "0x00000000"
+      }
+    ],
+    "5": [
+      {
+        "digest": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+        "type": "EV_SEPARATOR",
+        "desc": "0x00000000"
+      },
+      {
+        "digest": "d8043d6b7b85ad358eb3b6ae6a873ab7ef23a26352c5dc4faa5aeedacf5eb41b",
+        "type": "EV_EFI_ACTION",
+        "desc": "Exit Boot Services Invocation"
+      },
+      {
+        "digest": "b54f7542cbd872a81a9d9dea839b2b8d747c7ebd5ea6615c40f42f44a6dbeba0",
+        "type": "EV_EFI_ACTION",
+        "desc": "Exit Boot Services Returned with Success"
+      }
+    ],
+    "6": [
+      {
+        "digest": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+        "type": "EV_SEPARATOR",
+        "desc": "0x00000000"
+      }
+    ],
+    "7": [
+      {
+        "digest": "ce9ce386b52e099f3019e512a0d6062d6b560efe4ff3e5661c7525e2f9c263df",
+        "type": "EV_EFI_VARIABLE_DRIVER_CONFIG",
+        "desc": "SecureBoot"
+      },
+      {
+        "digest": "dea7b80ab53a3daaa24d5cc46c64e1fa9ffd03739f90aadbd8c0867c4a5b4890",
+        "type": "EV_EFI_VARIABLE_DRIVER_CONFIG",
+        "desc": "PK"
+      },
+      {
+        "digest": "e670e121fcebd473b8bc41bb801301fc1d9afa33904f06f7149b74f12c47a68f",
+        "type": "EV_EFI_VARIABLE_DRIVER_CONFIG",
+        "desc": "KEK"
+      },
+      {
+        "digest": "baf89a3ccace52750c5f0128351e0422a41597a1adfd50822aa363b9d124ea7c",
+        "type": "EV_EFI_VARIABLE_DRIVER_CONFIG",
+        "desc": "db"
+      },
+      {
+        "digest": "9f75b6823bff6af1024a4e2036719cdd548d3cbc2bf1de8e7ef4d0ed01f94bf9",
+        "type": "EV_EFI_VARIABLE_DRIVER_CONFIG",
+        "desc": "dbx"
+      },
+      {
+        "digest": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+        "type": "EV_SEPARATOR",
+        "desc": "0x00000000"
+      }
+    ]
+  },
+  "compositeDigests": [
+    "f6da0363d842efe22ccaf790a309040281c4e2530450e7525c03f46b72eac031"
+  ]
+}

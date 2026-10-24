@@ -1,0 +1,264 @@
+{
+  "format": "zta-rv/1",
+  "name": "omarchy-uki",
+  "bank": "sha256",
+  "pcrs": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    12
+  ],
+  "source": {
+    "logs": [
+      {
+        "file": "binary_bios_measurements",
+        "sha256": "e2d735c67e9941d8723865d81fcecfe270a2b6074d64608ec794c0f49279c66e"
+      }
+    ],
+    "qemuFingerprint": "",
+    "capturedAt": "2026-10-23T15:02:34.099Z"
+  },
+  "events": {
+    "0": [
+      {
+        "digest": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+        "type": "EV_S_CRTM_VERSION",
+        "desc": "EV_S_CRTM_VERSION"
+      },
+      {
+        "digest": "55e437a5bd9456599d19e7f99d6c9956f095ede81f91cf11e8ae606f41dae18d",
+        "type": "EV_EFI_PLATFORM_FIRMWARE_BLOB",
+        "desc": "EV_EFI_PLATFORM_FIRMWARE_BLOB"
+      },
+      {
+        "digest": "b7d31e87c8d191a9ce051080901bcb6e340b2325c8aac5eff071e7361af11492",
+        "type": "EV_EFI_PLATFORM_FIRMWARE_BLOB",
+        "desc": "EV_EFI_PLATFORM_FIRMWARE_BLOB"
+      },
+      {
+        "digest": "7232ca837677e7bedac0f6a8f0f5547a39fd402b7ac2a36f39f2082e15af976e",
+        "type": "EV_POST_CODE",
+        "desc": "ACPI DATA"
+      },
+      {
+        "digest": "f7ec23198d2308a57b42139c6b60b2077db3db6133df70e8653bfad730c7c773",
+        "type": "EV_POST_CODE",
+        "desc": "ACPI DATA"
+      },
+      {
+        "digest": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+        "type": "EV_SEPARATOR",
+        "desc": "0x00000000"
+      }
+    ],
+    "1": [
+      {
+        "digest": "8ed5247ccf3291c576a9d89075f06b15c9f00dbdc3ed0d74f0d9ff08e216f5ef",
+        "type": "EV_EFI_VARIABLE_BOOT",
+        "desc": "BootOrder"
+      },
+      {
+        "digest": "dcab5d493bd81b48439d979a37987b44c5b621efc458c7260aa2a4c6316a40ad",
+        "type": "EV_EFI_VARIABLE_BOOT",
+        "desc": "Boot0000"
+      },
+      {
+        "digest": "dc312f221a8735462c2668bcf1a8c14fdc9596de0108e6f48d8406feccc19baa",
+        "type": "EV_EFI_VARIABLE_BOOT",
+        "desc": "Boot0016"
+      },
+      {
+        "digest": "9a24f71b062e44798f91fa0636dcc5d84e18961c04b1dd157161aa2cee289a0b",
+        "type": "EV_EFI_VARIABLE_BOOT",
+        "desc": "Boot0002"
+      },
+      {
+        "digest": "3f66a9b5cd277bab7407c2d66e7dac2fc7405115512354eb284c13404730ef02",
+        "type": "EV_EFI_VARIABLE_BOOT",
+        "desc": "Boot0001"
+      },
+      {
+        "digest": "2ef7722455292fcd6595ec1db008a428a9fc5736c01bbfad9f18e2ce56126540",
+        "type": "EV_EFI_VARIABLE_BOOT",
+        "desc": "Boot0012"
+      },
+      {
+        "digest": "a81e7f461d3f25a245f0f559dc83e466b0d2771944fd8818e0e88da581497b77",
+        "type": "EV_EFI_VARIABLE_BOOT",
+        "desc": "Boot0013"
+      },
+      {
+        "digest": "a7f34e8c9940b77daf41f9732b40ce59731a562aaa3b60066d2f637e50dcd7b0",
+        "type": "EV_EFI_VARIABLE_BOOT",
+        "desc": "Boot0014"
+      },
+      {
+        "digest": "651a676fe39f9f3f97bbe742c49c62adf3a608dfdae0261964b4a2c50360dd2c",
+        "type": "EV_EFI_VARIABLE_BOOT",
+        "desc": "Boot0015"
+      },
+      {
+        "digest": "f23435f5d37e405e7c06c1286de54e9395e4cecee7a60145f6a6cd60f56f28b9",
+        "type": "EV_EFI_VARIABLE_BOOT",
+        "desc": "Boot0018"
+      },
+      {
+        "digest": "ab963388dcdbbbc2a3a365a85bb9805f284c63583591ec28490c7f83b8de0c83",
+        "type": "EV_EFI_VARIABLE_BOOT",
+        "desc": "Boot0019"
+      },
+      {
+        "digest": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+        "type": "EV_SEPARATOR",
+        "desc": "0x00000000"
+      },
+      {
+        "digest": "3412edcc933d70a97ae6ffcbf18be58d018829c85fef950bec1c56d1bd542ef0",
+        "type": "EV_EVENT_TAG",
+        "desc": "EV_EVENT_TAG"
+      },
+      {
+        "digest": "adc465d24d70c2e80a468363548678af68f3bc1182c6966726a72e27e04c93c5",
+        "type": "EV_EVENT_TAG",
+        "desc": "EV_EVENT_TAG"
+      },
+      {
+        "digest": "ed1a937fb995a4cf65a21a13b09c654a2fef9282171194b101da3d72c09ef12d",
+        "type": "EV_EVENT_TAG",
+        "desc": "EV_EVENT_TAG"
+      }
+    ],
+    "2": [
+      {
+        "digest": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+        "type": "EV_SEPARATOR",
+        "desc": "0x00000000"
+      }
+    ],
+    "3": [
+      {
+        "digest": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+        "type": "EV_SEPARATOR",
+        "desc": "0x00000000"
+      }
+    ],
+    "4": [
+      {
+        "digest": "3d6772b4f84ed47595d72a2c4c5ffd15f5bb72c7507fe26f2aaee2c69d5633ba",
+        "type": "EV_EFI_ACTION",
+        "desc": "Calling EFI Application from Boot Option"
+      },
+      {
+        "digest": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+        "type": "EV_SEPARATOR",
+        "desc": "0x00000000"
+      },
+      {
+        "digest": "08c95a76c82c3a8a4a90ee1ad7fa1529c683ab3e98a9513b67178c925ce078c5",
+        "type": "EV_EFI_BOOT_SERVICES_APPLICATION",
+        "desc": "\\EFI\\limine\\limine_x64.efi"
+      },
+      {
+        "digest": "58eb03b63e3b415733750c5a4ec42ccdd1896003be306683e39fa2696c61e4a5",
+        "type": "EV_EFI_BOOT_SERVICES_APPLICATION",
+        "desc": "EV_EFI_BOOT_SERVICES_APPLICATION"
+      }
+    ],
+    "5": [
+      {
+        "digest": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+        "type": "EV_SEPARATOR",
+        "desc": "0x00000000"
+      },
+      {
+        "digest": "50fd9338af1639f60ce6ac4925c1a2e1205a9ceaeb7d6f936acc02d09be290e2",
+        "type": "EV_EFI_GPT_EVENT",
+        "desc": "EV_EFI_GPT_EVENT"
+      },
+      {
+        "digest": "d8043d6b7b85ad358eb3b6ae6a873ab7ef23a26352c5dc4faa5aeedacf5eb41b",
+        "type": "EV_EFI_ACTION",
+        "desc": "Exit Boot Services Invocation"
+      },
+      {
+        "digest": "b54f7542cbd872a81a9d9dea839b2b8d747c7ebd5ea6615c40f42f44a6dbeba0",
+        "type": "EV_EFI_ACTION",
+        "desc": "Exit Boot Services Returned with Success"
+      }
+    ],
+    "6": [
+      {
+        "digest": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+        "type": "EV_SEPARATOR",
+        "desc": "0x00000000"
+      }
+    ],
+    "7": [
+      {
+        "digest": "115aa827dbccfb44d216ad9ecfda56bdea620b860a94bed5b7a27bba1c4d02d8",
+        "type": "EV_EFI_VARIABLE_DRIVER_CONFIG",
+        "desc": "SecureBoot"
+      },
+      {
+        "digest": "99bd2dfa6bc84d71dfb6a0597f234c3624e36dbb6382d888f3bf71abb67a4934",
+        "type": "EV_EFI_VARIABLE_DRIVER_CONFIG",
+        "desc": "PK"
+      },
+      {
+        "digest": "f2ff789f4c200f638f38a453c3128398d4f30181c9c4b46ebb32ba5e19c73b0a",
+        "type": "EV_EFI_VARIABLE_DRIVER_CONFIG",
+        "desc": "KEK"
+      },
+      {
+        "digest": "704b9adc9522ddb98cc7e763178fb7db9cae25d1d32e9b8e63105cb474724800",
+        "type": "EV_EFI_VARIABLE_DRIVER_CONFIG",
+        "desc": "db"
+      },
+      {
+        "digest": "695fb808f0e2e922137c1d999cc4a84abf0c98ee8b730c31530303a7648cd1e4",
+        "type": "EV_EFI_VARIABLE_DRIVER_CONFIG",
+        "desc": "dbx"
+      },
+      {
+        "digest": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+        "type": "EV_SEPARATOR",
+        "desc": "0x00000000"
+      }
+    ],
+    "8": [],
+    "9": [
+      {
+        "digest": "795bc53621f3ccc0493ebb48d4f772137e0ef6d54f27a5881164c5c2af450cbb",
+        "type": "EV_EVENT_TAG",
+        "desc": "EV_EVENT_TAG"
+      },
+      {
+        "digest": "36af0c369b0a81bd0ebf645f4cc920a2baecc612228e872dacdc251fadcb9492",
+        "type": "EV_EVENT_TAG",
+        "desc": "EV_EVENT_TAG"
+      }
+    ],
+    "12": [
+      {
+        "digest": "795bc53621f3ccc0493ebb48d4f772137e0ef6d54f27a5881164c5c2af450cbb",
+        "type": "EV_IPL",
+        "desc": "EV_IPL"
+      },
+      {
+        "digest": "0bb28bbc1dee22e5dee34b785d068adae174a2b55d9f42da5a031d22202e6809",
+        "type": "EV_IPL",
+        "desc": "EV_IPL"
+      }
+    ]
+  },
+  "compositeDigests": [
+    "c34040a5bae11a395806d77362fa4b4a27c43de01c671112d8be613a3ed01076"
+  ]
+}

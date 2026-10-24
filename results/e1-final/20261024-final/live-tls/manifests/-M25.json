@@ -1,0 +1,62 @@
+{
+  "schema": "zta-run-manifest/1",
+  "runId": "run_b507702b",
+  "startedAt": "2026-10-24T02:19:17.444Z",
+  "label": "-M25",
+  "baseline": null,
+  "off": [
+    "M25"
+  ],
+  "on": [
+    "M1",
+    "M2",
+    "M3",
+    "M4",
+    "M5",
+    "M6",
+    "M7",
+    "M8",
+    "M9",
+    "M10",
+    "M11",
+    "M12",
+    "M13",
+    "M14",
+    "M15",
+    "M16",
+    "M17",
+    "M18",
+    "M19",
+    "M20",
+    "M21",
+    "M22",
+    "M23",
+    "M24",
+    "M25",
+    "M26",
+    "M27",
+    "M28"
+  ],
+  "hash": "62803c26c26d",
+  "git": {
+    "commit": "unknown",
+    "dirty": false
+  },
+  "code": {
+    "algorithm": "sha256 over sorted lines path NUL hex(sha256(file)) LF; excludes node_modules, data, results, testbed/{state,ca,images}",
+    "sha256": "70f43abcadc86a6079f5dada5f3788b5733822e3ffc7cbdb2ed182e627e7e7c7",
+    "files": 286,
+    "source": "walk"
+  },
+  "node": "v26.12.0",
+  "platform": "linux",
+  "arch": "x64",
+  "cpus": 8,
+  "env": {
+    "ZTA_TLS": "1"
+  },
+  "mode": "live",
+  "tpm": "swtpm",
+  "config": "-M25",
+  "manifestHash": "bb0ddcc80214626b"
+}
